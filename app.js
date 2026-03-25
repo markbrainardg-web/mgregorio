@@ -600,10 +600,10 @@ function roleBadge(roleId) {
 }
 
 let permissionsMatrix = {
-  super_admin:     { view_admin_dashboard:true, view_all_projects:true, view_my_dashboard:true, view_my_projects:true, view_users:true, view_hubspot:true, manage_users:true, create_delete_projects:true, edit_projects:true, edit_milestones:true, act_as_user:true, log_time:true, view_audit_trail:true, view_project_details:true, view_resource_hub:true, generate_resource_hub:true },
-  lead:            { view_admin_dashboard:true, view_all_projects:true, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:true, manage_users:false, create_delete_projects:true, edit_projects:true, edit_milestones:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:true, view_resource_hub:true, generate_resource_hub:false },
-  project_manager: { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:true, edit_milestones:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:true, view_resource_hub:true, generate_resource_hub:true },
-  implementer:     { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:false, edit_milestones:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:false, view_resource_hub:false, generate_resource_hub:false },
+  super_admin:     { view_admin_dashboard:true, view_all_projects:true, view_my_dashboard:true, view_my_projects:true, view_users:true, view_hubspot:true, manage_users:true, create_delete_projects:true, edit_projects:true, edit_milestones:true, act_as_user:true, log_time:true, view_audit_trail:true, view_project_details:true, view_resource_hub:true, generate_resource_hub:true, edit_dashboard_fields:true, view_pm_dashboard_table:false },
+  lead:            { view_admin_dashboard:true, view_all_projects:true, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:true, manage_users:false, create_delete_projects:true, edit_projects:true, edit_milestones:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:true, view_resource_hub:true, generate_resource_hub:false, edit_dashboard_fields:true, view_pm_dashboard_table:false },
+  project_manager: { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:true, edit_milestones:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:true, view_resource_hub:true, generate_resource_hub:true, edit_dashboard_fields:true, view_pm_dashboard_table:true },
+  implementer:     { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:false, edit_milestones:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:false, view_resource_hub:false, generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false },
 };
 
 async function fetchPermissions() {
@@ -1123,7 +1123,7 @@ async function navigate(page) {
     attachAnnouncementDismiss(container);
 
     // PM project table (project_manager role only)
-    if (effectiveUser().role === 'project_manager') renderPMProjectTable();
+    if (can('view_pm_dashboard_table')) renderPMProjectTable();
 
     // Daily briefing for non-admin users
     const myBriefingTarget = document.querySelector('#page-container .page-header');
@@ -1694,6 +1694,146 @@ async function fetchDashboardOverrides() {
   return {};
 }
 
+const fmtDate = v => v ? new Date(isNaN(v) ? v : Number(v)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+
+// ── Dashboard cell selection & copy-paste ─────────────────────
+let _dashSelCells  = new Map(); // key "hsId::field" → td element
+let _dashCopyBuf   = null;      // { value, field, colLabel }
+let _dashSelAnchor = null;      // { hsId, field }
+let _activeDashRender = null;   // reference to whichever table's render fn is active
+
+function _dashClearSel() {
+  _dashSelCells.forEach(td => td.classList.remove('dash-cell-selected'));
+  _dashSelCells.clear();
+  _dashSelAnchor = null;
+}
+
+function _dashSelectOne(td) {
+  _dashClearSel();
+  td.classList.add('dash-cell-selected');
+  _dashSelCells.set(td.dataset.hsid + '::' + td.dataset.field, td);
+  _dashSelAnchor = { hsId: td.dataset.hsid, field: td.dataset.field };
+}
+
+function _dashRangeSelect(clickedTd, tbody) {
+  const field = clickedTd.dataset.field;
+  if (!_dashSelAnchor || _dashSelAnchor.field !== field) { _dashSelectOne(clickedTd); return; }
+  const allTds = [...tbody.querySelectorAll(`td.dash-cell-editable[data-field="${CSS.escape(field)}"]`)];
+  const ai = allTds.findIndex(t => t.dataset.hsid === _dashSelAnchor.hsId);
+  const ci = allTds.indexOf(clickedTd);
+  if (ai === -1 || ci === -1) { _dashSelectOne(clickedTd); return; }
+  _dashClearSel();
+  _dashSelAnchor = { hsId: allTds[ai].dataset.hsid, field };
+  const [from, to] = ai <= ci ? [ai, ci] : [ci, ai];
+  for (let i = from; i <= to; i++) {
+    allTds[i].classList.add('dash-cell-selected');
+    _dashSelCells.set(allTds[i].dataset.hsid + '::' + field, allTds[i]);
+  }
+}
+
+async function _dashPaste() {
+  if (!_dashCopyBuf || _dashSelCells.size === 0) return;
+  const { value: newVal, field, colLabel } = _dashCopyBuf;
+  const promises = [];
+  _dashSelCells.forEach(td => {
+    if (td.dataset.field !== field) return;
+    const hsId  = td.dataset.hsid;
+    const oldVal = td.dataset.editVal || '';
+    if (String(oldVal) === String(newVal)) return;
+    const ov = cachedDashboardOverrides[hsId] || {};
+    if (!newVal) {
+      delete ov[field];
+      if (!Object.keys(ov).length) delete cachedDashboardOverrides[hsId];
+      else cachedDashboardOverrides[hsId] = ov;
+    } else {
+      ov[field] = newVal;
+      cachedDashboardOverrides[hsId] = ov;
+    }
+    promises.push(fetch(`/api/dashboard-overrides/${encodeURIComponent(hsId)}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(!newVal ? { field, reset: true } : { field, value: newVal }),
+    }).catch(() => {}));
+    const companyName = td.closest('tr')?.querySelector('td[data-field="name"]')?.dataset?.editVal || hsId;
+    promises.push(logAudit('dashboard.field_edit',
+      `[Paste] ${colLabel}: "${oldVal || '—'}" → "${newVal || '—'}" on ${companyName}`,
+      { hsId, field, from: oldVal, to: newVal, company: companyName, source: 'paste' }
+    ));
+  });
+  await Promise.all(promises);
+  _dashClearSel();
+  if (_activeDashRender) _activeDashRender();
+}
+
+// Global keyboard handler for copy/paste/escape on dashboard cells
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'c' && _dashSelCells.size > 0) {
+    const [, td] = _dashSelCells.entries().next().value;
+    const col = DASH_COLS.find(c => c.key === td.dataset.field);
+    _dashCopyBuf = { value: td.dataset.editVal || '', field: td.dataset.field, colLabel: col?.label || td.dataset.field };
+    _dashSelCells.forEach(t => {
+      t.style.outline = '2px dashed var(--primary)';
+      setTimeout(() => { t.style.outline = ''; }, 500);
+    });
+    e.preventDefault();
+  }
+  if (e.ctrlKey && e.key === 'v' && _dashCopyBuf) {
+    e.preventDefault();
+    _dashPaste();
+  }
+  if (e.key === 'Escape') _dashClearSel();
+});
+
+// Inject selection highlight style once
+if (!document.getElementById('dash-sel-style')) {
+  const s = document.createElement('style');
+  s.id = 'dash-sel-style';
+  s.textContent = '.dash-cell-selected { background: rgba(50,150,255,0.18) !important; outline: 2px solid #3296ff !important; outline-offset: -2px; }';
+  document.head.appendChild(s);
+}
+
+// Render HTML for a single dashboard table cell — shared by admin dashboard and PM dashboard table
+function renderDashCell(col, d, canEdit) {
+  const ov          = (cachedDashboardOverrides[d.id] || {})[col.key];
+  const isOverridden = ov !== undefined;
+  const hsRaw        = getHsVal(col, d);
+  const effectiveVal = isOverridden ? ov : hsRaw;
+
+  let displayHtml;
+  if (col.type === 'currency') {
+    const num = parseFloat(String(effectiveVal).replace(/[^0-9.]/g, ''));
+    displayHtml = effectiveVal && !isNaN(num) ? `₱${num.toLocaleString()}` : '—';
+  } else if (col.type === 'date') {
+    displayHtml = isOverridden ? (effectiveVal || '—') : (effectiveVal ? fmtDate(effectiveVal) : '—');
+  } else if (col.type === 'url') {
+    displayHtml = effectiveVal
+      ? `<a href="${escAttr(effectiveVal)}" target="_blank" rel="noopener" style="color:var(--primary);word-break:break-all">${escAttr(effectiveVal)}</a>`
+      : '—';
+  } else if (col.type === 'status-dropdown') {
+    if (effectiveVal) {
+      const key = STATUS_LABEL_TO_KEY[effectiveVal] || hsStatusToLocal(d.clientStatus, d.stage);
+      displayHtml = statusBadge(key);
+    } else { displayHtml = '—'; }
+  } else {
+    displayHtml = effectiveVal || '—';
+  }
+
+  const editVal = isOverridden ? ov
+    : (col.type === 'date' && effectiveVal) ? fmtDate(effectiveVal)
+    : effectiveVal;
+
+  const resetBtn = (isOverridden && col.hsField !== null)
+    ? `<button class="dash-reset-btn" data-hsid="${escAttr(d.id)}" data-field="${escAttr(col.key)}" title="Reset to HubSpot value">↩</button>`
+    : '';
+
+  const cls = [
+    'dash-cell',
+    isOverridden ? 'dash-cell-overridden' : '',
+    (canEdit && col.editable) ? 'dash-cell-editable' : '',
+  ].filter(Boolean).join(' ');
+
+  return `<td class="${cls}" data-hsid="${escAttr(d.id)}" data-field="${escAttr(col.key)}" data-col-type="${col.type}" data-edit-val="${escAttr(String(editVal))}">${displayHtml}${resetBtn}</td>`;
+}
+
 function refreshDashboard() {
   const container = document.getElementById('page-container');
   renderAdminDashboard(container, true);
@@ -1732,56 +1872,23 @@ async function renderAdminDashboard(container, forceRefresh = false) {
   const completed = deals.filter(d => d.isCompleted);
   const pmSet     = new Set(deals.map(d => resolveOwner(d)).filter(Boolean));
 
-  const fmtDate = v => v ? new Date(isNaN(v) ? v : Number(v)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
-
-  // Render HTML for a single dashboard table cell
-  function renderDashCell(col, d, canEdit) {
-    const ov          = (cachedDashboardOverrides[d.id] || {})[col.key];
-    const isOverridden = ov !== undefined;
-    const hsRaw        = getHsVal(col, d);
-    const effectiveVal = isOverridden ? ov : hsRaw;
-
-    // Display HTML
-    let displayHtml;
-    if (col.type === 'currency') {
-      const num = parseFloat(String(effectiveVal).replace(/[^0-9.]/g, ''));
-      displayHtml = effectiveVal && !isNaN(num) ? `₱${num.toLocaleString()}` : '—';
-    } else if (col.type === 'date') {
-      displayHtml = isOverridden ? (effectiveVal || '—') : (effectiveVal ? fmtDate(effectiveVal) : '—');
-    } else if (col.type === 'url') {
-      displayHtml = effectiveVal
-        ? `<a href="${escAttr(effectiveVal)}" target="_blank" rel="noopener" style="color:var(--primary);word-break:break-all">${escAttr(effectiveVal)}</a>`
-        : '—';
-    } else if (col.type === 'status-dropdown') {
-      if (effectiveVal) {
-        const key = STATUS_LABEL_TO_KEY[effectiveVal] || hsStatusToLocal(d.clientStatus, d.stage);
-        displayHtml = statusBadge(key);
-      } else { displayHtml = '—'; }
-    } else {
-      displayHtml = effectiveVal || '—';
-    }
-
-    // Edit-value: pre-fill for input (human-readable for HS dates)
-    const editVal = isOverridden ? ov
-      : (col.type === 'date' && effectiveVal) ? fmtDate(effectiveVal)
-      : effectiveVal;
-
-    // Reset button: only if overridden AND column has a HubSpot source
-    const resetBtn = (isOverridden && col.hsField !== null)
-      ? `<button class="dash-reset-btn" data-hsid="${escAttr(d.id)}" data-field="${escAttr(col.key)}" title="Reset to HubSpot value">↩</button>`
-      : '';
-
-    const cls = [
-      'dash-cell',
-      isOverridden ? 'dash-cell-overridden' : '',
-      (canEdit && col.editable) ? 'dash-cell-editable' : '',
-    ].filter(Boolean).join(' ');
-
-    return `<td class="${cls}" data-hsid="${escAttr(d.id)}" data-field="${escAttr(col.key)}" data-col-type="${col.type}" data-edit-val="${escAttr(String(editVal))}">${displayHtml}${resetBtn}</td>`;
-  }
+  // Pre-compute segment-aware counts (status Ongoing + stage Customer Onboarding)
+  const _psCol  = DASH_COLS.find(c => c.key === 'projectStatus');
+  const _stCol  = DASH_COLS.find(c => c.key === 'stage');
+  const _segCol = DASH_COLS.find(c => c.key === 'segment');
+  const _isOngoingCO = d =>
+    getDashEffectiveVal(_psCol, d) === 'Ongoing' &&
+    getDashEffectiveVal(_stCol, d) === 'Customer Onboarding';
+  const _initOngoing = deals.filter(_isOngoingCO).length;
+  const _initSME     = deals.filter(d => _isOngoingCO(d) && ['Micro','SME'].includes(String(getDashEffectiveVal(_segCol, d) || ''))).length;
+  const _initENT     = deals.filter(d => _isOngoingCO(d) && String(getDashEffectiveVal(_segCol, d) || '') === 'ENT').length;
 
   const canEdit    = can('edit_dashboard_fields');
-  const colFilters = {}; // col.key → Set of selected values
+  // Default filters: Ongoing projects in Customer Onboarding stage
+  const colFilters = {
+    projectStatus: new Set(['Ongoing']),
+    stage: new Set(['Customer Onboarding']),
+  };
 
   const tableHeaders = DASH_COLS.map(c => `
     <th style="position:sticky;top:0;z-index:2;min-width:${c.minW};padding:0;background:var(--surface);border-bottom:2px solid var(--border)">
@@ -1809,10 +1916,12 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     ${announcementBannerHtml()}
 
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">&#128193;</div><div><div class="stat-label">Companies</div><div class="stat-value" id="stat-val-companies">${deals.length}</div></div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">&#128193;</div><div><div class="stat-label">Ongoing Projects</div><div class="stat-value" id="stat-val-companies">${_initOngoing}</div></div></div>
       <div class="stat-card"><div class="stat-icon" style="background:#d1fae5">&#9889;</div><div><div class="stat-label">Total MRR</div><div class="stat-value" id="stat-val-mrr" style="font-size:1.1rem">₱${deals.reduce((s,d)=>s+(Number(d.amount)||0),0).toLocaleString()}</div></div></div>
       <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">&#127775;</div><div><div class="stat-label">Project Managers</div><div class="stat-value" id="stat-val-pms">${pmSet.size}</div></div></div>
       <div class="stat-card"><div class="stat-icon" style="background:#e0f2fe">&#128100;</div><div><div class="stat-label">Team Members</div><div class="stat-value">${users.length}</div></div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:#fef9c3">&#127981;</div><div><div class="stat-label">Ongoing SME Projects</div><div class="stat-value" id="stat-val-sme">${_initSME}</div></div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:#fce7f3">&#127970;</div><div><div class="stat-label">Ongoing ENT Projects</div><div class="stat-value" id="stat-val-ent">${_initENT}</div></div></div>
     </div>
 
     <div class="card">
@@ -1852,7 +1961,7 @@ async function renderAdminDashboard(container, forceRefresh = false) {
         </div>
       </div>
 
-      ${canEdit ? `<div style="padding:.35rem 1.2rem;font-size:.73rem;color:var(--txt-muted);border-bottom:1px solid var(--border);background:var(--bg)">&#9998; Click any cell to edit &nbsp;·&nbsp; <span style="display:inline-block;width:6px;height:6px;background:#32CE13;border-radius:50%;vertical-align:middle;margin-right:2px"></span> = manually updated &nbsp;·&nbsp; Hover overridden cells to reset to HubSpot value</div>` : ''}
+      ${canEdit ? `<div style="padding:.35rem 1.2rem;font-size:.73rem;color:var(--txt-muted);border-bottom:1px solid var(--border);background:var(--bg)">&#9998; Double-click to edit &nbsp;·&nbsp; Click to select &nbsp;·&nbsp; Shift+Click for range &nbsp;·&nbsp; Ctrl+C / Ctrl+V to copy &amp; paste &nbsp;·&nbsp; <span style="display:inline-block;width:6px;height:6px;background:#32CE13;border-radius:50%;vertical-align:middle;margin-right:2px"></span> = manually updated</div>` : ''}
 
       <div id="dashboard-tbody-wrap" class="table-wrap" style="max-height:480px;overflow:auto;cursor:grab;user-select:none">
         <table style="white-space:nowrap;min-width:5800px;table-layout:auto;font-size:.73rem">
@@ -1928,6 +2037,13 @@ async function renderAdminDashboard(container, forceRefresh = false) {
       tbody.innerHTML = filtered.length
         ? filtered.map(d => `<tr>${DASH_COLS.map(col => renderDashCell(col, d, canEdit)).join('')}</tr>`).join('')
         : `<tr><td colspan="${DASH_COLS.length}" class="empty-state">${hsError ? 'Could not load deals.' : 'No results found.'}</td></tr>`;
+      // Re-apply cell selection highlights after re-render
+      _dashSelCells.forEach((oldTd, key) => {
+        const [hId, fld] = key.split('::');
+        const newTd = tbody?.querySelector(`td[data-hsid="${hId}"][data-field="${fld}"]`);
+        if (newTd) { newTd.classList.add('dash-cell-selected'); _dashSelCells.set(key, newTd); }
+        else _dashSelCells.delete(key);
+      });
     }
 
     // Track filtered data for export
@@ -1940,12 +2056,19 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     // ── Stat cards ──
     const totalMRR    = filtered.reduce((s, d) => s + (Number(d.amount) || 0), 0);
     const filteredPMs = new Set(filtered.map(d => resolveOwner(d)).filter(Boolean)).size;
+    const filteredOngoing = filtered.filter(_isOngoingCO).length;
+    const filteredSME     = filtered.filter(d => _isOngoingCO(d) && ['Micro','SME'].includes(String(getDashEffectiveVal(_segCol, d) || ''))).length;
+    const filteredENT     = filtered.filter(d => _isOngoingCO(d) && String(getDashEffectiveVal(_segCol, d) || '') === 'ENT').length;
     const elCompanies = document.getElementById('stat-val-companies');
     const elMRR       = document.getElementById('stat-val-mrr');
     const elPMs       = document.getElementById('stat-val-pms');
-    if (elCompanies) elCompanies.textContent = filtered.length;
+    const elSME       = document.getElementById('stat-val-sme');
+    const elENT       = document.getElementById('stat-val-ent');
+    if (elCompanies) elCompanies.textContent = filteredOngoing;
     if (elMRR)       elMRR.textContent       = `₱${totalMRR.toLocaleString()}`;
     if (elPMs)       elPMs.textContent       = filteredPMs;
+    if (elSME)       elSME.textContent       = filteredSME;
+    if (elENT)       elENT.textContent       = filteredENT;
 
     // ── Charts ──
     const count = (arr, keyFn) => arr.reduce((acc, d) => { const k = keyFn(d) || 'Unknown'; acc[k] = (acc[k]||0)+1; return acc; }, {});
@@ -1970,6 +2093,7 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     updateColFilterBtns();
   }
 
+  _activeDashRender = renderDashboardRows;
   renderDashboardRows();
 
   // ── Inline cell editing ───────────────────────────────────────
@@ -1979,6 +2103,13 @@ async function renderAdminDashboard(container, forceRefresh = false) {
 
     document.getElementById('dashboard-tbody-wrap').addEventListener('mousedown', () => { _dashDragged = false; });
     document.getElementById('dashboard-tbody-wrap').addEventListener('mousemove', () => { _dashDragged = true; });
+
+    // Clear selection when clicking outside editable cells
+    document.getElementById('dashboard-tbody-wrap').addEventListener('mousedown', e => {
+      if (!e.target.closest('td.dash-cell-editable') && !e.target.closest('.dash-reset-btn')) {
+        _dashClearSel();
+      }
+    });
 
     editTbody.addEventListener('click', e => {
       if (_dashDragged) return;
@@ -2001,9 +2132,21 @@ async function renderAdminDashboard(container, forceRefresh = false) {
         return;
       }
 
-      // Editable cell click
+      // Single click on editable cell → select
       const td = e.target.closest('td.dash-cell-editable');
       if (!td || td.dataset.editing) return;
+      if (e.shiftKey) {
+        _dashRangeSelect(td, editTbody);
+      } else {
+        _dashSelectOne(td);
+      }
+    });
+
+    editTbody.addEventListener('dblclick', e => {
+      if (_dashDragged) return;
+      const td = e.target.closest('td.dash-cell-editable');
+      if (!td || td.dataset.editing) return;
+      _dashClearSel();
       td.dataset.editing = '1';
 
       const hsId    = td.dataset.hsid;
@@ -2011,13 +2154,13 @@ async function renderAdminDashboard(container, forceRefresh = false) {
       const cType   = td.dataset.colType;
       const curVal  = td.dataset.editVal || '';
       const origHtml = td.innerHTML;
+      const dealForAudit = deals.find(d => String(d.id) === String(hsId));
 
       const cancelEdit = () => { delete td.dataset.editing; td.innerHTML = origHtml; };
 
       const finishEdit = async (newVal) => {
         delete td.dataset.editing;
         if (newVal === curVal) { td.innerHTML = origHtml; return; }
-        // Optimistic update
         const ov = cachedDashboardOverrides[hsId] || {};
         if (newVal === '') {
           delete ov[field];
@@ -2028,6 +2171,11 @@ async function renderAdminDashboard(container, forceRefresh = false) {
           cachedDashboardOverrides[hsId] = ov;
         }
         renderDashboardRows();
+        const col = DASH_COLS.find(c => c.key === field);
+        logAudit('dashboard.field_edit',
+          `${col?.label || field}: "${curVal || '—'}" → "${newVal || '—'}" on ${dealForAudit?.name || hsId}`,
+          { hsId, field, from: curVal, to: newVal, company: dealForAudit?.name || hsId }
+        );
         fetch(`/api/dashboard-overrides/${encodeURIComponent(hsId)}`, {
           method: 'PATCH', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newVal === '' ? { field, reset: true } : { field, value: newVal }),
@@ -2047,16 +2195,16 @@ async function renderAdminDashboard(container, forceRefresh = false) {
         let saved = false;
         sel.addEventListener('change', () => { saved = true; finishEdit(sel.value); });
         sel.addEventListener('blur',   () => { if (!saved) cancelEdit(); });
-        sel.addEventListener('keydown', e => { if (e.key === 'Escape') { saved = true; cancelEdit(); } });
+        sel.addEventListener('keydown', ev => { if (ev.key === 'Escape') { saved = true; cancelEdit(); } });
         td.innerHTML = ''; td.appendChild(sel); sel.focus();
       } else {
         const inp = document.createElement('input');
         inp.type  = 'text';
         inp.value = curVal === '—' ? '' : curVal;
         inp.style.cssText = 'width:100%;border:1px solid var(--primary);border-radius:3px;padding:1px 4px;font-size:.82rem;font-family:inherit;background:var(--bg);color:var(--txt);box-sizing:border-box';
-        inp.addEventListener('keydown', e => {
-          if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
-          if (e.key === 'Escape') { cancelEdit(); inp.removeEventListener('blur', blurHandler); }
+        inp.addEventListener('keydown', ev => {
+          if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); }
+          if (ev.key === 'Escape') { cancelEdit(); inp.removeEventListener('blur', blurHandler); }
         });
         const blurHandler = () => finishEdit(inp.value.trim());
         inp.addEventListener('blur', blurHandler);
@@ -2703,7 +2851,7 @@ function renderUserDashboard() {
 
     ${toolsHubHtml()}
 
-    ${effectiveUser().role === 'project_manager' ? `
+    ${can('view_pm_dashboard_table') ? `
     <div id="pm-project-table-wrap" style="margin-top:1.5rem">
       <div style="padding:1.5rem;text-align:center;color:var(--txt-muted);font-size:.85rem">Loading your Customer Onboarding projects…</div>
     </div>` : ''}
@@ -2728,15 +2876,10 @@ async function renderPMProjectTable() {
   }
 
   const pmColFilters = {};
-  const fmtDate = v => v ? new Date(isNaN(v) ? v : Number(v)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
-  function pmCellVal(col, d) {
-    const val = getDashEffectiveVal(col, d);
-    if (val === '' || val === null || val === undefined) return '—';
-    if (col.type === 'currency') return `₱${Number(val).toLocaleString()}`;
-    if (col.type === 'date')     return fmtDate(val);
-    if (col.type === 'url')      return `<a href="${val}" target="_blank" style="color:var(--primary);text-decoration:none">Open ↗</a>`;
-    return val;
+  // Load overrides if not already cached
+  if (!Object.keys(cachedDashboardOverrides).length) {
+    cachedDashboardOverrides = await fetchDashboardOverrides();
   }
 
   const tableHeaders = DASH_COLS.map(c => `
@@ -2757,6 +2900,7 @@ async function renderPMProjectTable() {
         <input id="pm-dash-search" type="text" placeholder="Search company…" style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:6px;font-size:.82rem;font-family:'Rubik',sans-serif;background:var(--bg);color:var(--txt);min-width:180px" />
         <button id="pm-clear-filters" style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;font-weight:600;font-family:'Rubik',sans-serif;background:var(--bg);color:var(--txt-muted);cursor:pointer;white-space:nowrap">✕ Clear Filters</button>
       </div>
+      <div style="padding:.35rem 1.2rem;font-size:.73rem;color:var(--txt-muted);border-bottom:1px solid var(--border);background:var(--bg)">&#9998; Double-click to edit &nbsp;·&nbsp; Click to select &nbsp;·&nbsp; Shift+Click for range &nbsp;·&nbsp; Ctrl+C / Ctrl+V to copy &amp; paste &nbsp;·&nbsp; <span style="display:inline-block;width:6px;height:6px;background:#32CE13;border-radius:50%;vertical-align:middle;margin-right:2px"></span> = manually updated</div>
       <div style="overflow:auto;max-height:480px;cursor:grab;user-select:none" id="pm-table-scroller">
         <table style="white-space:nowrap;min-width:5800px;table-layout:auto;font-size:.73rem;border-collapse:collapse;width:100%">
           <thead><tr>${tableHeaders}</tr></thead>
@@ -2787,11 +2931,19 @@ async function renderPMProjectTable() {
     const tbody = document.getElementById('pm-table-tbody');
     if (!tbody) return;
     tbody.innerHTML = filtered.length
-      ? filtered.map(d => `<tr>${DASH_COLS.map(col => `<td style="padding:.45rem .6rem;border-bottom:1px solid var(--border);white-space:nowrap;font-size:.73rem;max-width:220px;overflow:hidden;text-overflow:ellipsis">${pmCellVal(col, d)}</td>`).join('')}</tr>`).join('')
+      ? filtered.map(d => `<tr>${DASH_COLS.map(col => renderDashCell(col, d, true)).join('')}</tr>`).join('')
       : `<tr><td colspan="${DASH_COLS.length}" class="empty-state">No results found.</td></tr>`;
+    // Re-apply cell selection highlights after re-render
+    _dashSelCells.forEach((oldTd, key) => {
+      const [hId, fld] = key.split('::');
+      const newTd = tbody?.querySelector(`td[data-hsid="${hId}"][data-field="${fld}"]`);
+      if (newTd) { newTd.classList.add('dash-cell-selected'); _dashSelCells.set(key, newTd); }
+      else _dashSelCells.delete(key);
+    });
     updatePMColFilterBtns();
   }
 
+  _activeDashRender = renderPMRows;
   renderPMRows();
 
   document.getElementById('pm-dash-search').addEventListener('input', renderPMRows);
@@ -2890,6 +3042,118 @@ async function renderPMProjectTable() {
     openPMFilterPopup(btn, btn.dataset.col);
   });
   document.addEventListener('click', closePMFilterPopup);
+
+  // ── Inline cell editing ───────────────────────────────────────
+  const pmEditTbody = document.getElementById('pm-table-tbody');
+  let _pmDragged = false;
+  document.getElementById('pm-table-scroller').addEventListener('mousedown', () => { _pmDragged = false; });
+  document.getElementById('pm-table-scroller').addEventListener('mousemove', () => { _pmDragged = true; });
+
+  // Clear selection when clicking outside
+  document.getElementById('pm-table-scroller').addEventListener('mousedown', e => {
+    if (!e.target.closest('td.dash-cell-editable') && !e.target.closest('.dash-reset-btn')) {
+      _dashClearSel();
+    }
+  });
+
+  pmEditTbody.addEventListener('click', e => {
+    if (_pmDragged) return;
+
+    const resetBtn = e.target.closest('.dash-reset-btn');
+    if (resetBtn) {
+      e.stopPropagation();
+      const hsId  = resetBtn.dataset.hsid;
+      const field = resetBtn.dataset.field;
+      const ov = cachedDashboardOverrides[hsId] || {};
+      delete ov[field];
+      if (!Object.keys(ov).length) delete cachedDashboardOverrides[hsId];
+      else cachedDashboardOverrides[hsId] = ov;
+      renderPMRows();
+      fetch(`/api/dashboard-overrides/${encodeURIComponent(hsId)}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ field, reset: true }),
+      }).catch(() => {});
+      return;
+    }
+
+    const td = e.target.closest('td.dash-cell-editable');
+    if (!td || td.dataset.editing) return;
+    if (e.shiftKey) {
+      _dashRangeSelect(td, pmEditTbody);
+    } else {
+      _dashSelectOne(td);
+    }
+  });
+
+  pmEditTbody.addEventListener('dblclick', e => {
+    if (_pmDragged) return;
+    const td = e.target.closest('td.dash-cell-editable');
+    if (!td || td.dataset.editing) return;
+    _dashClearSel();
+    td.dataset.editing = '1';
+
+    const hsId     = td.dataset.hsid;
+    const field    = td.dataset.field;
+    const cType    = td.dataset.colType;
+    const curVal   = td.dataset.editVal || '';
+    const origHtml = td.innerHTML;
+    const dealForAudit = myDeals.find(d => String(d.id) === String(hsId));
+
+    const cancelEdit = () => { delete td.dataset.editing; td.innerHTML = origHtml; };
+
+    const finishEdit = async (newVal) => {
+      delete td.dataset.editing;
+      if (newVal === curVal) { td.innerHTML = origHtml; return; }
+      const ov = cachedDashboardOverrides[hsId] || {};
+      if (newVal === '') {
+        delete ov[field];
+        if (!Object.keys(ov).length) delete cachedDashboardOverrides[hsId];
+        else cachedDashboardOverrides[hsId] = ov;
+      } else {
+        ov[field] = newVal;
+        cachedDashboardOverrides[hsId] = ov;
+      }
+      renderPMRows();
+      const col = DASH_COLS.find(c => c.key === field);
+      logAudit('dashboard.field_edit',
+        `${col?.label || field}: "${curVal || '—'}" → "${newVal || '—'}" on ${dealForAudit?.name || hsId}`,
+        { hsId, field, from: curVal, to: newVal, company: dealForAudit?.name || hsId }
+      );
+      fetch(`/api/dashboard-overrides/${encodeURIComponent(hsId)}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newVal === '' ? { field, reset: true } : { field, value: newVal }),
+      }).catch(() => {});
+    };
+
+    if (cType === 'status-dropdown' || cType === 'milestone-dropdown') {
+      const sel = document.createElement('select');
+      sel.style.cssText = 'width:100%;font-size:.82rem;font-family:inherit;border:1px solid var(--primary);border-radius:3px;background:var(--bg);color:var(--txt);padding:1px 2px';
+      const options = cType === 'status-dropdown' ? DASH_STATUS_OPTIONS : ['', ...MILESTONES];
+      options.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s || '— None —';
+        if (s === curVal || (!s && !curVal)) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      let saved = false;
+      sel.addEventListener('change', () => { saved = true; finishEdit(sel.value); });
+      sel.addEventListener('blur',   () => { if (!saved) cancelEdit(); });
+      sel.addEventListener('keydown', ev => { if (ev.key === 'Escape') { saved = true; cancelEdit(); } });
+      td.innerHTML = ''; td.appendChild(sel); sel.focus();
+    } else {
+      const inp = document.createElement('input');
+      inp.type  = 'text';
+      inp.value = curVal === '—' ? '' : curVal;
+      inp.style.cssText = 'width:100%;border:1px solid var(--primary);border-radius:3px;padding:1px 4px;font-size:.82rem;font-family:inherit;background:var(--bg);color:var(--txt);box-sizing:border-box';
+      inp.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); }
+        if (ev.key === 'Escape') { cancelEdit(); inp.removeEventListener('blur', blurHandler); }
+      });
+      const blurHandler = () => finishEdit(inp.value.trim());
+      inp.addEventListener('blur', blurHandler);
+      td.innerHTML = ''; td.appendChild(inp); inp.focus(); inp.select();
+    }
+  });
 
   // Drag-to-scroll
   const scroller = document.getElementById('pm-table-scroller');
@@ -6973,8 +7237,10 @@ function renderAccessMatrix(container) {
     {
       group: 'Dashboard',
       flags: [
-        { key: 'view_admin_dashboard', label: 'View Admin Dashboard' },
-        { key: 'view_my_dashboard',    label: 'View My Dashboard' },
+        { key: 'view_admin_dashboard',    label: 'View Admin Dashboard' },
+        { key: 'view_my_dashboard',       label: 'View My Dashboard' },
+        { key: 'view_pm_dashboard_table', label: 'View PM Dashboard Table' },
+        { key: 'edit_dashboard_fields',   label: 'Edit Dashboard Fields' },
       ],
     },
     {

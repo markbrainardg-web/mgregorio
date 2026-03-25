@@ -38,6 +38,7 @@ const DEFAULT_PERMISSIONS = {
     view_resource_hub:       true,
     generate_resource_hub:   true,
     edit_dashboard_fields:   true,
+    view_pm_dashboard_table: false,
   },
   lead: {
     view_admin_dashboard:    true,
@@ -57,6 +58,7 @@ const DEFAULT_PERMISSIONS = {
     view_resource_hub:       true,
     generate_resource_hub:   false,
     edit_dashboard_fields:   true,
+    view_pm_dashboard_table: false,
   },
   project_manager: {
     view_admin_dashboard:    false,
@@ -75,7 +77,8 @@ const DEFAULT_PERMISSIONS = {
     view_project_details:    true,
     view_resource_hub:       true,
     generate_resource_hub:   true,
-    edit_dashboard_fields:   false,
+    edit_dashboard_fields:   true,
+    view_pm_dashboard_table: true,
   },
   implementer: {
     view_admin_dashboard:    false,
@@ -95,6 +98,7 @@ const DEFAULT_PERMISSIONS = {
     view_resource_hub:       false,
     generate_resource_hub:   false,
     edit_dashboard_fields:   false,
+    view_pm_dashboard_table: false,
   },
 };
 
