@@ -1935,6 +1935,41 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     lbl.textContent = checked.length === 0 ? `All ${base}` : checked.length === 1 ? checked[0] : `${checked.length} selected`;
   };
 
+  const filterConfig = [
+    { id: 'dash-filter-pm',      fn: d => resolveOwner(d) || '' },
+    { id: 'dash-filter-hr',      fn: d => d.hrImplementer || '' },
+    { id: 'dash-filter-payroll', fn: d => d.payrollImplementer || '' },
+    { id: 'dash-filter-status',  fn: d => statusLabel(hsStatusToLocal(d.clientStatus, d.stage)) },
+    { id: 'dash-filter-stage',   fn: d => d.stage || '' },
+  ];
+
+  function updateFilterOptions() {
+    const search = document.getElementById('dash-search')?.value.toLowerCase() || '';
+    filterConfig.forEach(({ id, fn }) => {
+      const otherFilters = filterConfig.filter(f => f.id !== id);
+      const available = new Set(
+        deals.filter(d => {
+          if (search && !d.name.toLowerCase().includes(search)) return false;
+          return otherFilters.every(f => {
+            const checked = getChecked(f.id);
+            return !checked.length || checked.includes(f.fn(d));
+          });
+        }).map(d => fn(d)).filter(Boolean)
+      );
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      if (!dropdown) return;
+      dropdown.querySelectorAll('.ms-cb').forEach(cb => {
+        const lbl = cb.closest('label');
+        const avail = available.has(cb.value);
+        lbl.style.opacity = avail ? '' : '0.35';
+        lbl.style.pointerEvents = avail ? '' : 'none';
+        cb.disabled = !avail;
+        if (!avail) cb.checked = false;
+      });
+      updateLabel(id);
+    });
+  }
+
   function renderDashboardRows() {
     const search  = document.getElementById('dash-search').value.toLowerCase();
     const fPM     = getChecked('dash-filter-pm');
@@ -2000,6 +2035,7 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     if (Object.keys(byMilestone).length) buildChart('chart-milestone', 'bar', Object.keys(byMilestone), Object.values(byMilestone));
 
     _exportDashboardCharts = { byStatus, byStage: {}, byPM };
+    updateFilterOptions();
   }
 
   renderDashboardRows();

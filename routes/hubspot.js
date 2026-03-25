@@ -4,8 +4,7 @@ const { getUsers, getIntegrations } = require('../db');
 const router = express.Router();
 const HS = 'https://api.hubapi.com';
 
-// In-memory cache for HubSpot deals — avoids a full API round-trip on every page load
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+// In-memory cache for HubSpot deals — refreshed once daily at 7 AM
 let dealsCache = null;
 let dealsCacheTime = 0;
 
@@ -75,10 +74,9 @@ function buildSearchBody(after) {
    Only the six requested internal properties are pulled.
 ─────────────────────────────────────────────────────────────── */
 router.get('/deals', requireAuth, requireAdmin, async (req, res) => {
-  // Serve from cache unless it's expired or a forced refresh is requested
+  // Serve from cache unless a forced refresh is requested
   const forceRefresh = req.query.refresh === 'true';
-  const cacheValid   = dealsCache && (Date.now() - dealsCacheTime < CACHE_TTL_MS);
-  if (!forceRefresh && cacheValid) {
+  if (!forceRefresh && dealsCache) {
     return res.json(dealsCache);
   }
 
@@ -244,12 +242,12 @@ router.post('/sync', requireAuth, requireAdmin, (req, res) => {
   res.json({ projects });
 });
 
-// Warm the cache on server start so the first user never hits a cold load
-setTimeout(async () => {
+// ── Daily 7 AM cache refresh ──────────────────────────────────
+async function refreshHubSpotCache() {
   try {
     const hs    = getIntegrations().connectors?.find(c => c.id === 'hubspot');
     const token = hs?.apiKey || process.env.HUBSPOT_TOKEN;
-    if (!token) return; // no token configured yet, skip warm-up
+    if (!token) return;
 
     const [ownersData, firstPage] = await Promise.all([
       fetch(`${HS}/crm/v3/owners?limit=500`, { headers: hsHeaders() }).then(r => r.json()),
@@ -317,10 +315,17 @@ setTimeout(async () => {
 
     dealsCache     = { pipeline: 'HubSpot Companies', deals };
     dealsCacheTime = Date.now();
-    console.log(`[HubSpot] Cache warmed — ${deals.length} companies loaded.`);
+    console.log(`[HubSpot] Cache refreshed — ${deals.length} companies loaded at ${new Date().toLocaleTimeString()}.`);
   } catch (err) {
-    console.warn('[HubSpot] Cache warm-up failed (non-fatal):', err.message);
+    console.warn('[HubSpot] Cache refresh failed:', err.message);
   }
-}, 3000); // 3-second delay to let the server finish starting up
+}
+
+// Refresh cache every hour
+setInterval(refreshHubSpotCache, 60 * 60 * 1000);
+console.log('[HubSpot] Cache will refresh every hour.');
+
+// Warm the cache on server start so the first user never hits a cold load
+setTimeout(refreshHubSpotCache, 3000);
 
 module.exports = router;
