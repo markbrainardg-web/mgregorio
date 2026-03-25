@@ -1,0 +1,17 @@
+{
+  "timerPopupEnabled": true,
+  "onboardingEnabled": true,
+  "onboardingTarget": "all",
+  "milestones": [
+    "Project Team Assignment",
+    "KOM or Requirements Alignment",
+    "Data Gathering",
+    "Simulation I",
+    "Training and System Setup",
+    "Project Review Checklist",
+    "Simulation II / Parallel Run",
+    "Pre Handover",
+    "Project Handover",
+    "Hypercare"
+  ]
+}

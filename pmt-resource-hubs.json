@@ -1,0 +1,77 @@
+[
+  {
+    "id": "00b2f1466abe",
+    "slug": "san-gines-corporation-fza39t",
+    "projectId": "hs_49961597095",
+    "projectTitle": "San Gines Corporation",
+    "createdAt": "2026-03-22T06:04:13.933Z",
+    "createdBy": "mmj4wcs359kz",
+    "createdByName": "Louie Anthony See",
+    "isPublic": false,
+    "sections": {
+      "milestones": true,
+      "timeline": true,
+      "documents": true,
+      "recordings": true,
+      "contacts": true,
+      "ticketing": true
+    },
+    "ticketingUrl": "",
+    "ticketingNote": "",
+    "accessList": [
+      {
+        "contactId": "mn1co989oxmo",
+        "name": "Juan Dela Cruz",
+        "email": "sample@sample.com",
+        "accessLevel": "full",
+        "addedAt": "2026-03-22T06:04:13.932Z"
+      },
+      {
+        "contactId": "mn1cpborthyt",
+        "name": "Maria Reyes",
+        "email": "sample@sample.com",
+        "accessLevel": "full",
+        "addedAt": "2026-03-22T06:04:13.932Z"
+      },
+      {
+        "contactId": "mn1cq5m2shny",
+        "name": "Arnold San Jose",
+        "email": "sample@sample.com",
+        "accessLevel": "limited",
+        "addedAt": "2026-03-22T06:04:13.932Z"
+      }
+    ],
+    "recordings": [],
+    "updatedAt": "2026-03-23T09:05:01.463Z"
+  },
+  {
+    "id": "a775dcde514b",
+    "slug": "macetpm-inc-j67f4f",
+    "projectId": "hs_49599808893",
+    "projectTitle": "MACETPM INC",
+    "createdAt": "2026-03-24T04:30:18.084Z",
+    "createdBy": "mmj4wcs359kz",
+    "createdByName": "Louie Anthony See",
+    "isPublic": true,
+    "sections": {
+      "milestones": true,
+      "timeline": true,
+      "documents": true,
+      "recordings": false,
+      "contacts": true,
+      "ticketing": false
+    },
+    "limitedSections": {
+      "milestones": true,
+      "timeline": true,
+      "documents": true,
+      "recordings": false,
+      "contacts": false,
+      "ticketing": false
+    },
+    "ticketingUrl": "",
+    "ticketingNote": "",
+    "accessList": [],
+    "recordings": []
+  }
+]

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sprout Solutions | Project Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=8" />
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="screen active">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="Sprout Logo.png" alt="Sprout Solutions" class="login-logo-img" />
+        <p class="login-subtitle">Implementation Project Management</p>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Enter username" autocomplete="off" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter password" required />
+        </div>
+        <div id="login-error" class="error-msg hidden">Invalid username or password.</div>
+        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+        <div style="text-align:center;margin-top:.8rem">
+          <a href="#" id="forgot-link" style="color:var(--primary);font-size:.85rem;text-decoration:none">Forgot your password?</a>
+        </div>
+      </form>
+
+      <div class="login-powered">
+        <div class="login-powered-inner">
+          <img src="Sidekick.png" alt="Sprout Sidekick" class="login-powered-logo" />
+          <div class="login-powered-text">
+            <span class="login-powered-label">Powered by</span>
+            <span class="login-powered-name">Sprout Sidekick</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app-screen" class="screen">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <img src="Sprout Logo.png" alt="Sprout Solutions" class="sidebar-logo-img" />
+        <span class="sidebar-tagline">Project Management</span>
+      </div>
+      <nav id="sidebar-nav"></nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user-row">
+          <div id="user-badge"></div>
+          <div id="notif-bell"></div>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-full">Logout</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+      <div id="page-container"></div>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="app.js?v=21"></script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sprout Timer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:   #32CE13;
+      --bg:        #F7F9ED;
+      --surface:   #ffffff;
+      --txt:       #092903;
+      --txt-muted: #607060;
+      --border:    #cce8c0;
+      --font-main: 'Fira Sans', system-ui, sans-serif;
+      --font-sub:  'Rubik', system-ui, sans-serif;
+    }
+    [data-theme="dark"] {
+      --bg:        #0f1a0d;
+      --surface:   #1a2617;
+      --txt:       #dff0d8;
+      --txt-muted: #7aad70;
+      --border:    #2e4a28;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--txt);
+      user-select: none;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .header {
+      background: linear-gradient(135deg, #092903 0%, #1a6b0a 100%);
+      padding: .9rem 1.1rem .75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(90deg, rgba(50,206,19,.07) 0, rgba(50,206,19,.07) 1px, transparent 1px, transparent 36px),
+        repeating-linear-gradient(0deg,  rgba(50,206,19,.07) 0, rgba(50,206,19,.07) 1px, transparent 1px, transparent 36px);
+      pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; }
+
+    .header-label {
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: rgba(168,232,160,.55);
+      font-family: var(--font-sub);
+      margin-bottom: .2rem;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .header-label-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #32CE13;
+      animation: dotPulse 1.2s ease-in-out infinite;
+    }
+    .header-label-dot.paused { background: #FF7F00; animation: none; }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .3; }
+    }
+
+    .header-logo-row {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      margin-bottom: .35rem;
+    }
+    .header-logo {
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: .9;
+    }
+    .header-project {
+      font-size: .95rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-sub);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: .18rem .55rem;
+      border-radius: 20px;
+      font-family: var(--font-sub);
+    }
+    .status-chip.running { background: rgba(50,206,19,.22); color: #a8e8a0; }
+    .status-chip.paused  { background: rgba(255,127,0,.28);  color: #ffbf7a; }
+
+    /* ── BODY ───────────────────────────────────────────────── */
+    .body {
+      padding: 1.1rem 1.1rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+    }
+
+    /* Elapsed */
+    .elapsed-wrap { text-align: center; }
+    .elapsed {
+      font-size: 3rem;
+      font-weight: 700;
+      font-family: var(--font-sub);
+      color: var(--txt);
+      letter-spacing: .06em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      transition: color .25s;
+    }
+    .elapsed.paused { color: var(--txt-muted); }
+    .elapsed-sub {
+      font-size: .7rem;
+      color: var(--txt-muted);
+      margin-top: .3rem;
+      font-family: var(--font-sub);
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    /* Description */
+    .desc-label {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--txt-muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: .3rem;
+      font-family: var(--font-sub);
+    }
+    .desc-input {
+      width: 100%;
+      padding: .5rem .75rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: .88rem;
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--txt);
+      outline: none;
+      transition: border-color .2s;
+      user-select: text;
+    }
+    .desc-input::placeholder { color: var(--txt-muted); opacity: .7; }
+    .desc-input:focus { border-color: var(--primary); }
+    [data-theme="dark"] .desc-input:focus { background: #1f3020; }
+
+    /* Buttons */
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+    }
+    .btn {
+      padding: .6rem .4rem;
+      border-radius: 9px;
+      font-size: .82rem;
+      font-weight: 700;
+      font-family: var(--font-sub);
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: opacity .15s, transform .1s, filter .15s;
+      text-align: center;
+      letter-spacing: .02em;
+    }
+    .btn:hover  { opacity: .87; transform: scale(1.02); }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .btn-pause  { background: #fff3cd; color: #92400e; border-color: #fcd34d; }
+    .btn-resume { background: #d4f5ca; color: #092903; border-color: #32CE13; }
+    .btn-stop   { background: #fee2e2; color: #991b1b; border-color: #fca5a5; grid-column: span 2; }
+    [data-theme="dark"] .btn-pause  { background: #2e2005; color: #fcd34d; border-color: #78350f; }
+    [data-theme="dark"] .btn-resume { background: #1a4020; color: #a8e8a0; border-color: #166534; }
+    [data-theme="dark"] .btn-stop   { background: #2d1111; color: #fca5a5; border-color: #7f1d1d; }
+
+    /* Saved confirmation */
+    .saved-msg {
+      display: none;
+      text-align: center;
+      padding: .9rem;
+      font-size: .9rem;
+      font-weight: 700;
+      color: #166534;
+      font-family: var(--font-sub);
+      background: #dcfce7;
+      border-radius: 8px;
+      border: 1px solid #86efac;
+    }
+    [data-theme="dark"] .saved-msg { background: #0d2d14; color: #86efac; border-color: #166534; }
+
+    /* No timer state */
+    .no-timer {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--txt-muted);
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-label">
+        <span class="header-label-dot" id="dot"></span>
+        <span id="header-status-text">Timer Running</span>
+      </div>
+      <div class="header-logo-row">
+        <img src="/Sidekick.png" alt="" class="header-logo" />
+        <div class="header-project" id="project-name">Loading…</div>
+      </div>
+      <span class="status-chip running" id="status-chip">Running</span>
+    </div>
+  </div>
+
+  <div class="body" id="main-body">
+    <div class="elapsed-wrap">
+      <div class="elapsed" id="elapsed">00:00</div>
+      <div class="elapsed-sub" id="elapsed-sub">Active time</div>
+    </div>
+
+    <div>
+      <div class="desc-label">What are you working on?</div>
+      <input type="text" class="desc-input" id="desc-input"
+        placeholder="e.g. Setting up payroll module…" maxlength="200" />
+    </div>
+
+    <div class="actions" id="actions">
+      <button class="btn btn-pause"  id="pause-btn">&#9208; Pause</button>
+      <button class="btn btn-resume" id="resume-btn" style="display:none">&#9654; Resume</button>
+      <button class="btn btn-stop"   id="stop-btn">&#9209; Stop &amp; Save</button>
+    </div>
+
+    <div class="saved-msg" id="saved-msg">&#10003; Time logged successfully!</div>
+  </div>
+
+  <div class="no-timer" id="no-timer">
+    No timer is currently running.<br />Start one from the main app.
+  </div>
+
+  <script>
+    // ── Helpers ──────────────────────────────────────────────
+    function getTimer()        { try { return JSON.parse(localStorage.getItem('pmt_active_timer')); } catch { return null; } }
+    function saveTimer(t)      { localStorage.setItem('pmt_active_timer', JSON.stringify(t)); }
+    function clearTimer()      { localStorage.removeItem('pmt_active_timer'); }
+    function getProjects()     { try { return JSON.parse(localStorage.getItem('pmt_projects')) || []; } catch { return []; } }
+    function getTimeEntries()  { try { return JSON.parse(localStorage.getItem('pmt_time_entries')) || []; } catch { return []; } }
+    function saveTimeEntries(e){ localStorage.setItem('pmt_time_entries', JSON.stringify(e)); }
+    function genId()           { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+    function getElapsedMs(timer) {
+      if (!timer) return 0;
+      let ms = Date.now() - new Date(timer.startTime).getTime() - (timer.totalPausedMs || 0);
+      if (timer.pausedAt) ms -= (Date.now() - new Date(timer.pausedAt).getTime());
+      return Math.max(0, ms);
+    }
+
+    function formatElapsed(timer) {
+      const secs = Math.floor(getElapsedMs(timer) / 1000);
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    }
+
+    // ── Theme ────────────────────────────────────────────────
+    function applyTheme() {
+      const theme = localStorage.getItem('pmt_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    applyTheme();
+
+    // ── UI Update ────────────────────────────────────────────
+    function updateUI() {
+      const timer   = getTimer();
+      const mainBody = document.getElementById('main-body');
+      const noTimer  = document.getElementById('no-timer');
+
+      if (!timer) {
+        mainBody.style.display = 'none';
+        noTimer.style.display  = 'block';
+        return;
+      }
+      mainBody.style.display = '';
+      noTimer.style.display  = 'none';
+
+      const project   = getProjects().find(p => p.id === timer.projectId);
+      const isPaused  = !!timer.pausedAt;
+
+      document.getElementById('project-name').textContent    = project?.title || 'Unknown Project';
+      document.getElementById('elapsed').textContent         = formatElapsed(timer);
+      document.getElementById('elapsed').className           = `elapsed${isPaused ? ' paused' : ''}`;
+      document.getElementById('elapsed-sub').textContent     = isPaused ? 'Paused' : 'Active time';
+
+      const chip = document.getElementById('status-chip');
+      chip.textContent  = isPaused ? 'Paused' : 'Running';
+      chip.className    = `status-chip ${isPaused ? 'paused' : 'running'}`;
+
+      const dot = document.getElementById('dot');
+      dot.className = `header-label-dot${isPaused ? ' paused' : ''}`;
+      document.getElementById('header-status-text').textContent = isPaused ? 'Timer Paused' : 'Timer Running';
+
+      document.getElementById('pause-btn').style.display  = isPaused ? 'none' : '';
+      document.getElementById('resume-btn').style.display = isPaused ? '' : 'none';
+
+      // Don't override if user is actively typing
+      const descInput = document.getElementById('desc-input');
+      if (descInput !== document.activeElement) {
+        descInput.value = timer.description || '';
+      }
+    }
+
+    // ── Tick ─────────────────────────────────────────────────
+    let tickInterval = null;
+    function startTick() {
+      if (tickInterval) return;
+      tickInterval = setInterval(() => {
+        const timer = getTimer();
+        if (!timer)            { clearInterval(tickInterval); tickInterval = null; return; }
+        if (timer.pausedAt)    return;
+        document.getElementById('elapsed').textContent = formatElapsed(timer);
+      }, 1000);
+    }
+
+    // ── Actions ──────────────────────────────────────────────
+    function pause() {
+      const timer = getTimer();
+      if (!timer || timer.pausedAt) return;
+      timer.pausedAt     = new Date().toISOString();
+      timer.description  = document.getElementById('desc-input').value;
+      saveTimer(timer);
+      updateUI();
+    }
+
+    function resume() {
+      const timer = getTimer();
+      if (!timer || !timer.pausedAt) return;
+      timer.totalPausedMs = (timer.totalPausedMs || 0) + (Date.now() - new Date(timer.pausedAt).getTime());
+      timer.pausedAt      = null;
+      timer.description   = document.getElementById('desc-input').value;
+      saveTimer(timer);
+      updateUI();
+      startTick();
+    }
+
+    function stop() {
+      const timer = getTimer();
+      if (!timer) { window.close(); return; }
+
+      // Sync description
+      timer.description = document.getElementById('desc-input').value.trim();
+
+      const hours = getElapsedMs(timer) / 1000 / 3600;
+      if (hours >= (1 / 60)) {
+        const entries = getTimeEntries();
+        entries.push({
+          id:          genId(),
+          projectId:   timer.projectId,
+          userId:      timer.userId,
+          date:        new Date().toISOString().split('T')[0],
+          hours:       Math.round(hours * 100) / 100,
+          description: timer.description || 'Timer session',
+          source:      'timer',
+          createdAt:   new Date().toISOString(),
+        });
+        saveTimeEntries(entries);
+      }
+
+      // Disable buttons + show saved message
+      document.getElementById('pause-btn').disabled  = true;
+      document.getElementById('resume-btn').disabled = true;
+      document.getElementById('stop-btn').disabled   = true;
+      document.getElementById('actions').style.display  = 'none';
+      document.getElementById('saved-msg').style.display = 'block';
+
+      clearTimer(); // triggers storage event → main window refreshes its buttons
+      if (tickInterval) { clearInterval(tickInterval); tickInterval = null; }
+
+      setTimeout(() => window.close(), 1200);
+    }
+
+    // ── Wire up ──────────────────────────────────────────────
+    document.getElementById('pause-btn').addEventListener('click', pause);
+    document.getElementById('resume-btn').addEventListener('click', resume);
+    document.getElementById('stop-btn').addEventListener('click', stop);
+
+    document.getElementById('desc-input').addEventListener('input', () => {
+      const timer = getTimer();
+      if (!timer) return;
+      timer.description = document.getElementById('desc-input').value;
+      saveTimer(timer);
+    });
+
+    // ── Listen for changes from main window ──────────────────
+    window.addEventListener('storage', e => {
+      if (e.key === 'pmt_active_timer') {
+        if (!e.newValue) { window.close(); return; } // main window stopped the timer
+        updateUI();
+      }
+      if (e.key === 'pmt_theme') applyTheme();
+    });
+
+    // ── Init ─────────────────────────────────────────────────
+    updateUI();
+    startTick();
+  </script>
+</body>
+</html>

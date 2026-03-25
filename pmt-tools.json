@@ -1,0 +1,86 @@
+{
+  "mmj1fmmjvy5a": [
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "url": "",
+      "domain": "gmail.com",
+      "color": "#EA4335",
+      "custom": false
+    },
+    {
+      "id": "gcal",
+      "name": "Google Calendar",
+      "url": "",
+      "domain": "calendar.google.com",
+      "color": "#4285F4",
+      "custom": false
+    },
+    {
+      "id": "gdrive",
+      "name": "Google Drive",
+      "url": "",
+      "domain": "drive.google.com",
+      "color": "#34A853",
+      "custom": false
+    },
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "url": "",
+      "domain": "hubspot.com",
+      "color": "#FF7A59",
+      "custom": false
+    },
+    {
+      "id": "collateral",
+      "name": "PM Collateral Automation",
+      "url": "",
+      "domain": null,
+      "color": "#32CE13",
+      "custom": false
+    }
+  ],
+  "mmj4wcs359kz": [
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "url": "",
+      "domain": "gmail.com",
+      "color": "#EA4335",
+      "custom": false
+    },
+    {
+      "id": "gcal",
+      "name": "Google Calendar",
+      "url": "",
+      "domain": "calendar.google.com",
+      "color": "#4285F4",
+      "custom": false
+    },
+    {
+      "id": "gdrive",
+      "name": "Google Drive",
+      "url": "",
+      "domain": "drive.google.com",
+      "color": "#34A853",
+      "custom": false
+    },
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "url": "",
+      "domain": "hubspot.com",
+      "color": "#FF7A59",
+      "custom": false
+    },
+    {
+      "id": "collateral",
+      "name": "PM Collateral Automation",
+      "url": "",
+      "domain": null,
+      "color": "#32CE13",
+      "custom": false
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "super_admin",
+    "label": "Super Admin",
+    "system": true
+  },
+  {
+    "id": "lead",
+    "label": "Lead",
+    "system": true
+  },
+  {
+    "id": "project_manager",
+    "label": "Project Manager",
+    "system": true
+  },
+  {
+    "id": "implementer",
+    "label": "Implementer",
+    "system": true
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "connectors": [
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "enabled": true,
+      "apiKey": "",
+      "mappings": [
+        {
+          "source": "name",
+          "sourceLabel": "Company Name",
+          "target": "title",
+          "targetLabel": "Project Title"
+        },
+        {
+          "source": "client_status",
+          "sourceLabel": "Client Status",
+          "target": "status",
+          "targetLabel": "Status"
+        },
+        {
+          "source": "implem_package",
+          "sourceLabel": "Implementation Package",
+          "target": "description",
+          "targetLabel": "Description"
+        }
+      ],
+      "apiKeySet": true,
+      "keySource": "env"
+    },
+    {
+      "id": "anthropic",
+      "name": "Claude AI (Anthropic)",
+      "type": "api",
+      "enabled": true,
+      "apiKey": "",
+      "mappings": [],
+      "apiKeySet": true,
+      "keySource": "env"
+    }
+  ]
+}
