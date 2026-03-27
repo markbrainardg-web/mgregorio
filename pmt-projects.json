@@ -129,46 +129,46 @@
     },
     "timeline": {
       "Project Team Assignment": {
-        "targetDate": "2026-02-26",
         "startDate": "2026-02-26",
         "endDate": "2026-02-26",
+        "targetDate": "2026-02-26",
         "actualDate": "2026-03-26"
       },
       "KOM or Requirements Alignment": {
-        "targetDate": "2026-03-02",
         "startDate": "2026-03-02",
         "endDate": "2026-03-02",
+        "targetDate": "2026-03-02",
         "actualDate": "2026-03-26"
       },
       "Data Gathering": {
-        "targetDate": "2026-03-12",
         "startDate": "2026-03-03",
         "endDate": "2026-03-12",
+        "targetDate": "2026-03-12",
         "actualDate": "2026-03-26"
       },
       "Simulation I": {
-        "targetDate": "2026-03-16",
         "startDate": "2026-03-13",
         "endDate": "2026-03-16",
+        "targetDate": "2026-03-16",
         "actualDate": "2026-03-26"
       },
       "Training and System Setup": {
-        "targetDate": "2026-03-20",
         "startDate": "2026-03-09",
         "endDate": "2026-03-20",
+        "targetDate": "2026-03-20",
         "actualDate": "2026-03-26"
       },
       "Project Review Checklist": {
-        "targetDate": "2026-03-23",
         "startDate": "2026-03-23",
         "endDate": "2026-03-23",
+        "targetDate": "2026-03-23",
         "actualDate": "2026-03-26"
       },
       "Simulation II / Parallel Run": {
-        "targetDate": "2026-04-20",
         "startDate": "2026-04-01",
         "endDate": "2026-04-20",
-        "actualDate": "2026-03-26"
+        "targetDate": "2026-04-20",
+        "actualDate": ""
       },
       "Pre Handover": {
         "targetDate": "2026-03-19",
@@ -395,10 +395,42 @@
       "8. Implementation Sign Off": {
         "startDate": "2026-04-21",
         "endDate": "2026-04-23",
-        "targetDate": "2026-04-23"
+        "targetDate": "2026-04-23",
+        "actualDate": ""
+      },
+      "9. Adoption / Hypercare": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": "",
+        "actualDate": ""
       }
     },
-    "timelineTemplate": "tpl_1774488305998"
+    "timelineTemplate": "tpl_1774488305998",
+    "docs": {
+      "Simulation II / Parallel Run": [
+        {
+          "id": "mn8nvdnd033m",
+          "html": "Called the client asking to move the meeting today",
+          "text": "Called the client asking to move the meeting today",
+          "createdAt": "2026-03-27T08:50:28.441Z",
+          "createdByName": "Louie Anthony See"
+        },
+        {
+          "id": "mn8nvjwvflpf",
+          "html": "Test",
+          "text": "Test",
+          "createdAt": "2026-03-27T08:50:36.559Z",
+          "createdByName": "Louie Anthony See"
+        },
+        {
+          "id": "mn8nvmc7kzt1",
+          "html": "Test",
+          "text": "Test",
+          "createdAt": "2026-03-27T08:50:39.703Z",
+          "createdByName": "Louie Anthony See"
+        }
+      ]
+    }
   },
   {
     "id": "mmj509nt39ok",
@@ -786,9 +818,27 @@
     "syncedAt": "2026-03-19T08:40:26.806Z",
     "milestones": {
       "8. Implementation Sign Off": false,
-      "9. Adoption / Hypercare": false
+      "9. Adoption / Hypercare": false,
+      "Project Team Assignment": false,
+      "KOM or Requirements Alignment": false,
+      "Data Gathering": false,
+      "Simulation I": false,
+      "Training and System Setup": false,
+      "Project Review Checklist": false,
+      "Simulation II / Parallel Run": false
     },
-    "timelineTemplate": "tpl_1774488305998"
+    "timelineTemplate": "tpl_1774488305998",
+    "timeline": {
+      "Project Team Assignment": {
+        "actualDate": ""
+      },
+      "KOM or Requirements Alignment": {
+        "actualDate": ""
+      },
+      "Data Gathering": {
+        "actualDate": ""
+      }
+    }
   },
   {
     "id": "hs_49437119366",
@@ -897,7 +947,10 @@
     "priority": "medium",
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71byxgfqr0",
+      "mn71by3axx1g"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -1075,7 +1128,7 @@
     "id": "hs_25621691028",
     "title": "Gastronova Hospitality Group Corp.",
     "description": "Synced from HubSpot — Customer Onboarding",
-    "status": "on-hold-sales",
+    "status": "ongoing",
     "priority": "medium",
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
@@ -1491,11 +1544,14 @@
     "id": "hs_2884250383",
     "title": "Asian Vision Cable Holdings, Inc.",
     "description": "Synced from HubSpot — Customer Onboarding",
-    "status": "on-hold-sales",
+    "status": "ongoing",
     "priority": "medium",
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bxz20bxq",
+      "mn71bxi7kpad"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -1538,7 +1594,7 @@
     "id": "hs_46664555692",
     "title": "Dyninno Philippines",
     "description": "Synced from HubSpot — Customer Onboarding",
-    "status": "ongoing",
+    "status": "on-hold-sales",
     "priority": "medium",
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
@@ -64761,7 +64817,9 @@
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
     "coProjectManagerHsId": null,
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bybo3mr7"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -71922,7 +71980,10 @@
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": "44416908",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bz1odu9g",
+      "mn71bziwdmbo"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",

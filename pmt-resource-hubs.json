@@ -170,7 +170,7 @@
         "addedAt": "2026-03-25T13:05:58.316Z",
         "hasPassword": true,
         "passwordHash": "$2a$10$E/wcAfEQncLzYwkYggYcm.JFZqCno1l6cMFTbCL7ClJG9eqTf.GqG",
-        "lastAccess": "2026-03-26T05:04:06.534Z"
+        "lastAccess": "2026-03-27T08:55:14.100Z"
       }
     ],
     "recordings": [
@@ -183,6 +183,27 @@
       }
     ],
     "accessLog": [
+      {
+        "email": "markbrainardg@sprout.ph",
+        "timestamp": "2026-03-27T08:55:13.927Z",
+        "ip": "127.0.0.1",
+        "success": true,
+        "reason": "ok"
+      },
+      {
+        "email": "markbrainardg@sprout.ph",
+        "timestamp": "2026-03-27T08:55:00.604Z",
+        "ip": "127.0.0.1",
+        "success": true,
+        "reason": "ok"
+      },
+      {
+        "email": "markbrainardg@sprout.ph",
+        "timestamp": "2026-03-26T10:00:09.018Z",
+        "ip": "127.0.0.1",
+        "success": true,
+        "reason": "ok"
+      },
       {
         "email": "markbrainardg@sprout.ph",
         "timestamp": "2026-03-26T05:04:06.392Z",
@@ -380,6 +401,6 @@
         "reason": "email_not_found"
       }
     ],
-    "updatedAt": "2026-03-26T03:07:45.574Z"
+    "updatedAt": "2026-03-27T08:52:23.958Z"
   }
 ]

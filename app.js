@@ -2393,8 +2393,8 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     getDashEffectiveVal(_psCol, d) === 'Ongoing' &&
     getDashEffectiveVal(_stCol, d) === 'Customer Onboarding';
   const _initOngoing = deals.filter(_isOngoingCO).length;
-  const _initSME     = deals.filter(d => _isOngoingCO(d) && ['Micro','SME'].includes(String(getDashEffectiveVal(_segCol, d) || ''))).length;
-  const _initENT     = deals.filter(d => _isOngoingCO(d) && String(getDashEffectiveVal(_segCol, d) || '') === 'ENT').length;
+  const _initSME     = deals.filter(d => _isOngoingCO(d) && ['micro','sme'].includes(String(getDashEffectiveVal(_segCol, d) || '').toLowerCase())).length;
+  const _initENT     = deals.filter(d => _isOngoingCO(d) && String(getDashEffectiveVal(_segCol, d) || '').toLowerCase() === 'ent').length;
 
   const canEdit    = can('edit_dashboard_fields');
   // Default filters: Ongoing projects in Customer Onboarding stage
@@ -2431,9 +2431,7 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">&#128193;</div><div><div class="stat-label">Ongoing Projects</div><div class="stat-value" id="stat-val-companies">${_initOngoing}</div></div></div>
       <div class="stat-card"><div class="stat-icon" style="background:#d1fae5">&#9889;</div><div><div class="stat-label">Total MRR</div><div class="stat-value" id="stat-val-mrr" style="font-size:1.1rem">₱${deals.reduce((s,d)=>s+(Number(d.amount)||0),0).toLocaleString()}</div></div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">&#127775;</div><div><div class="stat-label">Project Managers</div><div class="stat-value" id="stat-val-pms">${pmSet.size}</div></div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:#e0f2fe">&#128100;</div><div><div class="stat-label">Team Members</div><div class="stat-value">${users.length}</div></div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:#fef9c3">&#127981;</div><div><div class="stat-label">Ongoing SME Projects</div><div class="stat-value" id="stat-val-sme">${_initSME}</div></div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:#fef9c3">&#127981;</div><div><div class="stat-label">Ongoing SME & Micro</div><div class="stat-value" id="stat-val-sme">${_initSME}</div></div></div>
       <div class="stat-card"><div class="stat-icon" style="background:#fce7f3">&#127970;</div><div><div class="stat-label">Ongoing ENT Projects</div><div class="stat-value" id="stat-val-ent">${_initENT}</div></div></div>
     </div>
 
@@ -2461,8 +2459,8 @@ async function renderAdminDashboard(container, forceRefresh = false) {
       <!-- Analytics charts -->
       <div id="dash-analytics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;padding:.5rem 1.2rem;border-bottom:1px solid var(--border)">
         <div style="background:var(--bg);border-radius:8px;padding:.5rem">
-          <div style="font-size:.68rem;font-weight:700;color:var(--txt-muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">By Status</div>
-          <div style="position:relative;height:90px"><canvas id="chart-status"></canvas></div>
+          <div style="font-size:.68rem;font-weight:700;color:var(--txt-muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">By Segment</div>
+          <div style="position:relative;height:90px"><canvas id="chart-segment"></canvas></div>
         </div>
         <div style="background:var(--bg);border-radius:8px;padding:.5rem">
           <div style="font-size:.68rem;font-weight:700;color:var(--txt-muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">By Project Manager</div>
@@ -2568,29 +2566,26 @@ async function renderAdminDashboard(container, forceRefresh = false) {
 
     // ── Stat cards ──
     const totalMRR    = filtered.reduce((s, d) => s + (Number(d.amount) || 0), 0);
-    const filteredPMs = new Set(filtered.map(d => resolveOwner(d)).filter(Boolean)).size;
     const filteredOngoing = filtered.filter(_isOngoingCO).length;
-    const filteredSME     = filtered.filter(d => _isOngoingCO(d) && ['Micro','SME'].includes(String(getDashEffectiveVal(_segCol, d) || ''))).length;
-    const filteredENT     = filtered.filter(d => _isOngoingCO(d) && String(getDashEffectiveVal(_segCol, d) || '') === 'ENT').length;
+    const filteredSME     = filtered.filter(d => _isOngoingCO(d) && ['micro','sme'].includes(String(getDashEffectiveVal(_segCol, d) || '').toLowerCase())).length;
+    const filteredENT     = filtered.filter(d => _isOngoingCO(d) && String(getDashEffectiveVal(_segCol, d) || '').toLowerCase() === 'ent').length;
     const elCompanies = document.getElementById('stat-val-companies');
     const elMRR       = document.getElementById('stat-val-mrr');
-    const elPMs       = document.getElementById('stat-val-pms');
     const elSME       = document.getElementById('stat-val-sme');
     const elENT       = document.getElementById('stat-val-ent');
     if (elCompanies) elCompanies.textContent = filteredOngoing;
     if (elMRR)       elMRR.textContent       = `₱${totalMRR.toLocaleString()}`;
-    if (elPMs)       elPMs.textContent       = filteredPMs;
     if (elSME)       elSME.textContent       = filteredSME;
     if (elENT)       elENT.textContent       = filteredENT;
 
     // ── Charts ──
     const count = (arr, keyFn) => arr.reduce((acc, d) => { const k = keyFn(d) || 'Unknown'; acc[k] = (acc[k]||0)+1; return acc; }, {});
 
-    const byStatus = count(filtered, d => {
-      const ov = (cachedDashboardOverrides[d.id] || {}).projectStatus;
-      return ov || statusLabel(hsStatusToLocal(d.clientStatus, d.stage));
+    const bySegment = count(filtered, d => {
+      const seg = String(getDashEffectiveVal(_segCol, d) || '').toUpperCase();
+      return seg || 'Unknown';
     });
-    buildChart('chart-status', 'doughnut', Object.keys(byStatus), Object.values(byStatus));
+    buildChart('chart-segment', 'doughnut', Object.keys(bySegment), Object.values(bySegment));
 
     const byPM = count(filtered, d => resolveOwner(d) || 'Unassigned');
     buildChart('chart-pm', 'bar', Object.keys(byPM), Object.values(byPM));
@@ -2602,7 +2597,7 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     });
     if (Object.keys(byMilestone).length) buildChart('chart-milestone', 'bar', Object.keys(byMilestone), Object.values(byMilestone));
 
-    _exportDashboardCharts = { byStatus, byStage: {}, byPM };
+    _exportDashboardCharts = { bySegment, byPM };
     updateColFilterBtns();
   }
 
@@ -3912,9 +3907,9 @@ function exportDashboardPDF() {
 
   // Charts — embed canvas images side by side
   const chartDefs = [
-    { id: 'chart-status', label: 'BY STATUS' },
-    { id: 'chart-stage',  label: 'BY STAGE'  },
-    { id: 'chart-pm',     label: 'BY PROJECT MANAGER' },
+    { id: 'chart-segment',   label: 'BY SEGMENT'          },
+    { id: 'chart-pm',        label: 'BY PROJECT MANAGER'  },
+    { id: 'chart-milestone', label: 'BY MILESTONE'        },
   ];
   const chartAreaW = (pageW - 28) / 3;
   const chartH     = 48;
