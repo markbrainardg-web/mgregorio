@@ -198,6 +198,22 @@ router.get('/my-deals', requireAuth, (req, res) => {
   res.json({ pipeline: dealsCache.pipeline, deals: myDeals });
 });
 
+/* ── GET /api/hubspot/deal-team/:hubspotId ────────────────────
+   Returns implementer team fields for a single cached deal.
+   Does NOT hit HubSpot API — reads from in-memory dealsCache.
+─────────────────────────────────────────────────────────────── */
+router.get('/deal-team/:hubspotId', requireAuth, (req, res) => {
+  if (!dealsCache) return res.json({});
+  const deal = (dealsCache.deals || []).find(d => String(d.id) === String(req.params.hubspotId));
+  if (!deal) return res.json({});
+  res.json({
+    hrsi:          deal.hrImplementer          || null,
+    psi:           deal.payrollImplementer      || null,
+    payrollMaster: deal.payrollMaster           || null,
+    softwareImpl:  deal.softwareImplementer     || null,
+  });
+});
+
 /* ── GET /api/hubspot/deals ───────────────────────────────────
    Fetches Company objects where client_stage is
    "Sales Handover", "Customer Onboarding", or "implem_upsell_onboarding".
@@ -472,4 +488,19 @@ console.log('[HubSpot] Cache will refresh every hour.');
 // Warm the cache on server start so the first user never hits a cold load
 setTimeout(refreshHubSpotCache, 3000);
 
+/* Returns implementer text names for a given HubSpot deal ID from the in-memory cache.
+   Returns null if no cache or deal not found. */
+function getImplementersByHubspotId(hubspotId) {
+  if (!dealsCache) return null;
+  const deal = (dealsCache.deals || []).find(d => String(d.id) === String(hubspotId));
+  if (!deal) return null;
+  return {
+    hrsi:          deal.hrImplementer          || null,
+    psi:           deal.payrollImplementer      || null,
+    payrollMaster: deal.payrollMaster           || null,
+    softwareImpl:  deal.softwareImplementer     || null,
+  };
+}
+
 module.exports = router;
+module.exports.getImplementersByHubspotId = getImplementersByHubspotId;

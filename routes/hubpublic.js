@@ -8,6 +8,7 @@
 const express = require('express');
 const bcrypt  = require('bcryptjs');
 const { getHubs, saveHubs, getProjects, getUsers } = require('../db');
+const { getImplementersByHubspotId } = require('./hubspot');
 
 const router = express.Router();
 
@@ -420,6 +421,40 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
   const allUsers = getUsers();
   const pm = project?.projectManager ? allUsers.find(u => u.id === project.projectManager) : null;
 
+  // Resolve implementer team members — prefer saved teamRoles, fall back to live deals cache
+  let teamRoles = project?.teamRoles || {};
+  const hasTeamRoles = Object.values(teamRoles).some(r => r?.name || r?.id);
+  if (!hasTeamRoles && project?.hubspotId) {
+    const live = getImplementersByHubspotId(project.hubspotId);
+    if (live) {
+      teamRoles = {
+        hrsi:          { id: null, name: live.hrsi          || null },
+        psi:           { id: null, name: live.psi           || null },
+        payrollMaster: { id: null, name: live.payrollMaster || null },
+        softwareImpl:  { id: null, name: live.softwareImpl  || null },
+      };
+    }
+  }
+  function resolveTeamMember(role) {
+    if (!role) return null;
+    let u = role.id ? allUsers.find(u => u.id === role.id) : null;
+    // Fall back to name match when no ID (e.g. text-only from HubSpot cache)
+    if (!u && role.name) u = allUsers.find(u => u.name?.trim().toLowerCase() === role.name.trim().toLowerCase());
+    const name = u?.name || role.name;
+    if (!name) return null;
+    return { name, jobTitle: u?.jobTitle || null, email: u?.email || null };
+  }
+  const sproutTeam = [
+    pm ? { label: pm.jobTitle || 'Project Manager',                          name: pm.name, email: pm.email } : null,
+    resolveTeamMember(teamRoles.hrsi)         ? { label: resolveTeamMember(teamRoles.hrsi).jobTitle         || 'HR Software Implementation Officer',      ...resolveTeamMember(teamRoles.hrsi) }         : null,
+    resolveTeamMember(teamRoles.psi)          ? { label: resolveTeamMember(teamRoles.psi).jobTitle          || 'Payroll Software Implementation Officer', ...resolveTeamMember(teamRoles.psi) }          : null,
+    resolveTeamMember(teamRoles.payrollMaster)? { label: resolveTeamMember(teamRoles.payrollMaster).jobTitle || 'Payroll Master',                          ...resolveTeamMember(teamRoles.payrollMaster)} : null,
+    resolveTeamMember(teamRoles.softwareImpl) ? { label: resolveTeamMember(teamRoles.softwareImpl).jobTitle  || 'Software Implementation Officer',         ...resolveTeamMember(teamRoles.softwareImpl) } : null,
+  ].filter(Boolean);
+
+  // Client name for the second contacts section header
+  const clientName = escHtml(hub.projectTitle || project?.title || 'Client');
+
   const statusLabel = s => ({ ongoing:'Ongoing', 'on-hold':'On Hold', 'on-hold-sales':'On Hold – Sales', churn:'Churned', completed:'Completed' }[s] || (s||'—'));
   const statusColor = s => ({ ongoing:'#16a34a', 'on-hold':'#d97706', 'on-hold-sales':'#9333ea', churn:'#dc2626', completed:'#0891b2' }[s] || '#5a7a5a');
 
@@ -539,33 +574,51 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
     </section>` : '';
 
   // ── Contacts section ──
-  const pmCardHtml = pm ? `
-    <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#f0fdf4;border:1.5px solid #6ee7b7;border-radius:12px">
-      <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#092903,#1a6b08);color:#fff;font-family:'Fira Sans',sans-serif;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${(pm.name||'?')[0].toUpperCase()}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.9rem;font-weight:700;color:#092903">${escHtml(pm.name)}</div>
-        <div style="font-size:.75rem;color:#065f46;font-weight:700;margin-top:2px">Project Manager</div>
-        ${pm.email?`<a href="mailto:${escHtml(pm.email)}" style="font-size:.78rem;color:#1a6b08;text-decoration:none;margin-top:4px;display:block">${escHtml(pm.email)}</a>`:''}
+  const sproutTeamHtml = sproutTeam.length > 0 ? `
+    <div style="margin-bottom:20px">
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#065f46;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+        <span style="display:inline-block;width:3px;height:14px;background:#16a34a;border-radius:2px"></span>
+        Sprout Project Team
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+        ${sproutTeam.map(m=>`
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f0fdf4;border:1.5px solid #6ee7b7;border-radius:12px">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#092903,#1a6b08);color:#fff;font-family:'Fira Sans',sans-serif;font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${(m.name||'?')[0].toUpperCase()}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.88rem;font-weight:700;color:#092903">${escHtml(m.name)}</div>
+              <div style="font-size:.72rem;color:#065f46;font-weight:700;margin-top:2px">${escHtml(m.label)}</div>
+              ${m.email?`<a href="mailto:${escHtml(m.email)}" style="font-size:.75rem;color:#1a6b08;text-decoration:none;margin-top:3px;display:block;word-break:break-all">${escHtml(m.email)}</a>`:''}
+            </div>
+          </div>`).join('')}
       </div>
     </div>` : '';
 
-  const ctcHtml = sections.contacts && canSee('contacts') && (pm || contacts.length > 0) ? `
+  const clientContactsHtml = contacts.length > 0 ? `
+    <div>
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+        <span style="display:inline-block;width:3px;height:14px;background:#f59e0b;border-radius:2px"></span>
+        ${clientName} Project Team
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+        ${contacts.map(c=>`
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;font-family:'Fira Sans',sans-serif;font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${(c.name||'?')[0].toUpperCase()}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.88rem;font-weight:700;color:#092903">${escHtml(c.name)}</div>
+              ${c.position?`<div style="font-size:.72rem;color:#5a7a5a;margin-top:2px">${escHtml(c.position)}</div>`:''}
+              ${c.projectRole?`<div style="font-size:.72rem;color:#92400e;font-weight:600;margin-top:2px">${escHtml(c.projectRole)}</div>`:''}
+              ${c.email?`<a href="mailto:${escHtml(c.email)}" style="font-size:.75rem;color:#1a6b08;text-decoration:none;margin-top:3px;display:block;word-break:break-all">${escHtml(c.email)}</a>`:''}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>` : '';
+
+  const ctcHtml = sections.contacts && canSee('contacts') && (sproutTeam.length > 0 || contacts.length > 0) ? `
     <section id="contacts" style="margin-bottom:40px">
       <div style="font-family:'Fira Sans',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5a7a5a;margin-bottom:14px;border-left:4px solid #f59e0b;padding-left:12px">📞 Key Contacts</div>
       <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(9,41,3,.07)">
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
-          ${pmCardHtml}
-          ${contacts.map(c=>`
-            <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#f9fdf9;border:1px solid #e4ece4;border-radius:12px">
-              <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#8139EE,#32CE13);color:#fff;font-family:'Fira Sans',sans-serif;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${(c.name||'?')[0].toUpperCase()}</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:.9rem;font-weight:700;color:#092903">${escHtml(c.name)}</div>
-                ${c.position?`<div style="font-size:.75rem;color:#5a7a5a;margin-top:2px">${escHtml(c.position)}</div>`:''}
-                ${c.projectRole?`<div style="font-size:.75rem;color:#8139EE;font-weight:600;margin-top:2px">${escHtml(c.projectRole)}</div>`:''}
-                ${c.email?`<a href="mailto:${escHtml(c.email)}" style="font-size:.78rem;color:#1a6b08;text-decoration:none;margin-top:4px;display:block;word-break:break-all">${escHtml(c.email)}</a>`:''}
-              </div>
-            </div>`).join('')}
-        </div>
+        ${sproutTeamHtml}
+        ${clientContactsHtml}
       </div>
     </section>` : '';
 

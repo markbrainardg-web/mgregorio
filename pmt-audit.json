@@ -1,5 +1,231 @@
 [
   {
+    "id": "921d2d6fdd35",
+    "timestamp": "2026-03-27T12:58:16.843Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "6ecfbd7d7f85",
+    "timestamp": "2026-03-27T12:58:12.995Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Mark Brainard Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "9654ed46a480",
+    "timestamp": "2026-03-27T12:57:46.081Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Mark Brainard Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "ec6d703fae44",
+    "timestamp": "2026-03-27T12:57:41.026Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "4f80feb0e4df",
+    "timestamp": "2026-03-27T12:55:59.162Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "de84d8803110",
+    "timestamp": "2026-03-27T12:55:55.430Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Mark Brainard Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "a86061ece3c3",
+    "timestamp": "2026-03-27T12:55:49.703Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "user.bulkProfileUpdated",
+    "details": "Bulk updated profiles for 34 user(s)",
+    "meta": {
+      "count": 34
+    }
+  },
+  {
+    "id": "ed3ce108227d",
+    "timestamp": "2026-03-27T12:52:59.640Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Mark Brainard Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "789233634fac",
+    "timestamp": "2026-03-27T12:52:48.897Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "06c125fd8618",
+    "timestamp": "2026-03-27T12:52:21.239Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "21f262e4f9de",
+    "timestamp": "2026-03-27T12:52:16.601Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Mark Brainard Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "2031e969a568",
+    "timestamp": "2026-03-27T12:52:03.539Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "user.bulkProfileUpdated",
+    "details": "Bulk updated profiles for 34 user(s)",
+    "meta": {
+      "count": 34
+    }
+  },
+  {
+    "id": "641f0417e6a0",
+    "timestamp": "2026-03-27T12:50:37.617Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Mark Brainard Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "869ad8a0751c",
+    "timestamp": "2026-03-27T12:50:30.686Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "e20ed53452da",
+    "timestamp": "2026-03-27T12:49:50.506Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "b01798d11b0d",
+    "timestamp": "2026-03-27T12:43:42.396Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Mark Brainard Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Mark Brainard Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "e794df1a0e93",
+    "timestamp": "2026-03-27T12:43:37.603Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "2cfd144d5438",
+    "timestamp": "2026-03-27T12:40:38.709Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "4dfb4eea5cae",
+    "timestamp": "2026-03-27T12:36:13.154Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "9efb2c1ceef1",
+    "timestamp": "2026-03-27T12:33:26.934Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
     "id": "6e3da923bed1",
     "timestamp": "2026-03-27T08:52:24.570Z",
     "userId": "mmj4wcs359kz",

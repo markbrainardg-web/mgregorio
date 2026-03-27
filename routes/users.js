@@ -31,7 +31,7 @@ router.get('/', requireAuth, (req, res) => {
 
 /* ── POST /api/users ──────────────────────────────────────── */
 router.post('/', requireAuth, requireAdmin, async (req, res) => {
-  const { username, password, name, email, role, color, hubspotOwnerId, photoUrl } = req.body;
+  const { username, password, name, email, role, color, hubspotOwnerId, photoUrl, jobTitle, phone } = req.body;
 
   if (!username || !password || !name)
     return res.status(400).json({ error: 'Username, password, and name are required.' });
@@ -50,6 +50,8 @@ router.post('/', requireAuth, requireAdmin, async (req, res) => {
     color:          color || '#4f46e5',
     hubspotOwnerId: hubspotOwnerId || null,
     photoUrl:       photoUrl       || null,
+    jobTitle:       (jobTitle || '').trim() || null,
+    phone:          (phone    || '').trim() || null,
     resetToken:     null,
     resetExpires:   null,
   };
@@ -108,7 +110,7 @@ router.put('/me', requireAuth, async (req, res) => {
 /* ── PUT /api/users/:id ───────────────────────────────────── */
 router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
-  const { username, password, name, email, role, color, hubspotOwnerId, photoUrl } = req.body;
+  const { username, password, name, email, role, color, hubspotOwnerId, photoUrl, jobTitle, phone } = req.body;
 
   const users = getUsers();
   const user  = users.find(u => u.id === id);
@@ -127,6 +129,8 @@ router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
   if (color)                       user.color          = color;
   if (hubspotOwnerId !== undefined) user.hubspotOwnerId = hubspotOwnerId || null;
   if (photoUrl       !== undefined) user.photoUrl       = photoUrl       || null;
+  if (jobTitle !== undefined) user.jobTitle = (jobTitle || '').trim() || null;
+  if (phone    !== undefined) user.phone    = (phone    || '').trim() || null;
 
   saveUsers(users);
   const actor = getUsers().find(u => u.id === req.session.userId);
@@ -208,6 +212,43 @@ router.post('/bulk', requireAuth, requireAdmin, async (req, res) => {
     errors,
     users: created.map(safeUser),
   });
+});
+
+/* ── PATCH /api/users/bulk-profile ───────────────────────── */
+router.patch('/bulk-profile', requireAuth, requireAdmin, (req, res) => {
+  const rows = req.body;
+  if (!Array.isArray(rows) || rows.length === 0)
+    return res.status(400).json({ error: 'Expected a non-empty array.' });
+
+  const users = getUsers();
+  const actor = users.find(u => u.id === req.session.userId);
+  let changed = 0;
+
+  rows.forEach(row => {
+    const user = users.find(u => u.id === row.id);
+    if (!user) return;
+    if (row.name     !== undefined) user.name     = (row.name     || '').trim() || user.name;
+    if (row.email    !== undefined) user.email    = (row.email    || '').trim().toLowerCase();
+    if (row.phone    !== undefined) user.phone    = (row.phone    || '').trim() || null;
+    if (row.jobTitle !== undefined) user.jobTitle = (row.jobTitle || '').trim() || null;
+    changed++;
+  });
+
+  if (changed > 0) {
+    saveUsers(users);
+    appendAuditEntry({
+      id:        require('crypto').randomBytes(6).toString('hex'),
+      timestamp: new Date().toISOString(),
+      userId:    actor?.id || 'unknown',
+      userName:  actor?.name || 'Unknown',
+      userRole:  actor?.role || 'unknown',
+      action:    'user.bulkProfileUpdated',
+      details:   `Bulk updated profiles for ${changed} user(s)`,
+      meta:      { count: changed },
+    });
+  }
+
+  res.json({ ok: true, updated: changed });
 });
 
 /* ── POST /api/users/onboarding-reset — super_admin only ──── */

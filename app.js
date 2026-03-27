@@ -2963,17 +2963,24 @@ async function renderAdminProjects(container) {
             (u.email && u.email.toLowerCase() === raw.toLowerCase())
           ) || null;
         }
-        const implUsers = [
-          resolveToLocalUser(deal.hrImplementerRaw),
-          resolveToLocalUser(deal.payrollImplementerRaw),
-          resolveToLocalUser(deal.payrollMasterRaw),
-          resolveToLocalUser(deal.softwareImplementerRaw),
-        ].filter(Boolean);
+        const hrsiUser   = resolveToLocalUser(deal.hrImplementerRaw);
+        const psiUser    = resolveToLocalUser(deal.payrollImplementerRaw);
+        const pmasterUser = resolveToLocalUser(deal.payrollMasterRaw);
+        const softImplUser = resolveToLocalUser(deal.softwareImplementerRaw);
+        const implUsers = [hrsiUser, psiUser, pmasterUser, softImplUser].filter(Boolean);
 
         const assignedTo = [...new Set([
           ...(coPmUser ? [coPmUser.id] : []),
           ...implUsers.map(u => u.id),
         ])];
+
+        const teamRoles = {
+          hrsi:         { id: hrsiUser?.id    || null, name: deal.hrImplementer    || null },
+          psi:          { id: psiUser?.id     || null, name: deal.payrollImplementer || null },
+          payrollMaster:{ id: pmasterUser?.id || null, name: deal.payrollMaster    || null },
+          softwareImpl: { id: softImplUser?.id|| null, name: deal.softwareImplementer || null },
+        };
+
         if (!proj) {
           existing.push({
             id:                   `hs_${deal.id}`,
@@ -2986,6 +2993,7 @@ async function renderAdminProjects(container) {
             hubspotOwnerId:       deal.ownerHubspotId,
             coProjectManagerHsId: deal.coProjectManagerHsId || null,
             assignedTo,
+            teamRoles,
             dueDate:              '',
             progress:             0,
             createdBy:            'hubspot',
@@ -2995,7 +3003,7 @@ async function renderAdminProjects(container) {
           });
           changed = true;
         } else {
-          // Always update status, PM, and assignedTo to stay in sync with HubSpot
+          // Always update status, PM, assignedTo, and teamRoles to stay in sync with HubSpot
           const newPmId = matchedUser ? matchedUser.id : (proj.projectManager || null);
           // Implementers from HubSpot fields (always recalculate)
           const hsAssigned = [...new Set(implUsers.map(u => u.id))];
@@ -3008,6 +3016,7 @@ async function renderAdminProjects(container) {
           proj.projectManager = newPmId;
           if (!proj.syncedAt) proj.syncedAt = new Date().toISOString();
           proj.assignedTo     = newAssignedTo;
+          proj.teamRoles      = teamRoles;
           changed = true;
         }
       });
@@ -3289,7 +3298,42 @@ function renderAdminUsers(container) {
       <div><h2>Team Members</h2><p>Manage users and their access.</p></div>
       <div style="display:flex;gap:.6rem">
         <button class="btn btn-ghost" onclick="openBulkImportUsersModal()">&#8679; Import Users</button>
+        <button class="btn btn-ghost" id="bulk-edit-profiles-btn" style="border-color:var(--primary);color:var(--primary)">&#9998; Bulk Edit Profiles</button>
         <button class="btn btn-primary" id="new-user-btn">+ Add User</button>
+      </div>
+    </div>
+    <div id="bulk-profile-panel" style="display:none;margin-bottom:1.2rem">
+      <div class="card" style="padding:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+          <div style="font-size:.85rem;font-weight:700;color:var(--txt)">Edit Name, Email, Phone &amp; Job Title for all users</div>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-ghost btn-sm" id="bulk-profile-cancel">Cancel</button>
+            <button class="btn btn-primary btn-sm" id="bulk-profile-save">&#10003; Save All Changes</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.82rem" id="bulk-profile-table">
+            <thead>
+              <tr style="background:var(--surface);text-align:left">
+                <th style="padding:.4rem .6rem;border-bottom:1px solid var(--border);min-width:160px">Name</th>
+                <th style="padding:.4rem .6rem;border-bottom:1px solid var(--border)">Role</th>
+                <th style="padding:.4rem .6rem;border-bottom:1px solid var(--border);min-width:200px">Job Title</th>
+                <th style="padding:.4rem .6rem;border-bottom:1px solid var(--border);min-width:200px">Email</th>
+                <th style="padding:.4rem .6rem;border-bottom:1px solid var(--border);min-width:140px">Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${cachedUsers.map(u => `
+                <tr data-uid="${u.id}">
+                  <td style="padding:.3rem .4rem"><input type="text" value="${(u.name||'').replace(/"/g,'&quot;')}" data-field="name" style="width:100%;padding:.25rem .4rem;border:1px solid var(--border);border-radius:5px;font-size:.82rem;background:var(--bg);color:var(--txt)" /></td>
+                  <td style="padding:.3rem .4rem;color:var(--txt-muted);font-size:.78rem;white-space:nowrap">${u.role||''}</td>
+                  <td style="padding:.3rem .4rem"><input type="text" value="${(u.jobTitle||'').replace(/"/g,'&quot;')}" data-field="jobTitle" placeholder="e.g. HR Software Implementation Officer" style="width:100%;padding:.25rem .4rem;border:1px solid var(--border);border-radius:5px;font-size:.82rem;background:var(--bg);color:var(--txt)" /></td>
+                  <td style="padding:.3rem .4rem"><input type="email" value="${(u.email||'').replace(/"/g,'&quot;')}" data-field="email" style="width:100%;padding:.25rem .4rem;border:1px solid var(--border);border-radius:5px;font-size:.82rem;background:var(--bg);color:var(--txt)" /></td>
+                  <td style="padding:.3rem .4rem"><input type="tel" value="${(u.phone||'').replace(/"/g,'&quot;')}" data-field="phone" placeholder="09171234567" style="width:100%;padding:.25rem .4rem;border:1px solid var(--border);border-radius:5px;font-size:.82rem;background:var(--bg);color:var(--txt)" /></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="card">
@@ -5044,13 +5088,71 @@ function openDocsModal(projectId) {
 
 // ── CONTACTS MODAL ────────────────────────────────────────────
 function openContactsModal(projectId) {
-  function buildModal() {
+  async function buildModal() {
     const p = getProjects().find(x => x.id === projectId);
     if (!p) return;
-    const contacts = p.details?.contacts || [];
+    const contacts  = p.details?.contacts || [];
+    let teamRoles   = p.teamRoles || {};
 
+    // If teamRoles not yet saved (project existed before this feature), fetch from live deal cache
+    const hasTeamData = Object.values(teamRoles).some(r => r?.name || r?.id);
+    if (!hasTeamData && p.hubspotId) {
+      try {
+        const r = await fetch(`/api/hubspot/deal-team/${encodeURIComponent(p.hubspotId)}`);
+        if (r.ok) {
+          const live = await r.json();
+          // Convert text-only format to the { id, name } shape
+          teamRoles = {
+            hrsi:          { id: null, name: live.hrsi          || null },
+            psi:           { id: null, name: live.psi           || null },
+            payrollMaster: { id: null, name: live.payrollMaster || null },
+            softwareImpl:  { id: null, name: live.softwareImpl  || null },
+          };
+        }
+      } catch {}
+    }
+
+    // ── Sprout Team ──
+    const pm = p.projectManager ? cachedUsers.find(u => u.id === p.projectManager) : null;
+
+    function resolveTeamMember(role) {
+      if (!role) return null;
+      let u = role.id ? cachedUsers.find(u => u.id === role.id) : null;
+      if (!u && role.name) u = cachedUsers.find(u => u.name?.trim().toLowerCase() === role.name.trim().toLowerCase());
+      const name = u?.name || role.name;
+      if (!name) return null;
+      return { name, jobTitle: u?.jobTitle || null, email: u?.email || null, phone: u?.phone || null };
+    }
+
+    function teamRow(label, member) {
+      if (!member) return '';
+      const displayLabel = member.jobTitle || label;
+      return `<tr>
+        <td style="padding:.4rem .6rem;font-size:.78rem;font-weight:700;color:#065f46;white-space:nowrap">${displayLabel}</td>
+        <td style="padding:.4rem .6rem;font-size:.8rem;font-weight:600">${member.name}</td>
+        <td style="padding:.4rem .6rem;font-size:.8rem;color:var(--txt-muted)">${member.phone || '—'}</td>
+        <td style="padding:.4rem .6rem;font-size:.8rem">${member.email ? `<a href="mailto:${member.email}" style="color:var(--primary)">${member.email}</a>` : '—'}</td>
+      </tr>`;
+    }
+
+    const sproutTeamRows = [
+      pm ? `<tr>
+        <td style="padding:.4rem .6rem;font-size:.78rem;font-weight:700;color:#065f46;white-space:nowrap">${pm.jobTitle || 'Project Manager'}</td>
+        <td style="padding:.4rem .6rem;font-size:.8rem;font-weight:600">${pm.name}</td>
+        <td style="padding:.4rem .6rem;font-size:.8rem;color:var(--txt-muted)">${pm.phone || '—'}</td>
+        <td style="padding:.4rem .6rem;font-size:.8rem">${pm.email ? `<a href="mailto:${pm.email}" style="color:var(--primary)">${pm.email}</a>` : '—'}</td>
+      </tr>` : '',
+      teamRow('HRSI',          resolveTeamMember(teamRoles.hrsi)),
+      teamRow('PSI',           resolveTeamMember(teamRoles.psi)),
+      teamRow('Payroll Master',resolveTeamMember(teamRoles.payrollMaster)),
+      teamRow('SI',            resolveTeamMember(teamRoles.softwareImpl)),
+    ].join('');
+
+    const hasSproutTeam = pm || Object.values(teamRoles).some(r => r?.name || r?.id);
+
+    // ── Client Contacts ──
     const contactRows = contacts.length === 0
-      ? `<tr><td colspan="7" style="text-align:center;padding:.75rem;color:var(--txt-muted);font-size:.83rem">No contacts added yet.</td></tr>`
+      ? `<tr><td colspan="7" style="text-align:center;padding:.75rem;color:var(--txt-muted);font-size:.83rem">No client contacts added yet.</td></tr>`
       : contacts.map((c, i) => `
           <tr>
             <td style="padding:.4rem .6rem;font-size:.8rem">${c.name}</td>
@@ -5065,7 +5167,30 @@ function openContactsModal(projectId) {
     const modal = createModal(`
       <h3>&#128101; Contacts &mdash; <span style="font-weight:400;font-size:.95rem">${p.title}</span></h3>
 
-      <div style="overflow-x:auto;margin:.75rem 0">
+      ${hasSproutTeam ? `
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#065f46;margin:1rem 0 .4rem;display:flex;align-items:center;gap:.5rem">
+        <span style="display:inline-block;width:3px;height:14px;background:#16a34a;border-radius:2px"></span>
+        Sprout Project Team
+      </div>
+      <div style="overflow-x:auto;margin-bottom:1rem">
+        <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+          <thead>
+            <tr style="background:#f0fdf4;text-align:left">
+              <th style="padding:.4rem .6rem;border-bottom:1px solid #bbf7d0;font-size:.75rem">Role</th>
+              <th style="padding:.4rem .6rem;border-bottom:1px solid #bbf7d0;font-size:.75rem">Name</th>
+              <th style="padding:.4rem .6rem;border-bottom:1px solid #bbf7d0;font-size:.75rem">Phone</th>
+              <th style="padding:.4rem .6rem;border-bottom:1px solid #bbf7d0;font-size:.75rem">Email</th>
+            </tr>
+          </thead>
+          <tbody>${sproutTeamRows}</tbody>
+        </table>
+      </div>` : ''}
+
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--txt-muted);margin:.5rem 0 .4rem;display:flex;align-items:center;gap:.5rem">
+        <span style="display:inline-block;width:3px;height:14px;background:#f59e0b;border-radius:2px"></span>
+        Client Contact
+      </div>
+      <div style="overflow-x:auto;margin-bottom:.75rem">
         <table style="width:100%;border-collapse:collapse;font-size:.8rem">
           <thead>
             <tr style="background:var(--surface);text-align:left">
@@ -5093,7 +5218,7 @@ function openContactsModal(projectId) {
           <option value="limited">Limited</option>
         </select>
       </div>
-      <button class="btn btn-primary btn-sm" id="pd-add-contact" style="margin-top:.5rem">&#43; Add Contact</button>
+      <button class="btn btn-primary btn-sm" id="pd-add-contact" style="margin-top:.5rem">&#43; Add Client Contact</button>
 
       <div class="modal-actions" style="margin-top:.75rem">
         <button class="btn btn-ghost" id="pd-close">Close</button>
@@ -5818,6 +5943,33 @@ function attachPageHandlers(page) {
       b.addEventListener('click', () => openUserModal(b.dataset.id)));
     document.querySelectorAll('.delete-user-btn').forEach(b =>
       b.addEventListener('click', () => deleteUser(b.dataset.id)));
+
+    // Bulk Edit Profiles panel
+    document.getElementById('bulk-edit-profiles-btn')?.addEventListener('click', () => {
+      const panel = document.getElementById('bulk-profile-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    });
+    document.getElementById('bulk-profile-cancel')?.addEventListener('click', () => {
+      document.getElementById('bulk-profile-panel').style.display = 'none';
+    });
+    document.getElementById('bulk-profile-save')?.addEventListener('click', async () => {
+      const rows = [...document.querySelectorAll('#bulk-profile-table tbody tr')].map(tr => ({
+        id:       tr.dataset.uid,
+        name:     tr.querySelector('[data-field="name"]').value.trim(),
+        email:    tr.querySelector('[data-field="email"]').value.trim(),
+        phone:    tr.querySelector('[data-field="phone"]').value.trim(),
+        jobTitle: tr.querySelector('[data-field="jobTitle"]').value.trim(),
+      }));
+      const res = await fetch('/api/users/bulk-profile', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(rows),
+      });
+      if (!res.ok) { alert('Save failed.'); return; }
+      await fetchUsers();
+      document.getElementById('bulk-profile-panel').style.display = 'none';
+      renderAdminUsers(document.getElementById('main-content'));
+    });
   }
   if (page === 'users' && permissionsMatrix[currentUser.role]?.act_as_user) {
     document.querySelectorAll('.act-as-btn').forEach(b =>
@@ -6680,6 +6832,16 @@ function openUserModal(id) {
         ).join('')}
       </select>
     </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Job Title <span style="color:var(--txt-muted);font-size:.8rem">(shown on Resource Hub & Contacts)</span></label>
+        <input type="text" id="m-job-title" value="${u?.jobTitle || ''}" placeholder="e.g. HR Software Implementation Officer" />
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="m-phone" value="${u?.phone || ''}" placeholder="e.g. 09171234567" />
+      </div>
+    </div>
     <div class="form-group">
       <label>HubSpot Owner ID <span style="color:var(--txt-muted);font-size:.8rem">(optional — links this user to a HubSpot owner)</span></label>
       <input type="text" id="m-hs-owner-id" value="${u?.hubspotOwnerId || ''}" placeholder="e.g. 12345678" />
@@ -6756,7 +6918,9 @@ function openUserModal(id) {
     if (removePhoto)      photoUrl = null;
     else if (photoFile)   photoUrl = await getBase64(photoFile);
 
-    const body = { name, email, username: uname, role, color, hubspotOwnerId: hsOwnerId || null, photoUrl };
+    const jobTitle = document.getElementById('m-job-title').value.trim();
+    const phone    = document.getElementById('m-phone').value.trim();
+    const body = { name, email, username: uname, role, color, hubspotOwnerId: hsOwnerId || null, photoUrl, jobTitle: jobTitle || null, phone: phone || null };
     if (pass) body.password = pass;
 
     const res = await fetch(u ? `/api/users/${u.id}` : '/api/users', {
