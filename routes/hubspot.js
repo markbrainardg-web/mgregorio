@@ -219,10 +219,27 @@ router.get('/deal-team/:hubspotId', requireAuth, (req, res) => {
    "Sales Handover", "Customer Onboarding", or "implem_upsell_onboarding".
    Only the six requested internal properties are pulled.
 ─────────────────────────────────────────────────────────────── */
+// Resolve any raw email values still sitting in the implementer fields of a deals array
+function patchEmailsInDeals(deals) {
+  const emailToName = {};
+  getUsers().forEach(u => { if (u.email) emailToName[u.email.toLowerCase().trim()] = u.name; });
+  const IMPL_FIELDS = ['hrImplementer', 'payrollImplementer', 'payrollMaster', 'softwareImplementer'];
+  deals.forEach(d => {
+    IMPL_FIELDS.forEach(f => {
+      if (d[f] && d[f].includes('@')) {
+        const resolved = emailToName[d[f].toLowerCase().trim()];
+        if (resolved) d[f] = resolved;
+      }
+    });
+  });
+}
+
 router.get('/deals', requireAuth, requireHubspotAccess, async (req, res) => {
   // Serve from cache unless a forced refresh is requested
   const forceRefresh = req.query.refresh === 'true';
   if (!forceRefresh && dealsCache) {
+    // Patch any email-valued implementer fields still in the cache before serving
+    patchEmailsInDeals(dealsCache.deals || []);
     return res.json(dealsCache);
   }
 
@@ -244,6 +261,8 @@ router.get('/deals', requireAuth, requireHubspotAccess, async (req, res) => {
       ownerMap[o.id] = name;
       if (o.email) emailMap[o.email.toLowerCase()] = name;
     });
+    // Also index local users by email so raw-email fallbacks resolve to a real name
+    getUsers().forEach(u => { if (u.email) emailMap[u.email.toLowerCase()] = u.name; });
     const resolveOwnerField = v => v ? (ownerMap[v] || emailMap[v?.toLowerCase()] || v) : '';
 
     if (!firstPage.results) {
@@ -413,6 +432,8 @@ async function refreshHubSpotCache() {
       ownerMap[o.id] = name;
       if (o.email) emailMap[o.email.toLowerCase()] = name;
     });
+    // Also index local users by email so raw-email fallbacks resolve to a real name
+    getUsers().forEach(u => { if (u.email) emailMap[u.email.toLowerCase()] = u.name; });
     const resolveOwnerField = v => v ? (ownerMap[v] || emailMap[v?.toLowerCase()] || v) : '';
 
     if (!firstPage.results) return;

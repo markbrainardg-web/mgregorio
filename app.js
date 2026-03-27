@@ -5115,10 +5115,17 @@ function openContactsModal(projectId) {
     // ── Sprout Team ──
     const pm = p.projectManager ? cachedUsers.find(u => u.id === p.projectManager) : null;
 
+    function fuzzyNameMatch(a, b) {
+      const ta = a.trim().toLowerCase().split(/\s+/);
+      const tb = b.trim().toLowerCase().split(/\s+/);
+      const [shorter, longer] = ta.length <= tb.length ? [ta, tb] : [tb, ta];
+      return shorter.every(t => longer.some(lt => lt.startsWith(t)));
+    }
     function resolveTeamMember(role) {
       if (!role) return null;
       let u = role.id ? cachedUsers.find(u => u.id === role.id) : null;
       if (!u && role.name) u = cachedUsers.find(u => u.name?.trim().toLowerCase() === role.name.trim().toLowerCase());
+      if (!u && role.name) u = cachedUsers.find(u => u.name && fuzzyNameMatch(u.name, role.name));
       const name = u?.name || role.name;
       if (!name) return null;
       return { name, jobTitle: u?.jobTitle || null, email: u?.email || null, phone: u?.phone || null };
