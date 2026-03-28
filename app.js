@@ -6626,6 +6626,7 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
         buildModal('timeline');
       });
       });
+    }
 
     // Version selector — switch between historical snapshots
     modal.querySelector('#pf-version-selector')?.addEventListener('change', function() {
