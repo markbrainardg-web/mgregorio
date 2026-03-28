@@ -582,7 +582,31 @@
         "actualDate": "2026-03-26"
       }
     },
-    "timelineTemplate": "tpl_1774488305998"
+    "timelineTemplate": "tpl_1774488305998",
+    "details": {
+      "contacts": [
+        {
+          "id": "mnadrhvc6rah",
+          "name": "Erwin Po",
+          "phone": "09988881118",
+          "email": "erwin@ugi.com.ph",
+          "position": "Primary Contact;C-Level;Accounts Payable;Authorized Contact;Authorized Contact (CRF);Partner Channel Account Manager;Comp & Ben Officer;Signatory;Data Privacy Officer;Executive Sponsor;Finance;Fintech Contact;HR Champion;IT;None;Payroll Champion;Project Manager;Project  Manager",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        },
+        {
+          "id": "mnadrhvciru3",
+          "name": "—",
+          "phone": "",
+          "email": "tin.cabrillos@ugi.com.ph",
+          "position": "",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        }
+      ]
+    }
   },
   {
     "id": "hs_50882887723",
@@ -794,7 +818,31 @@
         "actualDate": "2026-03-26"
       }
     },
-    "timelineTemplate": "tpl_1774488305998"
+    "timelineTemplate": "tpl_1774488305998",
+    "details": {
+      "contacts": [
+        {
+          "id": "mnadqj43wvgp",
+          "name": "Pinky Maquera",
+          "phone": "+639363787202",
+          "email": "pinky.maquera@macegroup.com",
+          "position": "Project Manager",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        },
+        {
+          "id": "mnadqj43bph8",
+          "name": "Ronalyn Manansala",
+          "phone": "09088752685",
+          "email": "ronalyn.manansala@macegroup.com",
+          "position": "Project  Manager;Project Manager",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        }
+      ]
+    }
   },
   {
     "id": "hs_49485516167",
@@ -838,6 +886,20 @@
       "Data Gathering": {
         "actualDate": ""
       }
+    },
+    "details": {
+      "contacts": [
+        {
+          "id": "mnadwam26kdd",
+          "name": "Eduardo  Norberte Jr",
+          "phone": "09209511597",
+          "email": "ednorberte.it@gmail.com",
+          "position": "Accounts Payable;Authorized Contact;Authorized Contact (CRF);C-Level;Partner Channel Account Manager;Comp & Ben Officer;Signatory;Data Privacy Officer;Executive Sponsor;Finance;Fintech Contact;HR Champion;IT;Payroll Champion;Primary Contact;Project Manager;Project  Manager",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        }
+      ]
     }
   },
   {
