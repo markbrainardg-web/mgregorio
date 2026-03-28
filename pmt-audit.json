@@ -1,5 +1,121 @@
 [
   {
+    "id": "241e311fda91",
+    "timestamp": "2026-03-28T18:42:40.307Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "timeline.version_saved",
+    "details": "Saved timeline version \"Version 1 Timeline\" for \"Test Project 3\" — Reason: Initial Timeline",
+    "meta": {
+      "projectId": "mmj4zvaygyej"
+    }
+  },
+  {
+    "id": "f68c4e6bfda8",
+    "timestamp": "2026-03-28T18:42:04.559Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "54882e11d5fc",
+    "timestamp": "2026-03-28T18:07:00.013Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "c7e93187b75d",
+    "timestamp": "2026-03-28T17:53:01.205Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "4d384a2cde44",
+    "timestamp": "2026-03-28T17:45:36.273Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "4195490c9de4",
+    "timestamp": "2026-03-28T17:34:57.823Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "5dd9c3c716f1",
+    "timestamp": "2026-03-28T17:34:43.168Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "12f05f71f390",
+    "timestamp": "2026-03-28T17:32:18.086Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "42e14a21503e",
+    "timestamp": "2026-03-28T17:32:10.097Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "047c9c212d61",
+    "timestamp": "2026-03-28T17:31:34.554Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
     "id": "b72fceccfadb",
     "timestamp": "2026-03-28T16:49:56.781Z",
     "userId": "mmj4wcs359kz",
