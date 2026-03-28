@@ -186,11 +186,16 @@ function buildPlanningRows(timeline, milestones, isReadOnly, phases) {
           <input type="date" class="plan-end" data-milestone="${taskKey}" value="${tEnd}" ${isReadOnly ? 'disabled' : ''} style="${taskDateCss}" />
         </div>`;
       } else {
-        // Built-in template: display-only
-        html += `<div style="display:flex;align-items:center;gap:.5rem;padding:.28rem .9rem .28rem ${pl}px;background:${rowBg};border-top:1px solid #e4ece4">
-          <span style="font-size:.77rem;font-weight:${isHdr?'600':'400'};color:${isHdr?'#166534':'#374151'};flex:1">${task.label}</span>
-          ${task.duration !== '' && task.duration != null ? `<span style="font-size:.68rem;color:#6b7280;white-space:nowrap">${task.duration}d</span>` : ''}
-          ${task.assignedTo ? `<span style="font-size:.65rem;background:#e4ece4;color:#374151;padding:1px 6px;border-radius:8px;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis">${task.assignedTo}</span>` : ''}
+        // Built-in template: same layout as custom — with per-task Start/End date inputs
+        const taskKey = key + '_t' + ti;
+        const tStart  = timeline[taskKey]?.startDate || '';
+        const tEnd    = timeline[taskKey]?.endDate || timeline[taskKey]?.targetDate || '';
+        html += `<div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:.4rem;align-items:center;padding:.3rem .9rem .3rem ${pl}px;background:${rowBg};border-top:1px solid #e4ece4">
+          <span style="font-size:.77rem;font-weight:${isHdr?'600':'400'};color:${isHdr?'#166534':'#374151'}">${task.label}</span>
+          ${task.assignedTo ? `<span style="font-size:.63rem;background:#e4ece4;color:#374151;padding:1px 7px;border-radius:8px;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;text-align:center">${task.assignedTo}</span>` : '<span></span>'}
+          ${task.duration !== '' && task.duration != null ? `<span style="font-size:.68rem;color:#6b7280;white-space:nowrap">${task.duration}d</span>` : '<span></span>'}
+          <input type="date" class="plan-start" data-milestone="${taskKey}" value="${tStart}" ${isReadOnly ? 'disabled' : ''} style="${taskDateCss}" />
+          <input type="date" class="plan-end" data-milestone="${taskKey}" value="${tEnd}" ${isReadOnly ? 'disabled' : ''} style="${taskDateCss}" />
         </div>`;
       }
     });
@@ -224,6 +229,208 @@ function buildPlanningRows(timeline, milestones, isReadOnly, phases) {
   }
 
   return html;
+}
+
+// ── Paste Dates modal ─────────────────────────────────────────
+// Opens a modal letting the user paste 2 columns (Start | End) from a
+// spreadsheet. Maps them positionally to all .plan-start/.plan-end input
+// pairs inside `parentModal` (works for built-in and custom templates).
+function openPasteDatesModal(parentModal) {
+  const startInputs = [...parentModal.querySelectorAll('input.plan-start:not([disabled])')];
+  const endInputs   = [...parentModal.querySelectorAll('input.plan-end:not([disabled])')];
+
+  function labelFor(input) {
+    const m = input.dataset.milestone || '';
+    return m.replace(/_t\d+$/, '') + (/_t\d+$/.test(m) ? ' (task)' : '');
+  }
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `
+    <div style="background:var(--surface);border-radius:14px;padding:1.6rem;width:580px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.35)">
+      <h3 style="margin-bottom:.35rem;font-size:1rem">📋 Paste Dates from Spreadsheet</h3>
+      <p style="font-size:.82rem;color:var(--txt-muted);margin-bottom:1rem;line-height:1.5">
+        In your spreadsheet, select the <strong>Start Date</strong> and <strong>End Date</strong> columns — one row per phase/task — then <strong>Ctrl+C</strong> and paste below.<br/>
+        <span style="color:var(--txt-muted)">Timeline has <strong>${startInputs.length} rows</strong> (phases + tasks).</span>
+      </p>
+      <textarea id="pdt-input" rows="10" placeholder="Paste here — e.g.&#10;4/7/2026&#9;4/7/2026&#10;4/8/2026&#9;4/10/2026&#10;..."
+        style="width:100%;padding:.55rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-family:monospace;font-size:.81rem;outline:none;resize:vertical;line-height:1.6;color:var(--txt);background:var(--bg)"></textarea>
+      <div id="pdt-preview" style="margin-top:.75rem"></div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;flex-wrap:wrap">
+        <button id="pdt-cancel" class="btn btn-ghost">Cancel</button>
+        <button id="pdt-preview-btn" class="btn btn-secondary">Preview</button>
+        <button id="pdt-apply" class="btn btn-primary" disabled>Apply Dates</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  let parsedRows = [];
+
+  function toIsoDate(str) {
+    if (!str || !str.trim()) return '';
+    const s = str.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+    if (m) {
+      const yr = m[3].length === 2 ? '20' + m[3] : m[3];
+      return `${yr}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+    }
+    try { const d = new Date(s); if (!isNaN(d)) return d.toISOString().slice(0,10); } catch {}
+    return '';
+  }
+
+  function parsePaste(raw) {
+    return raw.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+      const parts = line.split(/\t/).map(p => p.trim());
+      const dates = parts.filter(p => /\d/.test(p) && toIsoDate(p));
+      if (!dates.length) return null;
+      return { start: toIsoDate(dates[0]), end: toIsoDate(dates[1] || dates[0]) };
+    }).filter(Boolean);
+  }
+
+  overlay.querySelector('#pdt-preview-btn').addEventListener('click', () => {
+    parsedRows = parsePaste(overlay.querySelector('#pdt-input').value);
+    const previewEl = overlay.querySelector('#pdt-preview');
+    if (!parsedRows.length) {
+      previewEl.innerHTML = '<p style="color:#dc2626;font-size:.83rem">No valid dates found. Copy two columns (Start, End) from your spreadsheet.</p>';
+      overlay.querySelector('#pdt-apply').disabled = true;
+      return;
+    }
+    const applyCount = Math.min(parsedRows.length, startInputs.length);
+    const rows = startInputs.slice(0, applyCount).map((inp, i) => {
+      const s = parsedRows[i].start; const e = parsedRows[i].end;
+      return `<tr><td style="padding:3px 8px;font-size:.75rem;color:var(--txt-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${labelFor(inp)}</td>
+        <td style="padding:3px 8px;font-size:.77rem;font-weight:600;color:${s?'var(--txt)':'#dc2626'}">${s||'⚠ invalid'}</td>
+        <td style="padding:3px 8px;font-size:.77rem;font-weight:600;color:${e?'var(--txt)':'#dc2626'}">${e||'⚠ invalid'}</td></tr>`;
+    }).join('');
+    const warn = parsedRows.length !== startInputs.length
+      ? `<p style="font-size:.76rem;color:#d97706;margin-top:6px">⚠ Paste has ${parsedRows.length} row${parsedRows.length!==1?'s':''}, timeline expects ${startInputs.length}. ${parsedRows.length > startInputs.length ? 'Extra rows ignored.' : 'Remaining rows left unchanged.'}</p>` : '';
+    previewEl.innerHTML = `
+      <div style="font-size:.79rem;font-weight:700;color:var(--txt);margin-bottom:5px">${applyCount} row${applyCount!==1?'s':''} will be updated:</div>
+      <div style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="background:var(--bg);position:sticky;top:0">
+            <th style="padding:4px 8px;font-size:.71rem;text-align:left;color:var(--txt-muted)">Field</th>
+            <th style="padding:4px 8px;font-size:.71rem;text-align:left;color:var(--txt-muted)">Start</th>
+            <th style="padding:4px 8px;font-size:.71rem;text-align:left;color:var(--txt-muted)">End</th>
+          </tr></thead><tbody>${rows}</tbody>
+        </table>
+      </div>${warn}`;
+    overlay.querySelector('#pdt-apply').disabled = false;
+  });
+
+  overlay.querySelector('#pdt-apply').addEventListener('click', () => {
+    parsedRows.forEach((row, i) => {
+      if (i >= startInputs.length) return;
+      if (row.start) startInputs[i].value = row.start;
+      if (row.end)   endInputs[i].value   = row.end;
+    });
+    overlay.remove();
+  });
+
+  overlay.querySelector('#pdt-cancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  setTimeout(() => overlay.querySelector('#pdt-input').focus(), 50);
+}
+
+// ── Timeline date field Ctrl+C / Ctrl+V ───────────────────────
+// Click any .plan-start or .plan-end date input, Ctrl+C to copy the date,
+// then click another date input and Ctrl+V to paste it. Works across both
+// timeline modals and all templates (built-in and custom).
+let _copiedDate = '';
+
+(function initDateFieldCopyPaste() {
+  function flashTip(input, text, textColor, bgColor) {
+    const rect = input.getBoundingClientRect();
+    const tip  = document.createElement('div');
+    tip.textContent = text;
+    tip.style.cssText = [
+      `position:fixed`,
+      `top:${rect.top - 28}px`,
+      `left:${rect.left + rect.width / 2}px`,
+      `transform:translateX(-50%)`,
+      `background:${bgColor}`,
+      `color:${textColor}`,
+      `font-size:.71rem`,
+      `font-weight:700`,
+      `padding:2px 9px`,
+      `border-radius:6px`,
+      `pointer-events:none`,
+      `z-index:99999`,
+      `box-shadow:0 2px 8px rgba(0,0,0,.18)`,
+      `transition:opacity .35s`,
+    ].join(';');
+    document.body.appendChild(tip);
+    setTimeout(() => { tip.style.opacity = '0'; setTimeout(() => tip.remove(), 350); }, 900);
+  }
+
+  document.addEventListener('keydown', e => {
+    const el = document.activeElement;
+    if (!el || (!el.classList.contains('plan-start') && !el.classList.contains('plan-end'))) return;
+
+    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+      if (!el.value) return;
+      e.preventDefault();
+      _copiedDate = el.value;
+      flashTip(el, '✓ Copied', '#065f46', '#d1fae5');
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+      if (!_copiedDate) return;
+      e.preventDefault();
+      el.value = _copiedDate;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      flashTip(el, '✓ Pasted', '#1e40af', '#dbeafe');
+    }
+  });
+})();
+
+// ── Save Version modal ────────────────────────────────────────
+// Proper form replacing browser prompt() — name + reason fields.
+// Calls onSave(name, reason) when user confirms.
+function openSaveVersionModal(onSave) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `
+    <div style="background:var(--surface);border-radius:14px;padding:1.6rem;width:480px;max-width:100%;box-shadow:0 24px 64px rgba(0,0,0,.35)">
+      <h3 style="margin-bottom:.3rem;font-size:1rem">📋 Save Timeline Version</h3>
+      <p style="font-size:.82rem;color:var(--txt-muted);margin-bottom:1.1rem;line-height:1.5">Saves a snapshot of the current timeline. You can view any previous version at any time.</p>
+      <div style="display:flex;flex-direction:column;gap:.85rem">
+        <div>
+          <label style="display:block;font-size:.8rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Version Name *</label>
+          <input type="text" id="sv-name" maxlength="80"
+            placeholder='e.g. "Q1 Revision", "Client Request 1", "After KOM"'
+            style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;outline:none;background:var(--bg);color:var(--txt)" />
+        </div>
+        <div>
+          <label style="display:block;font-size:.8rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Revision Reason *</label>
+          <textarea id="sv-reason" rows="3"
+            placeholder="e.g. Client requested a 2-week extension on Data Gathering due to HR data delays."
+            style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;outline:none;resize:vertical;line-height:1.5;background:var(--bg);color:var(--txt)"></textarea>
+        </div>
+        <div id="sv-error" style="display:none;font-size:.82rem;color:#dc2626;padding:.4rem .7rem;background:#fef2f2;border-radius:6px;border:1px solid #fca5a5"></div>
+      </div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.2rem">
+        <button id="sv-cancel" class="btn btn-ghost">Cancel</button>
+        <button id="sv-save" class="btn btn-primary">Save Version</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.querySelector('#sv-name').focus(), 50);
+  overlay.querySelector('#sv-save').addEventListener('click', () => {
+    const name   = overlay.querySelector('#sv-name').value.trim();
+    const reason = overlay.querySelector('#sv-reason').value.trim();
+    const errEl  = overlay.querySelector('#sv-error');
+    if (!name || !reason) {
+      errEl.textContent   = 'Both fields are required.';
+      errEl.style.display = 'block';
+      return;
+    }
+    overlay.remove();
+    onSave(name, reason);
+  });
+  overlay.querySelector('#sv-cancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
 }
 
 // ── Sync custom template phase dates → system milestone targets ─
@@ -6355,6 +6562,11 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
         buildModal('milestones');
       });
 
+      // Paste Dates button
+      modal.querySelector('#pf-tl-paste-btn')?.addEventListener('click', () => {
+        openPasteDatesModal(modal);
+      });
+
       // Save timeline dates
       modal.querySelector('#pf-tl-save-btn')?.addEventListener('click', () => {
         const updatedTimeline = collectTimeline();
@@ -6369,11 +6581,7 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
 
       // Save as new version
       modal.querySelector('#pf-tl-version-btn')?.addEventListener('click', () => {
-        const name = prompt('Version name (e.g. "Q1 Revision", "After Kickoff"):')?.trim();
-        if (!name) return;
-        const reason = prompt('Revision reason (required — this will be auto-documented internally):')?.trim();
-        if (!reason) return;
-
+        openSaveVersionModal((name, reason) => {
         const newTimeline = collectTimeline();
         syncTemplateToMilestones(newTimeline, getPfActivePhases());
 
@@ -6417,7 +6625,7 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
         modal.remove();
         buildModal('timeline');
       });
-    }
+      });
 
     // Version selector — switch between historical snapshots
     modal.querySelector('#pf-version-selector')?.addEventListener('change', function() {
@@ -9533,6 +9741,17 @@ function openMilestonesModal(projectId) {
   const activeTpl    = cachedTemplates.find(t => t.id === activeTplId);
   const activePhases = activeTpl ? activeTpl.phases : null;
 
+  // ── Version history ───────────────────────────────────────────
+  const versions = p.timelineVersions || [];
+  const msVersionSelectorHtml = versions.length > 0 ? `
+    <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem;padding:.5rem .85rem;background:#f0fdf4;border-radius:8px;border:1px solid #86efac">
+      <span style="font-size:.78rem;font-weight:700;color:#065f46;white-space:nowrap">&#128203; History:</span>
+      <select id="ms-version-selector" style="flex:1;padding:.3rem .55rem;border:1px solid #86efac;border-radius:6px;font-size:.8rem;background:#fff;color:var(--txt)">
+        <option value="">&#10003; Active (Current)</option>
+        ${[...versions].reverse().map(v => `<option value="${v.id}">v${v.versionNumber} &mdash; ${v.name} (${new Date(v.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})})</option>`).join('')}
+      </select>
+    </div>` : '';
+
   // Template selector HTML (only if custom templates exist)
   const tplSelectorHtml = cachedTemplates.length > 0 ? `
     <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.85rem;padding:.55rem .85rem;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
@@ -9597,11 +9816,14 @@ function openMilestonesModal(projectId) {
     <!-- Tab 1: Planning -->
     <div id="tab-plan">
       <p style="font-size:.82rem;color:var(--txt-muted);margin-bottom:.9rem">Set target dates per phase. Save first, then download to present to your client.</p>
+      ${msVersionSelectorHtml}
+      <div id="ms-version-reason-banner" style="display:none;padding:.45rem .85rem;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;margin-bottom:.6rem;font-size:.78rem;color:#92400e"></div>
       ${tplSelectorHtml}
       <div id="ms-planning-rows-wrap" style="display:flex;flex-direction:column;gap:.2rem">${planningRows}</div>
       <div class="modal-actions" style="margin-top:1.2rem">
         <button class="btn btn-ghost" id="modal-cancel">Close</button>
         <button class="btn btn-ghost" id="plan-download-btn">&#11123; Download Timeline</button>
+        ${!isReadOnly ? `<button class="btn btn-ghost" id="plan-version-btn" style="border-color:var(--primary);color:var(--primary)">&#128190; Save as New Version</button>` : ''}
         ${!isReadOnly ? `<button class="btn btn-primary" id="plan-save-btn">Save Dates</button>` : ''}
       </div>
     </div>
@@ -9796,8 +10018,70 @@ function openMilestonesModal(projectId) {
 
   if (!isReadOnly) {
     modal.querySelector('#plan-save-btn')?.addEventListener('click', savePlanningDates);
+    modal.querySelector('#plan-paste-btn')?.addEventListener('click', () => {
+      openPasteDatesModal(modal);
+    });
     modal.querySelector('#prog-save-btn')?.addEventListener('click', saveProgressData);
+
+    // ── Save as New Version ────────────────────────────────────────
+    modal.querySelector('#plan-version-btn')?.addEventListener('click', () => {
+      openSaveVersionModal((name, reason) => {
+        const updatedTimeline = collectTimeline();
+        syncTemplateToMilestones(updatedTimeline, getMsActivePhases());
+        const list    = getProjects();
+        const idx     = list.findIndex(x => x.id === projectId);
+        const proj    = list[idx];
+        const vList   = proj.timelineVersions || [];
+        const nextNum = (vList.length > 0 ? Math.max(...vList.map(v => v.versionNumber)) : 0) + 1;
+        vList.push({
+          id:             'v' + Date.now(),
+          versionNumber:  nextNum,
+          name,
+          revisionReason: reason,
+          snapshot:       JSON.parse(JSON.stringify(updatedTimeline)),
+          createdAt:      new Date().toISOString(),
+          createdBy:      currentUser?.id || '',
+          createdByName:  currentUser?.name || 'Unknown',
+        });
+        proj.timelineVersions  = vList;
+        proj.timeline          = updatedTimeline;
+        proj.timelineTemplate  = modal.querySelector('#ms-tpl-selector')?.value || null;
+        saveProjects(list);
+        logAudit('timeline.version_saved', `Saved timeline version "${name}" for "${proj.title}" — Reason: ${reason}`, { projectId });
+        modal.remove();
+        openMilestonesModal(projectId);
+      });
+    });
   }
+
+  // ── Version selector: show historical snapshot (read-only) ────
+  modal.querySelector('#ms-version-selector')?.addEventListener('change', function () {
+    const vId     = this.value;
+    const wrap    = modal.querySelector('#ms-planning-rows-wrap');
+    const banner  = modal.querySelector('#ms-version-reason-banner');
+    const saveBtn = modal.querySelector('#plan-save-btn');
+    const verBtn  = modal.querySelector('#plan-version-btn');
+    const tplSel  = modal.querySelector('#ms-tpl-selector');
+
+    if (!vId) {
+      // Back to current
+      if (wrap) wrap.innerHTML = buildPlanningRows(timeline, milestones, isReadOnly, getMsActivePhases());
+      if (banner) { banner.style.display = 'none'; banner.textContent = ''; }
+      if (saveBtn) saveBtn.style.display = '';
+      if (verBtn)  verBtn.style.display  = '';
+      if (tplSel)  tplSel.closest('div') && (tplSel.closest('div').style.display = '');
+    } else {
+      const ver = versions.find(v => v.id === vId);
+      if (!ver) return;
+      if (wrap) wrap.innerHTML = buildPlanningRows(ver.snapshot, milestones, true /* read-only */, getMsActivePhases());
+      if (banner) {
+        banner.style.display = 'block';
+        banner.innerHTML = `<strong>v${ver.versionNumber} &mdash; ${ver.name}</strong> &nbsp;|&nbsp; Saved ${new Date(ver.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})} by ${ver.createdByName || 'Unknown'}${ver.revisionReason ? `<br><em>Reason: ${ver.revisionReason}</em>` : ''}`;
+      }
+      if (saveBtn) saveBtn.style.display = 'none';
+      if (verBtn)  verBtn.style.display  = 'none';
+    }
+  });
 }
 
 // ── AI PROJECT CHAT MODAL ─────────────────────────────────────
