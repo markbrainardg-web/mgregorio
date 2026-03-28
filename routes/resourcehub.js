@@ -150,7 +150,7 @@ router.post('/', requireAuth, (req, res) => {
     userName:  actor?.name || 'Unknown',
     userRole:  actor?.role || 'unknown',
     action:    'resource_hub.created',
-    details:   `Resource hub generated for project: ${project.title}`,
+    details:   `Sprout Success Kit generated for project: ${project.title}`,
     meta:      { projectId, slug: hub.slug },
   });
 
@@ -196,7 +196,7 @@ router.put('/:id', requireAuth, (req, res) => {
     userName:  actor?.name || 'Unknown',
     userRole:  actor?.role || 'unknown',
     action:    'resource_hub.updated',
-    details:   `Resource hub updated for project: ${list[idx].projectTitle}`,
+    details:   `Sprout Success Kit updated for project: ${list[idx].projectTitle}`,
     meta:      { hubId: req.params.id },
   });
 
@@ -225,7 +225,7 @@ router.delete('/:id', requireAuth, (req, res) => {
     userName:  actor?.name || 'Unknown',
     userRole:  actor?.role || 'unknown',
     action:    'resource_hub.deleted',
-    details:   `Resource hub deleted for project: ${removed.projectTitle}`,
+    details:   `Sprout Success Kit deleted for project: ${removed.projectTitle}`,
     meta:      { hubId: req.params.id, slug: removed.slug },
   });
 

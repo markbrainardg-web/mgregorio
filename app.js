@@ -3432,7 +3432,7 @@ function projectRows(projects) {
         <span class="open-full-modal-link" data-id="${p.id}" style="cursor:pointer;font-weight:700;color:var(--primary)">${p.title}</span>
         <div style="font-size:.78rem;color:var(--txt-muted);margin-top:.2rem">${p.description.slice(0,60)}${p.description.length>60?'…':''}</div>
         ${riskBadge(p)}
-        ${(() => { const h = _hubsMap[p.id]; if (!h) return ''; return `<span class="proj-hub-badge ${h.isPublic ? 'proj-hub-active' : 'proj-hub-private'}" data-id="${p.id}" title="${h.isPublic ? 'Resource Hub: Active — click to manage' : 'Resource Hub: Private — click to manage'}">&#127760; Hub${h.isPublic ? '' : ' (Private)'}</span>`; })()}
+        ${(() => { const h = _hubsMap[p.id]; if (!h) return ''; return `<span class="proj-hub-badge ${h.isPublic ? 'proj-hub-active' : 'proj-hub-private'}" data-id="${p.id}" title="${h.isPublic ? 'Sprout Success Kit: Active — click to manage' : 'Sprout Success Kit: Private — click to manage'}">&#127760; Hub${h.isPublic ? '' : ' (Private)'}</span>`; })()}
       </td>
       <td>${statusBadge(p.status)}</td>
       <td>${projectTypeBadge(p.projectType)}</td>
@@ -4521,7 +4521,7 @@ function kanbanCard(p) {
   const timer     = getActiveTimer();
   const isRunning = timer && timer.projectId === p.id;
   const milestone = getCurrentMilestone(p) || 'Completed';
-  const docCount  = p.docs?.[milestone]?.length || 0;
+  const docCount  = p.docs ? Object.values(p.docs).reduce((s, a) => s + (Array.isArray(a) ? a.length : 0), 0) : 0;
   const today     = new Date().toISOString().slice(0, 10);
   const isOverdue = p.dueDate && p.dueDate < today && p.status !== 'completed' && p.status !== 'churn';
   const dueLbl    = p.dueDate ? `Due ${new Date(p.dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}` : '';
@@ -4710,7 +4710,7 @@ async function openResourceHubModal(projectId) {
 
   // Show loading state immediately
   let backdrop = createModal(`
-    <h3 style="margin-bottom:.5rem">&#127760; Resource Hub</h3>
+    <h3 style="margin-bottom:.5rem">&#127760; Sprout Success Kit</h3>
     <div style="color:var(--txt-muted);font-size:.85rem;padding:1rem 0;text-align:center">Loading…</div>
   `);
 
@@ -4720,7 +4720,7 @@ async function openResourceHubModal(projectId) {
     hub = await r.json();
   } catch (e) {
     backdrop.remove();
-    alert('Failed to load resource hub data.');
+    alert('Failed to load Sprout Success Kit data.');
     return;
   }
 
@@ -4730,10 +4730,10 @@ async function openResourceHubModal(projectId) {
   if (!hub) {
     if (!canGenerate) {
       createModal(`
-        <h3 style="margin-bottom:.75rem">&#127760; Resource Hub</h3>
+        <h3 style="margin-bottom:.75rem">&#127760; Sprout Success Kit</h3>
         <div style="padding:1.5rem 0;text-align:center;color:var(--txt-muted)">
           <div style="font-size:2.5rem;margin-bottom:.6rem">🌐</div>
-          <p style="font-size:.88rem">No resource hub has been generated for <strong>${p.title}</strong> yet.</p>
+          <p style="font-size:.88rem">No Sprout Success Kit has been generated for <strong>${p.title}</strong> yet.</p>
           <p style="font-size:.8rem;margin-top:.4rem">Contact a Super Admin or Project Manager to set one up.</p>
         </div>
         <div class="modal-actions"><button class="btn btn-ghost rh-close-btn">Close</button></div>
@@ -4763,7 +4763,7 @@ async function openResourceHubModal(projectId) {
       : '';
 
     const m = createModal(`
-      <h3 style="margin-bottom:.3rem">&#127760; Generate Resource Hub</h3>
+      <h3 style="margin-bottom:.3rem">&#127760; Generate Sprout Success Kit</h3>
       <p style="font-size:.82rem;color:var(--txt-muted);margin-bottom:1.2rem">${p.title}</p>
 
       <div style="background:#f0f8ff;border:1px solid #c0d8f0;border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.2rem;font-size:.83rem;color:#1a3a5a;line-height:1.55">
@@ -5000,7 +5000,7 @@ async function openResourceHubModal(projectId) {
     ];
 
     const m = createModal(`
-      <h3 style="margin-bottom:.3rem">&#127760; Resource Hub</h3>
+      <h3 style="margin-bottom:.3rem">&#127760; Sprout Success Kit</h3>
       <p style="font-size:.82rem;color:var(--txt-muted);margin-bottom:.9rem">${p.title}</p>
 
       <div style="display:flex;gap:0;margin-bottom:1.1rem;border-bottom:2px solid var(--border)">
@@ -5041,7 +5041,7 @@ async function openResourceHubModal(projectId) {
 
     // Delete hub
     m.querySelector('#rh-delete-btn')?.addEventListener('click', async function() {
-      if (!confirm(`Delete the resource hub for "${p.title}"? This cannot be undone.`)) return;
+      if (!confirm(`Delete the Sprout Success Kit for "${p.title}"? This cannot be undone.`)) return;
       await fetch(`/api/resource-hub/${hub.id}`, { method: 'DELETE' });
       m.remove();
     });
@@ -5178,36 +5178,122 @@ function openDocsModal(projectId) {
   const p = getProjects().find(x => x.id === projectId);
   if (!p) return;
 
-  const milestone = getCurrentMilestone(p) || 'Completed';
+  const userRole  = effectiveUser()?.role;
+  const canDelete = userRole === 'super_admin' || userRole === 'lead';
+  let currentMilestone = getCurrentMilestone(p) || 'Completed';
+  let searchQuery = '';
+
+  function allMilestonesList() {
+    return [...MILESTONES, 'Completed'];
+  }
+
+  function noteCardHtml(d) {
+    const dateStr = new Date(d.createdAt).toLocaleString('en-PH',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    return `
+      <div class="doc-note-card" data-note-id="${d.id}">
+        <div class="doc-note-header">
+          <div class="doc-note-meta">
+            <span class="doc-note-author">${d.createdByName}</span>
+            <span class="doc-note-dot">&middot;</span>
+            <span class="doc-note-date">${dateStr}</span>
+          </div>
+          ${canDelete ? `<button class="doc-note-delete" data-note-id="${d.id}" title="Delete note">&#128465;</button>` : ''}
+        </div>
+        <div class="doc-note-body">${d.html || d.text?.replace(/\n/g,'<br>') || ''}</div>
+      </div>`;
+  }
+
+  function renderNotesList(entries) {
+    const q = searchQuery.trim().toLowerCase();
+    const filtered = q
+      ? entries.filter(e =>
+          (e.text || '').toLowerCase().includes(q) ||
+          (e.createdByName || '').toLowerCase().includes(q))
+      : entries;
+    if (filtered.length === 0) {
+      return `<div class="doc-empty-state">
+        <div style="font-size:1.5rem;margin-bottom:.4rem">&#128196;</div>
+        <div>${entries.length === 0 ? 'No notes yet for this milestone.' : 'No notes match your search.'}</div>
+      </div>`;
+    }
+    return [...filtered].reverse().map(d => noteCardHtml(d)).join('');
+  }
+
+  function wireDeleteButtons(container) {
+    container.querySelectorAll('.doc-note-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!confirm('Delete this note?')) return;
+        const noteId = btn.dataset.noteId;
+        const list = getProjects();
+        const idx  = list.findIndex(x => x.id === projectId);
+        if (idx === -1) return;
+        if (!list[idx].docs?.[currentMilestone]) return;
+        list[idx].docs[currentMilestone] = list[idx].docs[currentMilestone].filter(n => n.id !== noteId);
+        saveProjects(list);
+        modal.remove();
+        buildModal();
+      });
+    });
+  }
+
+  let modal;
 
   function buildModal() {
     const proj    = getProjects().find(x => x.id === projectId);
-    const entries = proj?.docs?.[milestone] || [];
+    const allMs   = allMilestonesList();
+    const entries = proj?.docs?.[currentMilestone] || [];
 
-    const entriesHtml = entries.length === 0
-      ? `<div style="text-align:center;padding:1.5rem 0;color:var(--txt-muted);font-size:.85rem">No notes yet for this milestone.</div>`
-      : [...entries].reverse().map(d => `
-          <div style="border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;margin-bottom:.5rem;background:var(--surface)">
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
-              <span style="font-size:.7rem;color:var(--txt-muted)">
-                ${new Date(d.createdAt).toLocaleString('en-PH',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})}
-              </span>
-              <span style="font-size:.7rem;font-weight:600;color:var(--primary)">&#183; ${d.createdByName}</span>
-            </div>
-            <div style="font-size:.84rem;color:var(--txt);line-height:1.55">${d.html || d.text?.replace(/\n/g,'<br>') || ''}</div>
-          </div>`).join('');
+    const totalNotes = allMs.reduce((sum, m) => sum + (proj?.docs?.[m]?.length || 0), 0);
+    const noteCount  = entries.length;
+
+    const msOptions = allMs.map(m => {
+      const cnt = (proj?.docs?.[m] || []).length;
+      return `<option value="${m}" ${m === currentMilestone ? 'selected' : ''}>${m}${cnt > 0 ? ` (${cnt})` : ''}</option>`;
+    }).join('');
 
     const toolbarBtn = (cmd, icon, title) =>
       `<button type="button" class="doc-fmt-btn" data-cmd="${cmd}" title="${title}"
         style="padding:.2rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--txt);cursor:pointer;font-size:.8rem;line-height:1;font-family:inherit">${icon}</button>`;
 
-    const modal = createModal(`
-      <h3>&#128196; Documentation</h3>
-      <div style="font-size:.78rem;color:var(--txt-muted);margin-bottom:.85rem;font-weight:500">
-        &#9873; ${milestone} &nbsp;&mdash;&nbsp; ${proj.title}
+    modal = createModal(`
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap">
+        <div>
+          <h3 style="margin:0 0 .2rem">&#128196; Documentation</h3>
+          <div style="font-size:.76rem;color:var(--txt-muted)">
+            ${proj.title} &nbsp;&middot;&nbsp;
+            <strong>${totalNotes}</strong> total note${totalNotes !== 1 ? 's' : ''}
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" id="docs-export-pdf"
+            style="font-size:.77rem;white-space:nowrap;display:flex;align-items:center;gap:.35rem">
+            &#11015; PDF
+          </button>
+          <button class="btn btn-ghost btn-sm" id="docs-export-excel"
+            style="font-size:.77rem;white-space:nowrap;display:flex;align-items:center;gap:.35rem">
+            &#11015; Excel
+          </button>
+        </div>
       </div>
-      <div style="max-height:240px;overflow-y:auto;margin-bottom:1rem;padding-right:.2rem">${entriesHtml}</div>
-      <div style="margin-bottom:.4rem">
+
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;flex-wrap:wrap">
+        <select id="docs-milestone-select"
+          style="flex:1;min-width:160px;padding:.35rem .55rem;border:1px solid var(--border);border-radius:6px;font-size:.8rem;background:var(--bg);color:var(--txt)">
+          ${msOptions}
+        </select>
+        <span style="font-size:.72rem;font-weight:700;background:var(--primary);color:#fff;border-radius:20px;padding:.2rem .65rem;white-space:nowrap">
+          ${noteCount} note${noteCount !== 1 ? 's' : ''}
+        </span>
+      </div>
+
+      <input type="text" id="docs-search" placeholder="Search notes…" value="${searchQuery}"
+        style="width:100%;box-sizing:border-box;padding:.35rem .6rem;border:1px solid var(--border);border-radius:6px;font-size:.8rem;background:var(--bg);color:var(--txt);margin-bottom:.6rem" />
+
+      <div class="doc-notes-list" id="docs-notes-list">
+        ${renderNotesList(entries)}
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:.75rem;margin-top:.25rem">
         <div style="font-size:.75rem;font-weight:600;color:var(--txt-muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em">Add a Note</div>
         <div style="display:flex;gap:.3rem;margin-bottom:.35rem;flex-wrap:wrap">
           ${toolbarBtn('bold',      '<b>B</b>',  'Bold')}
@@ -5217,14 +5303,120 @@ function openDocsModal(projectId) {
           ${toolbarBtn('insertOrderedList',   '1. List',      'Numbered List')}
         </div>
         <div id="docs-editor" contenteditable="true"
-          style="min-height:90px;max-height:180px;overflow-y:auto;border:1.5px solid var(--border);border-radius:6px;padding:.55rem .75rem;font-size:.84rem;line-height:1.55;background:var(--bg);color:var(--txt);outline:none;font-family:inherit"
+          style="min-height:90px;max-height:160px;overflow-y:auto;border:1.5px solid var(--border);border-radius:6px;padding:.55rem .75rem;font-size:.84rem;line-height:1.55;background:var(--bg);color:var(--txt);outline:none;font-family:inherit"
           data-placeholder="What happened at this milestone?..."></div>
       </div>
+
       <div class="modal-actions">
         <button class="btn btn-ghost" id="docs-cancel">Close</button>
         <button class="btn btn-primary" id="docs-add">Add Note</button>
       </div>
     `);
+
+    // Milestone switcher
+    modal.querySelector('#docs-milestone-select').addEventListener('change', e => {
+      currentMilestone = e.target.value;
+      searchQuery = '';
+      modal.remove();
+      buildModal();
+    });
+
+    // Live search — re-render notes list only
+    modal.querySelector('#docs-search').addEventListener('input', e => {
+      searchQuery = e.target.value;
+      const proj2   = getProjects().find(x => x.id === projectId);
+      const entries2 = proj2?.docs?.[currentMilestone] || [];
+      const listEl   = document.getElementById('docs-notes-list');
+      if (listEl) {
+        listEl.innerHTML = renderNotesList(entries2);
+        wireDeleteButtons(listEl);
+      }
+    });
+
+    // Export all as PDF
+    modal.querySelector('#docs-export-pdf').addEventListener('click', () => {
+      const proj2 = getProjects().find(x => x.id === projectId);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const left = 15, right = 195, pageH = 282;
+      let y = 18;
+
+      function checkPage(needed = 8) {
+        if (y + needed > pageH) { doc.addPage(); y = 18; }
+      }
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.setTextColor(20);
+      doc.text('Documentation Export', left, y); y += 7;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text(`Project: ${proj2.title}`, left, y); y += 5;
+      doc.text(`Exported: ${new Date().toLocaleString('en-PH')}`, left, y); y += 10;
+
+      allMilestonesList().forEach(m => {
+        const msEntries = proj2?.docs?.[m] || [];
+        if (!msEntries.length) return;
+
+        checkPage(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(0);
+        doc.text(m, left, y); y += 2;
+        doc.setDrawColor(200);
+        doc.line(left, y, right, y); y += 5;
+
+        [...msEntries].reverse().forEach(entry => {
+          checkPage(18);
+          doc.setFont('helvetica', 'italic');
+          doc.setFontSize(8);
+          doc.setTextColor(130);
+          const ds = new Date(entry.createdAt).toLocaleString('en-PH',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+          doc.text(`${entry.createdByName}  ·  ${ds}`, left, y); y += 5;
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(30);
+          const rawText = entry.text || entry.html?.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim() || '';
+          const lines = doc.splitTextToSize(rawText, right - left);
+          lines.forEach(line => { checkPage(6); doc.text(line, left, y); y += 5; });
+          y += 3;
+        });
+        y += 4;
+      });
+
+      doc.save(`Documentation_${proj2.title.replace(/[^a-z0-9]/gi,'_')}.pdf`);
+    });
+
+    // Export all as Excel
+    modal.querySelector('#docs-export-excel').addEventListener('click', () => {
+      const proj2 = getProjects().find(x => x.id === projectId);
+      const rows  = [['Project', 'Milestone', 'Author', 'Date', 'Note']];
+      allMilestonesList().forEach(m => {
+        const msEntries = proj2?.docs?.[m] || [];
+        [...msEntries].reverse().forEach(entry => {
+          const text = entry.text || entry.html?.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim() || '';
+          const date = new Date(entry.createdAt).toLocaleString('en-PH',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+          rows.push([proj2.title, m, entry.createdByName, date, text]);
+        });
+      });
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols'] = [
+        { wch: 30 }, // Project
+        { wch: 30 }, // Milestone
+        { wch: 20 }, // Author
+        { wch: 22 }, // Date
+        { wch: 80 }, // Note
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Documentation');
+      XLSX.writeFile(wb, `Documentation_${proj2.title.replace(/[^a-z0-9]/gi,'_')}.xlsx`);
+    });
+
+    // Wire delete on initial render
+    wireDeleteButtons(modal.querySelector('#docs-notes-list'));
 
     // Placeholder behaviour
     const editor = modal.querySelector('#docs-editor');
@@ -5233,7 +5425,7 @@ function openDocsModal(projectId) {
     // Format toolbar
     modal.querySelectorAll('.doc-fmt-btn').forEach(btn => {
       btn.addEventListener('mousedown', e => {
-        e.preventDefault(); // keep focus in editor
+        e.preventDefault();
         editor.focus();
         document.execCommand(btn.dataset.cmd, false, null);
       });
@@ -5247,8 +5439,8 @@ function openDocsModal(projectId) {
       const idx  = list.findIndex(x => x.id === projectId);
       if (idx === -1) return;
       if (!list[idx].docs) list[idx].docs = {};
-      if (!list[idx].docs[milestone]) list[idx].docs[milestone] = [];
-      list[idx].docs[milestone].push({
+      if (!list[idx].docs[currentMilestone]) list[idx].docs[currentMilestone] = [];
+      list[idx].docs[currentMilestone].push({
         id:            genId(),
         html,
         text:          editor.innerText,
@@ -5582,7 +5774,7 @@ async function openRecordingsModal(projectId) {
     const modal = createModal(`
       <h3>&#127909; Recordings &mdash; <span style="font-weight:400;font-size:.95rem">${p.title}</span></h3>
       ${!hub ? `<div style="padding:1rem;text-align:center;color:var(--txt-muted);font-size:.85rem;background:var(--surface);border-radius:8px;margin:.75rem 0">
-        Resource Hub not set up yet. Generate one first via the Hub button.
+        Sprout Success Kit not set up yet. Generate one first via the Hub button.
       </div>` : `
       <div style="max-height:260px;overflow-y:auto;margin:.75rem 0;padding-right:.2rem">${recListHtml}</div>
       <div style="display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem">
@@ -5652,7 +5844,7 @@ function openFilesModal(projectId) {
 
     const modal = createModal(`
       <h3>&#128193; Files &mdash; <span style="font-weight:400;font-size:.95rem">${p.title}</span></h3>
-      <div style="font-size:.77rem;color:var(--txt-muted);margin-bottom:.75rem">Files are visible to the client on the Resource Hub under "Project Documents".</div>
+      <div style="font-size:.77rem;color:var(--txt-muted);margin-bottom:.75rem">Files are visible to the client on the Sprout Success Kit under "Project Documents".</div>
       <div style="max-height:260px;overflow-y:auto;margin-bottom:.85rem;padding-right:.2rem">${filesHtml}</div>
       <div style="display:flex;gap:.5rem;align-items:center">
         <input type="text" id="file-name" placeholder="Label (e.g. SOW, Proposal…)"
@@ -7240,7 +7432,7 @@ function openUserModal(id) {
     </div>
     <div class="grid-2">
       <div class="form-group">
-        <label>Job Title <span style="color:var(--txt-muted);font-size:.8rem">(shown on Resource Hub & Contacts)</span></label>
+        <label>Job Title <span style="color:var(--txt-muted);font-size:.8rem">(shown on Sprout Success Kit & Contacts)</span></label>
         <input type="text" id="m-job-title" value="${u?.jobTitle || ''}" placeholder="e.g. HR Software Implementation Officer" />
       </div>
       <div class="form-group">
@@ -8685,7 +8877,7 @@ async function renderAuditTrail(container) {
             <option value="permissions">Permissions</option>
             <option value="role">Roles</option>
             <option value="hubspot">HubSpot</option>
-            <option value="resource_hub">Resource Hub</option>
+            <option value="resource_hub">Sprout Success Kit</option>
           </select>
         </div>
         <div>
@@ -8904,8 +9096,8 @@ function renderAccessMatrix(container) {
         { key: 'manage_files',           label: 'Manage Files & Project Links' },
         { key: 'log_time',               label: 'Log Time' },
         { key: 'view_project_details',   label: 'View Project Details (Docs & Contacts)' },
-        { key: 'view_resource_hub',      label: 'View Resource Hub (read-only)' },
-        { key: 'generate_resource_hub',  label: 'Generate & Manage Resource Hub' },
+        { key: 'view_resource_hub',      label: 'View Sprout Success Kit (read-only)' },
+        { key: 'generate_resource_hub',  label: 'Generate & Manage Sprout Success Kit' },
       ],
     },
     {

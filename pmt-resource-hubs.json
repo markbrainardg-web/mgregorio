@@ -65,9 +65,9 @@
       "milestones": true,
       "timeline": true,
       "documents": true,
-      "recordings": false,
+      "recordings": true,
       "contacts": true,
-      "ticketing": false
+      "ticketing": true
     },
     "limitedSections": {
       "milestones": true,
@@ -103,7 +103,8 @@
         "success": false,
         "reason": "email_not_found"
       }
-    ]
+    ],
+    "updatedAt": "2026-03-28T14:19:32.318Z"
   },
   {
     "id": "223b7085e025",
@@ -193,7 +194,7 @@
         "addedAt": "2026-03-25T13:05:58.316Z",
         "hasPassword": true,
         "passwordHash": "$2a$10$E/wcAfEQncLzYwkYggYcm.JFZqCno1l6cMFTbCL7ClJG9eqTf.GqG",
-        "lastAccess": "2026-03-27T08:55:14.100Z"
+        "lastAccess": "2026-03-28T14:17:14.372Z"
       }
     ],
     "recordings": [
@@ -206,6 +207,20 @@
       }
     ],
     "accessLog": [
+      {
+        "email": "markbrainardg@sprout.ph",
+        "timestamp": "2026-03-28T14:17:14.292Z",
+        "ip": "127.0.0.1",
+        "success": true,
+        "reason": "ok"
+      },
+      {
+        "email": "markbrainardg@sprout.ph",
+        "timestamp": "2026-03-28T14:15:03.536Z",
+        "ip": "127.0.0.1",
+        "success": true,
+        "reason": "ok"
+      },
       {
         "email": "markbrainardg@sprout.ph",
         "timestamp": "2026-03-27T08:55:13.927Z",

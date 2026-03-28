@@ -2217,3 +2217,60 @@ td.dash-cell-overridden::after {
 }
 .dash-reset-btn:hover { background: #fef2f2; color: var(--danger); border-color: var(--danger); }
 td.dash-cell-overridden:hover .dash-reset-btn { display: inline-block; }
+
+/* ── DOCUMENTATION MODAL ─────────────────────────────────────── */
+.doc-notes-list {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding-right: .2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.doc-notes-list::-webkit-scrollbar { width: 5px; }
+.doc-notes-list::-webkit-scrollbar-track { background: transparent; }
+.doc-notes-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.doc-note-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .65rem .85rem;
+  margin-bottom: .45rem;
+  background: var(--surface);
+  transition: box-shadow .15s;
+}
+.doc-note-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+
+.doc-note-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .35rem;
+}
+.doc-note-meta { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+.doc-note-author { font-size: .72rem; font-weight: 700; color: var(--primary); }
+.doc-note-dot   { font-size: .72rem; color: var(--txt-muted); }
+.doc-note-date  { font-size: .7rem;  color: var(--txt-muted); }
+
+.doc-note-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--txt-muted);
+  padding: .1rem .25rem;
+  border-radius: 4px;
+  line-height: 1;
+  opacity: .45;
+  transition: opacity .15s, color .15s;
+}
+.doc-note-delete:hover { opacity: 1; color: #ef4444; }
+
+.doc-note-body { font-size: .84rem; color: var(--txt); line-height: 1.55; }
+
+.doc-empty-state {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--txt-muted);
+  font-size: .85rem;
+}

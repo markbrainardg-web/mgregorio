@@ -50,7 +50,7 @@ function buildGateHtml(hub, errorMsg) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escHtml(hub.projectTitle)} — Sprout Resource Hub</title>
+  <title>${escHtml(hub.projectTitle)} — Sprout Success Kit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700;800&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
@@ -277,7 +277,7 @@ function buildGateHtml(hub, errorMsg) {
 
     <div class="gate-badge">🔒</div>
     <h2 class="gate-title">${escHtml(hub.projectTitle)}</h2>
-    <p class="gate-subtitle">This resource hub is private. Enter your credentials to verify access.</p>
+    <p class="gate-subtitle">This Sprout Success Kit is private. Enter your credentials to verify access.</p>
 
     <div class="gate-field">
       <label class="gate-label" for="gateEmail">Email Address</label>
@@ -287,11 +287,11 @@ function buildGateHtml(hub, errorMsg) {
       <label class="gate-label" for="gatePassword">Password <span>(if provided by your project team)</span></label>
       <input class="gate-input" type="password" id="gatePassword" placeholder="Leave blank if no password was set" />
     </div>
-    <button class="gate-btn" id="gateBtn" onclick="verifyAccess()">Access Resource Hub →</button>
+    <button class="gate-btn" id="gateBtn" onclick="verifyAccess()">Access Sprout Success Kit →</button>
     <div class="gate-error" id="gateError">${errorMsg ? escHtml(errorMsg) : ''}</div>
 
   </div>
-  <div class="gate-footer"><strong>Sprout Solutions</strong> &mdash; Implementation Resource Hub</div>
+  <div class="gate-footer"><strong>Sprout Solutions</strong> &mdash; Sprout Success Kit</div>
 </div>
 
 <script>
@@ -325,13 +325,13 @@ function buildGateHtml(hub, errorMsg) {
       } else {
         showError(data.error || 'Access denied. Please contact your Sprout Solutions project team.');
         btn.disabled = false;
-        btn.textContent = 'Access Resource Hub →';
+        btn.textContent = 'Access Sprout Success Kit →';
       }
     })
     .catch(() => {
       showError('Something went wrong. Please try again.');
       btn.disabled = false;
-      btn.textContent = 'Access Resource Hub →';
+      btn.textContent = 'Access Sprout Success Kit →';
     });
   }
 
@@ -363,7 +363,7 @@ function buildPrivateHtml(hub) {
 </head>
 <body>
   <div style="font-size:3rem;margin-bottom:16px">🔒</div>
-  <h2>This resource hub is currently unavailable.</h2>
+  <h2>This Sprout Success Kit is currently unavailable.</h2>
   <p>Please contact your Sprout Solutions project team for access.</p>
 </body>
 </html>`;
@@ -385,7 +385,7 @@ function build404Html() {
 </head>
 <body>
   <div style="font-size:3rem;margin-bottom:16px">🔍</div>
-  <h2>Resource hub not found.</h2>
+  <h2>Sprout Success Kit not found.</h2>
   <p>The link may be invalid or expired. Please contact your project team.</p>
 </body>
 </html>`;
@@ -633,7 +633,7 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>${escHtml(hub.projectTitle)} — Sprout Resource Hub</title>
+  <title>${escHtml(hub.projectTitle)} — Sprout Success Kit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -742,7 +742,7 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
   <img class="logo" src="/Sprout%20Logo.png" alt="Sprout Solutions"/>
   <div class="header-center">
     <div class="header-project">${escHtml(hub.projectTitle)}</div>
-    <div class="header-sub">Implementation Resource Hub &nbsp;·&nbsp; ${fmtDate(new Date().toISOString())}</div>
+    <div class="header-sub">Sprout Success Kit &nbsp;·&nbsp; ${fmtDate(new Date().toISOString())}</div>
   </div>
   <div class="header-right">
     ${pm ? `<span style="font-size:.78rem;opacity:.8">PM: ${escHtml(pm.name)}</span>` : ''}
@@ -857,7 +857,7 @@ ${adminBanner}
 </div>
 
 <footer>
-  <p><span class="footer-brand">Sprout Solutions</span> &mdash; Implementation Resource Hub &mdash; Data refreshes automatically on every visit.</p>
+  <p><span class="footer-brand">Sprout Solutions</span> &mdash; Sprout Success Kit &mdash; Data refreshes automatically on every visit.</p>
 </footer>
 
 <script>

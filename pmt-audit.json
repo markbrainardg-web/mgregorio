@@ -1,5 +1,29 @@
 [
   {
+    "id": "5a162d4f5ede",
+    "timestamp": "2026-03-28T14:19:32.541Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: MACETPM INC",
+    "meta": {
+      "hubId": "a775dcde514b"
+    }
+  },
+  {
+    "id": "3ce3c504a359",
+    "timestamp": "2026-03-28T14:16:44.103Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
     "id": "fc1b25e70032",
     "timestamp": "2026-03-28T13:50:53.328Z",
     "userId": "mmj4wcs359kz",
