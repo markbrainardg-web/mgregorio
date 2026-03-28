@@ -523,5 +523,59 @@ function getImplementersByHubspotId(hubspotId) {
   };
 }
 
+// ── GET /api/hubspot/company/:hsId/contacts ────────────────────
+// Fetch contacts associated with a HubSpot company, returning
+// firstname, lastname, email, phone, type_of_contact_cloned_
+router.get('/company/:hsId/contacts', requireAuth, async (req, res) => {
+  const headers = hsHeaders();
+  if (!headers.Authorization || headers.Authorization === 'Bearer undefined') {
+    return res.status(400).json({ error: 'HubSpot API key not configured.' });
+  }
+  const hsId = req.params.hsId;
+  try {
+    // Step 1: Get contact IDs associated with this company
+    const assocRes = await fetch(
+      `${HS}/crm/v3/objects/companies/${hsId}/associations/contacts?limit=100`,
+      { headers }
+    );
+    if (!assocRes.ok) {
+      const txt = await assocRes.text();
+      return res.status(assocRes.status).json({ error: `HubSpot associations error: ${txt}` });
+    }
+    const assocData = await assocRes.json();
+    const contactIds = (assocData.results || []).map(r => r.id);
+    if (!contactIds.length) return res.json([]);
+
+    // Step 2: Batch read contact properties
+    const batchRes = await fetch(`${HS}/crm/v3/objects/contacts/batch/read`, {
+      method:  'POST',
+      headers,
+      body: JSON.stringify({
+        inputs:     contactIds.map(id => ({ id })),
+        properties: ['firstname', 'lastname', 'email', 'phone', 'type_of_contact_cloned_'],
+      }),
+    });
+    if (!batchRes.ok) {
+      const txt = await batchRes.text();
+      return res.status(batchRes.status).json({ error: `HubSpot batch read error: ${txt}` });
+    }
+    const batchData = await batchRes.json();
+
+    const contacts = (batchData.results || []).map(c => ({
+      hsContactId: c.id,
+      firstname:   c.properties.firstname || '',
+      lastname:    c.properties.lastname  || '',
+      name:        [c.properties.firstname, c.properties.lastname].filter(Boolean).join(' ') || '—',
+      email:       c.properties.email || '',
+      phone:       c.properties.phone || '',
+      contactType: c.properties.type_of_contact_cloned_ || '',
+    }));
+
+    res.json(contacts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
 module.exports.getImplementersByHubspotId = getImplementersByHubspotId;

@@ -482,6 +482,162 @@ function openAddTimelineTemplateModal(onSaved) {
   });
 }
 
+// ── Edit Timeline Template modal ──────────────────────────────
+function openEditTimelineTemplateModal(tplId, onSaved) {
+  const tpl = cachedTemplates.find(t => t.id === tplId);
+  if (!tpl) return;
+
+  // Deep-copy so edits don't mutate cached data until saved
+  let phases = JSON.parse(JSON.stringify(tpl.phases || []));
+
+  function phaseRowsHtml() {
+    return phases.map((phase, pi) => `
+      <div class="etpl-phase" data-pi="${pi}" style="border:1.5px solid var(--border);border-radius:8px;margin-bottom:.65rem;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:.5rem;padding:.48rem .7rem;background:var(--surface);border-bottom:1px solid var(--border)">
+          <span style="font-size:.72rem;font-weight:700;color:var(--txt-muted);min-width:1.2rem">${pi + 1}.</span>
+          <input type="text" class="etpl-phase-label" data-pi="${pi}" value="${escAttr(phase.label)}"
+            style="flex:1;padding:.3rem .5rem;border:1px solid var(--border);border-radius:5px;font-size:.83rem;font-weight:600;background:var(--bg);color:var(--txt)" placeholder="Phase name" />
+          <button class="btn btn-danger btn-sm etpl-del-phase" data-pi="${pi}" style="font-size:.68rem;padding:.12rem .38rem;min-width:unset">✕</button>
+        </div>
+        <div style="padding:.5rem .7rem">
+          ${phase.tasks.map((task, ti) => `
+            <div class="etpl-task-row" data-pi="${pi}" data-ti="${ti}"
+              style="display:grid;grid-template-columns:1fr 60px 130px 28px;gap:.4rem;align-items:center;margin-bottom:.32rem">
+              <input type="text" class="etpl-task-label" data-pi="${pi}" data-ti="${ti}" value="${escAttr(task.label || '')}"
+                style="padding:.26rem .44rem;border:1px solid var(--border);border-radius:5px;font-size:.78rem;background:var(--bg);color:var(--txt)" placeholder="Task label" />
+              <input type="number" class="etpl-task-dur" data-pi="${pi}" data-ti="${ti}" value="${task.duration ?? ''}" min="0"
+                style="padding:.26rem .4rem;border:1px solid var(--border);border-radius:5px;font-size:.78rem;background:var(--bg);color:var(--txt);text-align:center" placeholder="Days" />
+              <input type="text" class="etpl-task-who" data-pi="${pi}" data-ti="${ti}" value="${escAttr(task.assignedTo || '')}"
+                style="padding:.26rem .44rem;border:1px solid var(--border);border-radius:5px;font-size:.78rem;background:var(--bg);color:var(--txt)" placeholder="Assigned to" />
+              <button class="btn btn-danger btn-sm etpl-del-task" data-pi="${pi}" data-ti="${ti}"
+                style="font-size:.64rem;padding:.1rem .28rem;min-width:unset">✕</button>
+            </div>`).join('')}
+          <button class="btn btn-ghost btn-sm etpl-add-task" data-pi="${pi}"
+            style="font-size:.74rem;padding:.18rem .55rem;margin-top:.2rem">+ Add Task</button>
+        </div>
+      </div>`).join('');
+  }
+
+  const modal = createModal(`
+    <h3 style="margin-bottom:.9rem">&#9998; Edit Template</h3>
+    <div style="margin-bottom:.85rem">
+      <label style="display:block;font-size:.82rem;font-weight:600;margin-bottom:.3rem;color:var(--txt)">Template Name</label>
+      <input type="text" id="etpl-name" value="${escAttr(tpl.name)}"
+        style="width:100%;padding:.42rem .7rem;border:1.5px solid var(--border);border-radius:7px;font-size:.88rem;background:var(--bg);color:var(--txt);box-sizing:border-box" />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem">
+      <div style="font-size:.82rem;font-weight:700;color:var(--txt)">Phases &amp; Tasks</div>
+      <div style="font-size:.7rem;color:var(--txt-muted)">label &nbsp;/&nbsp; days &nbsp;/&nbsp; assigned to</div>
+    </div>
+    <div id="etpl-phases-wrap" style="max-height:400px;overflow-y:auto;padding-right:.15rem">
+      ${phaseRowsHtml()}
+    </div>
+    <button class="btn btn-ghost btn-sm" id="etpl-add-phase"
+      style="margin-top:.6rem;width:100%;font-size:.8rem">+ Add Phase</button>
+    <div id="etpl-error" style="display:none;color:#dc2626;font-size:.82rem;margin-top:.55rem;padding:.38rem .6rem;background:#fef2f2;border-radius:6px"></div>
+    <div class="modal-actions" style="margin-top:1rem">
+      <button class="btn btn-ghost" id="etpl-cancel">Cancel</button>
+      <button class="btn btn-primary" id="etpl-save">Save Changes</button>
+    </div>
+  `);
+
+  // Set modal wider for the task grid
+  modal.querySelector ? null : null;
+  const modalEl = document.querySelector('.modal-backdrop:last-child .modal');
+  if (modalEl) { modalEl.style.maxWidth = '640px'; modalEl.style.width = '96%'; }
+
+  function collectPhases() {
+    const result = [];
+    document.querySelectorAll('#etpl-phases-wrap .etpl-phase').forEach(phaseEl => {
+      const pi    = parseInt(phaseEl.dataset.pi);
+      const label = phaseEl.querySelector('.etpl-phase-label').value.trim();
+      const tasks = [];
+      phaseEl.querySelectorAll('.etpl-task-row').forEach(taskEl => {
+        const ti = parseInt(taskEl.dataset.ti);
+        tasks.push({
+          label:      taskEl.querySelector('.etpl-task-label').value.trim(),
+          duration:   Number(taskEl.querySelector('.etpl-task-dur').value) || 0,
+          assignedTo: taskEl.querySelector('.etpl-task-who').value.trim(),
+          indent:     phases[pi]?.tasks[ti]?.indent || 0,
+        });
+      });
+      result.push({
+        ...(phases[pi] || {}),
+        label,
+        key: label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, ''),
+        tasks,
+      });
+    });
+    return result;
+  }
+
+  function wireEvents() {
+    document.querySelectorAll('.etpl-del-phase').forEach(btn => {
+      btn.addEventListener('click', () => {
+        phases = collectPhases();
+        phases.splice(parseInt(btn.dataset.pi), 1);
+        document.getElementById('etpl-phases-wrap').innerHTML = phaseRowsHtml();
+        wireEvents();
+      });
+    });
+    document.querySelectorAll('.etpl-del-task').forEach(btn => {
+      btn.addEventListener('click', () => {
+        phases = collectPhases();
+        phases[parseInt(btn.dataset.pi)].tasks.splice(parseInt(btn.dataset.ti), 1);
+        document.getElementById('etpl-phases-wrap').innerHTML = phaseRowsHtml();
+        wireEvents();
+      });
+    });
+    document.querySelectorAll('.etpl-add-task').forEach(btn => {
+      btn.addEventListener('click', () => {
+        phases = collectPhases();
+        phases[parseInt(btn.dataset.pi)].tasks.push({ label: '', duration: 0, assignedTo: '', indent: 0 });
+        document.getElementById('etpl-phases-wrap').innerHTML = phaseRowsHtml();
+        wireEvents();
+      });
+    });
+  }
+
+  wireEvents();
+
+  document.getElementById('etpl-add-phase').addEventListener('click', () => {
+    phases = collectPhases();
+    phases.push({ label: 'New Phase', key: 'new_phase_' + Date.now(), tasks: [] });
+    document.getElementById('etpl-phases-wrap').innerHTML = phaseRowsHtml();
+    wireEvents();
+  });
+
+  document.getElementById('etpl-cancel').addEventListener('click', () => modal.remove());
+
+  document.getElementById('etpl-save').addEventListener('click', async () => {
+    const name = document.getElementById('etpl-name').value.trim();
+    const errEl = document.getElementById('etpl-error');
+    if (!name) {
+      errEl.style.display = 'block'; errEl.textContent = 'Template name is required.'; return;
+    }
+    const updatedPhases = collectPhases();
+    if (!updatedPhases.length) {
+      errEl.style.display = 'block'; errEl.textContent = 'Template must have at least one phase.'; return;
+    }
+    const saveBtn = document.getElementById('etpl-save');
+    saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+    try {
+      const res = await fetch(`/api/timeline-templates/${tplId}`, {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name, phases: updatedPhases }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await fetchTimelineTemplates();
+      modal.remove();
+      onSaved();
+    } catch (err) {
+      errEl.style.display = 'block'; errEl.textContent = 'Save failed: ' + err.message;
+      saveBtn.disabled = false; saveBtn.textContent = 'Save Changes';
+    }
+  });
+}
+
 // ── MULTI-SELECT HELPER (shared) ──────────────────────────────
 // items: array of {value, label} or plain strings
 function buildMultiSelect(id, baseLabel, items) {
@@ -2429,10 +2585,30 @@ async function renderAdminDashboard(container, forceRefresh = false) {
     ${announcementBannerHtml()}
 
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">&#128193;</div><div><div class="stat-label">Ongoing Projects</div><div class="stat-value" id="stat-val-companies">${_initOngoing}</div></div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:#d1fae5">&#9889;</div><div><div class="stat-label">Total MRR</div><div class="stat-value" id="stat-val-mrr" style="font-size:1.1rem">₱${deals.reduce((s,d)=>s+(Number(d.amount)||0),0).toLocaleString()}</div></div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:#fef9c3">&#127981;</div><div><div class="stat-label">Ongoing SME & Micro</div><div class="stat-value" id="stat-val-sme">${_initSME}</div></div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:#fce7f3">&#127970;</div><div><div class="stat-label">Ongoing ENT Projects</div><div class="stat-value" id="stat-val-ent">${_initENT}</div></div></div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#166534 0%,#15803d 60%,#16a34a 100%);box-shadow:0 6px 20px rgba(22,101,52,.35)">
+        <div class="stat-vivid-icon">&#128736;</div>
+        <div class="stat-vivid-label">Ongoing Projects</div>
+        <div class="stat-vivid-value" id="stat-val-companies">${_initOngoing}</div>
+        <div class="stat-vivid-sub">Customer Onboarding stage</div>
+      </div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#5b21b6 0%,#7c3aed 60%,#8b5cf6 100%);box-shadow:0 6px 20px rgba(91,33,182,.35)">
+        <div class="stat-vivid-icon">&#9889;</div>
+        <div class="stat-vivid-label">Total MRR</div>
+        <div class="stat-vivid-value" id="stat-val-mrr" style="font-size:1.35rem">₱${deals.reduce((s,d)=>s+(Number(d.amount)||0),0).toLocaleString()}</div>
+        <div class="stat-vivid-sub">Monthly recurring revenue</div>
+      </div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#92400e 0%,#b45309 60%,#d97706 100%);box-shadow:0 6px 20px rgba(146,64,14,.35)">
+        <div class="stat-vivid-icon">&#127981;</div>
+        <div class="stat-vivid-label">Ongoing SME Projects</div>
+        <div class="stat-vivid-value" id="stat-val-sme">${_initSME}</div>
+        <div class="stat-vivid-sub">SME + Micro segment</div>
+      </div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 60%,#2563eb 100%);box-shadow:0 6px 20px rgba(30,58,138,.35)">
+        <div class="stat-vivid-icon">&#127970;</div>
+        <div class="stat-vivid-label">Ongoing ENT Projects</div>
+        <div class="stat-vivid-value" id="stat-val-ent">${_initENT}</div>
+        <div class="stat-vivid-sub">Enterprise segment</div>
+      </div>
     </div>
 
     <div class="card">
@@ -2472,7 +2648,6 @@ async function renderAdminDashboard(container, forceRefresh = false) {
         </div>
       </div>
 
-      ${canEdit ? `<div style="padding:.35rem 1.2rem;font-size:.73rem;color:var(--txt-muted);border-bottom:1px solid var(--border);background:var(--bg)">&#9998; Double-click to edit &nbsp;·&nbsp; Click to select &nbsp;·&nbsp; Shift+Click for range &nbsp;·&nbsp; Ctrl+C / Ctrl+V to copy &amp; paste &nbsp;·&nbsp; <span style="display:inline-block;width:6px;height:6px;background:#32CE13;border-radius:50%;vertical-align:middle;margin-right:2px"></span> = manually updated</div>` : ''}
 
       <div id="dashboard-tbody-wrap" class="table-wrap" style="max-height:480px;overflow:auto;cursor:grab;user-select:none">
         <table style="white-space:nowrap;min-width:5800px;table-layout:auto;font-size:.73rem">
@@ -3472,7 +3647,6 @@ async function renderPMProjectTable() {
         <input id="pm-dash-search" type="text" placeholder="Search company…" style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:6px;font-size:.82rem;font-family:'Rubik',sans-serif;background:var(--bg);color:var(--txt);min-width:180px" />
         <button id="pm-clear-filters" style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;font-weight:600;font-family:'Rubik',sans-serif;background:var(--bg);color:var(--txt-muted);cursor:pointer;white-space:nowrap">✕ Clear Filters</button>
       </div>
-      <div style="padding:.35rem 1.2rem;font-size:.73rem;color:var(--txt-muted);border-bottom:1px solid var(--border);background:var(--bg)">&#9998; Double-click to edit &nbsp;·&nbsp; Click to select &nbsp;·&nbsp; Shift+Click for range &nbsp;·&nbsp; Ctrl+C / Ctrl+V to copy &amp; paste &nbsp;·&nbsp; <span style="display:inline-block;width:6px;height:6px;background:#32CE13;border-radius:50%;vertical-align:middle;margin-right:2px"></span> = manually updated</div>
       <div style="overflow:auto;max-height:480px;cursor:grab;user-select:none" id="pm-table-scroller">
         <table style="white-space:nowrap;min-width:5800px;table-layout:auto;font-size:.73rem;border-collapse:collapse;width:100%">
           <thead><tr>${tableHeaders}</tr></thead>
@@ -4092,13 +4266,17 @@ function toolLogoHtml(tool) {
 
 function toolTileHtml(tool) {
   const hasUrl = !!tool.url;
+  const color  = tool.color || '#607060';
+  // Hex → rgba tint for logo circle background (18% opacity)
+  const logoBg = color + '22';
   return `
     <div class="tool-tile ${hasUrl ? 'tool-tile-set' : 'tool-tile-unset'}"
-         data-tool-id="${tool.id}" ${hasUrl ? `data-url="${tool.url}"` : ''}>
-      <div class="tool-tile-logo">${toolLogoHtml(tool)}</div>
+         data-tool-id="${tool.id}" ${hasUrl ? `data-url="${tool.url}"` : ''}
+         style="--tool-color:${color}">
+      <div class="tool-tile-logo" style="background:${logoBg}">${toolLogoHtml(tool)}</div>
       <div class="tool-tile-name">${tool.name}</div>
       <div>${hasUrl
-        ? `<span class="tool-tile-url-label">&#128279; Open</span>`
+        ? `<span class="tool-tile-open-btn" style="background:${logoBg};color:${color};border:1.5px solid ${color}55">&#8599; Open</span>`
         : `<span class="tool-tile-no-url">+ Set Link</span>`}
       </div>
       <button class="btn btn-ghost tool-tile-edit-btn" data-tool-id="${tool.id}" title="Edit">&#9998;</button>
@@ -5193,10 +5371,14 @@ function openContactsModal(projectId) {
         </table>
       </div>` : ''}
 
-      <div style="font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--txt-muted);margin:.5rem 0 .4rem;display:flex;align-items:center;gap:.5rem">
-        <span style="display:inline-block;width:3px;height:14px;background:#f59e0b;border-radius:2px"></span>
-        Client Contact
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:.5rem 0 .4rem">
+        <div style="font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--txt-muted);display:flex;align-items:center;gap:.5rem">
+          <span style="display:inline-block;width:3px;height:14px;background:#f59e0b;border-radius:2px"></span>
+          Client Contact
+        </div>
+        ${p.hubspotId ? `<button class="btn btn-ghost btn-sm" id="pd-hs-import-contacts" style="font-size:.72rem;display:flex;align-items:center;gap:.3rem"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot</button>` : ''}
       </div>
+      <div id="pd-hs-contacts-preview" style="display:none;margin-bottom:.5rem"></div>
       <div style="overflow-x:auto;margin-bottom:.75rem">
         <table style="width:100%;border-collapse:collapse;font-size:.8rem">
           <thead>
@@ -5233,6 +5415,103 @@ function openContactsModal(projectId) {
     `);
 
     document.getElementById('pd-close').addEventListener('click', () => modal.remove());
+
+    // HubSpot import
+    const pdHsBtn = document.getElementById('pd-hs-import-contacts');
+    if (pdHsBtn) {
+      pdHsBtn.addEventListener('click', async () => {
+        const previewEl = document.getElementById('pd-hs-contacts-preview');
+        pdHsBtn.disabled = true;
+        pdHsBtn.textContent = 'Loading…';
+        previewEl.style.display = 'block';
+        previewEl.innerHTML = `<div style="font-size:.8rem;color:var(--txt-muted);padding:.4rem 0">Fetching contacts from HubSpot…</div>`;
+        try {
+          const res  = await fetch(`/api/hubspot/company/${encodeURIComponent(p.hubspotId)}/contacts`);
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+          if (!data.length) {
+            previewEl.innerHTML = `<div style="font-size:.8rem;color:var(--txt-muted);padding:.5rem .8rem;border:1px solid var(--border);border-radius:6px;background:var(--surface)">No contacts found in HubSpot for this company.</div>`;
+            pdHsBtn.disabled = false;
+            pdHsBtn.innerHTML = '<img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot';
+            return;
+          }
+          previewEl.innerHTML = `
+            <div style="border:1.5px solid var(--primary);border-radius:8px;overflow:hidden">
+              <div style="background:#f0fdf4;padding:.45rem .75rem;font-size:.74rem;font-weight:700;color:#166534;display:flex;align-items:center;justify-content:space-between">
+                <span>&#128279; HubSpot Contacts (${data.length})</span>
+                <label style="display:flex;align-items:center;gap:.3rem;font-weight:500;cursor:pointer">
+                  <input type="checkbox" id="pd-hs-select-all" checked style="accent-color:var(--primary)"> Select All
+                </label>
+              </div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:.77rem">
+                  <thead>
+                    <tr style="background:var(--surface)">
+                      <th style="padding:.3rem .55rem;border-bottom:1px solid var(--border);width:24px"></th>
+                      <th style="padding:.3rem .55rem;border-bottom:1px solid var(--border);text-align:left">Name</th>
+                      <th style="padding:.3rem .55rem;border-bottom:1px solid var(--border);text-align:left">Email</th>
+                      <th style="padding:.3rem .55rem;border-bottom:1px solid var(--border);text-align:left">Phone</th>
+                      <th style="padding:.3rem .55rem;border-bottom:1px solid var(--border);text-align:left">Contact Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${data.map((c, i) => `
+                      <tr>
+                        <td style="padding:.28rem .55rem;border-bottom:1px solid var(--border);text-align:center">
+                          <input type="checkbox" class="pd-hs-contact-cb" data-idx="${i}" checked style="accent-color:var(--primary)">
+                        </td>
+                        <td style="padding:.28rem .55rem;border-bottom:1px solid var(--border);font-weight:600">${c.name || '—'}</td>
+                        <td style="padding:.28rem .55rem;border-bottom:1px solid var(--border)">${c.email || '—'}</td>
+                        <td style="padding:.28rem .55rem;border-bottom:1px solid var(--border)">${c.phone || '—'}</td>
+                        <td style="padding:.28rem .55rem;border-bottom:1px solid var(--border)">${c.contactType || '—'}</td>
+                      </tr>`).join('')}
+                  </tbody>
+                </table>
+              </div>
+              <div style="padding:.45rem .75rem;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.4rem;justify-content:flex-end">
+                <button class="btn btn-ghost btn-sm" id="pd-hs-cancel">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="pd-hs-confirm">&#43; Add Selected</button>
+              </div>
+            </div>`;
+
+          document.getElementById('pd-hs-select-all').addEventListener('change', e => {
+            document.querySelectorAll('.pd-hs-contact-cb').forEach(cb => cb.checked = e.target.checked);
+          });
+          document.getElementById('pd-hs-cancel').addEventListener('click', () => {
+            previewEl.style.display = 'none';
+            previewEl.innerHTML = '';
+            pdHsBtn.disabled = false;
+            pdHsBtn.innerHTML = '<img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot';
+          });
+          document.getElementById('pd-hs-confirm').addEventListener('click', () => {
+            const selected = [...document.querySelectorAll('.pd-hs-contact-cb:checked')]
+              .map(cb => data[parseInt(cb.dataset.idx)]);
+            if (!selected.length) { alert('Select at least one contact.'); return; }
+            const list = getProjects();
+            const idx  = list.findIndex(x => x.id === projectId);
+            if (idx === -1) return;
+            if (!list[idx].details)          list[idx].details = {};
+            if (!list[idx].details.contacts) list[idx].details.contacts = [];
+            const existingEmails = new Set(list[idx].details.contacts.map(c => (c.email || '').toLowerCase()));
+            selected.forEach(c => {
+              if (c.email && existingEmails.has(c.email.toLowerCase())) return;
+              list[idx].details.contacts.push({
+                id: genId(), name: c.name, phone: c.phone || '',
+                email: c.email || '', position: c.contactType || '',
+                projectRole: '', access: 'limited', fromHubSpot: true,
+              });
+            });
+            saveProjects(list);
+            modal.remove();
+            buildModal();
+          });
+        } catch (err) {
+          previewEl.innerHTML = `<div style="font-size:.8rem;color:#dc2626;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px">&#9888; ${err.message}</div>`;
+          pdHsBtn.disabled = false;
+          pdHsBtn.innerHTML = '<img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot';
+        }
+      });
+    }
 
     document.getElementById('pd-add-contact').addEventListener('click', () => {
       const name = document.getElementById('pd-c-name').value.trim();
@@ -5592,7 +5871,11 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
 
       <!-- Details Tab -->
       <div id="pf-tab-details" style="display:${activeTab === 'details' ? 'block' : 'none'}">
-        <div style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-muted);margin-bottom:.6rem">&#128101; Project Contacts</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+          <div style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-muted)">&#128101; Project Contacts</div>
+          ${p.hubspotId ? `<button class="btn btn-ghost btn-sm" id="pf-hs-import-contacts" style="font-size:.74rem;display:flex;align-items:center;gap:.3rem"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot</button>` : ''}
+        </div>
+        <div id="pf-hs-contacts-preview" style="display:none"></div>
         <div style="overflow-x:auto">
           <table style="width:100%;border-collapse:collapse;font-size:.8rem">
             <thead>
@@ -5896,6 +6179,122 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
         buildModal('documents');
       });
     });
+
+    // Details: Import from HubSpot
+    const hsImportBtn = modal.querySelector('#pf-hs-import-contacts');
+    if (hsImportBtn) {
+      hsImportBtn.addEventListener('click', async () => {
+        const previewEl = modal.querySelector('#pf-hs-contacts-preview');
+        hsImportBtn.disabled = true;
+        hsImportBtn.textContent = 'Loading…';
+        previewEl.style.display = 'block';
+        previewEl.innerHTML = `<div style="font-size:.8rem;color:var(--txt-muted);padding:.5rem 0">Fetching contacts from HubSpot…</div>`;
+
+        try {
+          const res  = await fetch(`/api/hubspot/company/${encodeURIComponent(p.hubspotId)}/contacts`);
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+          if (!data.length) {
+            previewEl.innerHTML = `<div style="font-size:.8rem;color:var(--txt-muted);padding:.5rem 0;border:1px solid var(--border);border-radius:6px;padding:.6rem .9rem;background:var(--surface)">No contacts found in HubSpot for this company.</div>`;
+            hsImportBtn.disabled = false;
+            hsImportBtn.innerHTML = '<img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot';
+            return;
+          }
+
+          // Render preview table with checkboxes
+          previewEl.innerHTML = `
+            <div style="border:1.5px solid var(--primary);border-radius:8px;overflow:hidden;margin-bottom:.7rem">
+              <div style="background:#f0fdf4;padding:.5rem .8rem;font-size:.75rem;font-weight:700;color:#166534;display:flex;align-items:center;justify-content:space-between">
+                <span>&#128279; HubSpot Contacts Found (${data.length})</span>
+                <label style="display:flex;align-items:center;gap:.3rem;font-weight:500;cursor:pointer">
+                  <input type="checkbox" id="pf-hs-select-all" checked style="accent-color:var(--primary)"> Select All
+                </label>
+              </div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+                  <thead>
+                    <tr style="background:var(--surface)">
+                      <th style="padding:.35rem .6rem;border-bottom:1px solid var(--border);width:28px"></th>
+                      <th style="padding:.35rem .6rem;border-bottom:1px solid var(--border);text-align:left">Name</th>
+                      <th style="padding:.35rem .6rem;border-bottom:1px solid var(--border);text-align:left">Email</th>
+                      <th style="padding:.35rem .6rem;border-bottom:1px solid var(--border);text-align:left">Phone</th>
+                      <th style="padding:.35rem .6rem;border-bottom:1px solid var(--border);text-align:left">Contact Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${data.map((c, i) => `
+                      <tr>
+                        <td style="padding:.32rem .6rem;border-bottom:1px solid var(--border);text-align:center">
+                          <input type="checkbox" class="pf-hs-contact-cb" data-idx="${i}" checked style="accent-color:var(--primary)">
+                        </td>
+                        <td style="padding:.32rem .6rem;border-bottom:1px solid var(--border);font-weight:600">${c.name || '—'}</td>
+                        <td style="padding:.32rem .6rem;border-bottom:1px solid var(--border)">${c.email || '—'}</td>
+                        <td style="padding:.32rem .6rem;border-bottom:1px solid var(--border)">${c.phone || '—'}</td>
+                        <td style="padding:.32rem .6rem;border-bottom:1px solid var(--border)">${c.contactType || '—'}</td>
+                      </tr>`).join('')}
+                  </tbody>
+                </table>
+              </div>
+              <div style="padding:.55rem .8rem;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.5rem;justify-content:flex-end">
+                <button class="btn btn-ghost btn-sm" id="pf-hs-cancel-import">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="pf-hs-confirm-import">&#43; Add Selected Contacts</button>
+              </div>
+            </div>`;
+
+          // Select all toggle
+          modal.querySelector('#pf-hs-select-all').addEventListener('change', e => {
+            modal.querySelectorAll('.pf-hs-contact-cb').forEach(cb => cb.checked = e.target.checked);
+          });
+
+          // Cancel
+          modal.querySelector('#pf-hs-cancel-import').addEventListener('click', () => {
+            previewEl.style.display = 'none';
+            previewEl.innerHTML = '';
+            hsImportBtn.disabled = false;
+            hsImportBtn.innerHTML = '<img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot';
+          });
+
+          // Confirm import
+          modal.querySelector('#pf-hs-confirm-import').addEventListener('click', () => {
+            const selected = [...modal.querySelectorAll('.pf-hs-contact-cb:checked')]
+              .map(cb => data[parseInt(cb.dataset.idx)]);
+            if (!selected.length) { alert('Select at least one contact.'); return; }
+
+            const list = getProjects();
+            const idx  = list.findIndex(x => x.id === projectId);
+            if (idx === -1) return;
+            if (!list[idx].details)          list[idx].details = {};
+            if (!list[idx].details.contacts) list[idx].details.contacts = [];
+
+            const existingEmails = new Set(list[idx].details.contacts.map(c => (c.email || '').toLowerCase()));
+            let added = 0;
+            selected.forEach(c => {
+              if (c.email && existingEmails.has(c.email.toLowerCase())) return; // skip dupes
+              list[idx].details.contacts.push({
+                id:          genId(),
+                name:        c.name,
+                phone:       c.phone || '',
+                email:       c.email || '',
+                position:    c.contactType || '',
+                projectRole: '',
+                access:      'limited',
+                fromHubSpot: true,
+              });
+              added++;
+            });
+            saveProjects(list);
+            modal.remove();
+            buildModal('details');
+          });
+
+        } catch (err) {
+          previewEl.innerHTML = `<div style="font-size:.8rem;color:#dc2626;padding:.6rem .9rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px">&#9888; ${err.message}</div>`;
+          hsImportBtn.disabled = false;
+          hsImportBtn.innerHTML = '<img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=16" style="width:13px;height:13px"> Import from HubSpot';
+        }
+      });
+    }
 
     // Details: add contact
     modal.querySelector('#pf-add-contact').addEventListener('click', () => {
@@ -7025,6 +7424,105 @@ function createModal(html) {
 }
 
 // ── HUBSPOT PAGE ──────────────────────────────────────────────
+// ── Bulk Import HubSpot Contacts ──────────────────────────────
+async function bulkImportHubSpotContacts() {
+  // Only HubSpot-synced projects with no contacts yet
+  const allProjects = getProjects();
+  const targets = allProjects.filter(p => p.hubspotId && !(p.details?.contacts?.length));
+
+  if (!targets.length) {
+    alert('All HubSpot-synced projects already have contacts, or there are no HubSpot projects to process.');
+    return;
+  }
+
+  if (!confirm(`This will import HubSpot contacts for ${targets.length} project(s) that currently have no client contacts.\n\nProjects with existing contacts will be skipped.\n\nContinue?`)) return;
+
+  // Progress modal
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop';
+  backdrop.innerHTML = `
+    <div class="modal" style="max-width:480px;width:96%">
+      <h3 style="margin-bottom:.8rem">&#128101; Bulk Import HubSpot Contacts</h3>
+      <div style="font-size:.83rem;color:var(--txt-muted);margin-bottom:1rem">
+        Processing <strong>${targets.length}</strong> projects…
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:.8rem">
+        <div id="bulk-hs-bar" style="height:8px;background:var(--primary);width:0%;transition:width .3s ease;border-radius:8px"></div>
+      </div>
+      <div id="bulk-hs-status" style="font-size:.8rem;color:var(--txt-muted);margin-bottom:.5rem">Starting…</div>
+      <div id="bulk-hs-log" style="max-height:220px;overflow-y:auto;font-size:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.5rem .7rem;line-height:1.7"></div>
+      <div class="modal-actions" style="margin-top:1rem">
+        <button class="btn btn-ghost" id="bulk-hs-close" disabled>Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(backdrop);
+
+  const barEl    = document.getElementById('bulk-hs-bar');
+  const statusEl = document.getElementById('bulk-hs-status');
+  const logEl    = document.getElementById('bulk-hs-log');
+  const closeBtn = document.getElementById('bulk-hs-close');
+
+  function log(msg, color = 'var(--txt)') {
+    const line = document.createElement('div');
+    line.style.color = color;
+    line.textContent = msg;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  let added = 0, skipped = 0, failed = 0;
+
+  for (let i = 0; i < targets.length; i++) {
+    const p = targets[i];
+    const pct = Math.round(((i + 1) / targets.length) * 100);
+    barEl.style.width = pct + '%';
+    statusEl.textContent = `(${i + 1} / ${targets.length}) ${p.title}`;
+
+    try {
+      const res  = await fetch(`/api/hubspot/company/${encodeURIComponent(p.hubspotId)}/contacts`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+      if (!data.length) {
+        log(`— ${p.title}: no contacts in HubSpot`, 'var(--txt-muted)');
+        skipped++;
+      } else {
+        const list = getProjects();
+        const idx  = list.findIndex(x => x.id === p.id);
+        if (idx !== -1) {
+          if (!list[idx].details)          list[idx].details = {};
+          if (!list[idx].details.contacts) list[idx].details.contacts = [];
+          const existingEmails = new Set(list[idx].details.contacts.map(c => (c.email || '').toLowerCase()));
+          let newCount = 0;
+          data.forEach(c => {
+            if (c.email && existingEmails.has(c.email.toLowerCase())) return;
+            list[idx].details.contacts.push({
+              id: genId(), name: c.name, phone: c.phone || '',
+              email: c.email || '', position: c.contactType || '',
+              projectRole: '', access: 'limited', fromHubSpot: true,
+            });
+            newCount++;
+          });
+          saveProjects(list);
+          log(`✓ ${p.title}: ${newCount} contact(s) added`, '#16a34a');
+          added += newCount;
+        }
+      }
+    } catch (err) {
+      log(`✗ ${p.title}: ${err.message}`, '#dc2626');
+      failed++;
+    }
+
+    // Rate-limit: 200ms delay between requests to stay within HubSpot limits
+    if (i < targets.length - 1) await new Promise(r => setTimeout(r, 200));
+  }
+
+  barEl.style.width = '100%';
+  statusEl.innerHTML = `Done &mdash; <strong style="color:#16a34a">${added} contacts added</strong> across ${targets.length - skipped - failed} projects &nbsp;·&nbsp; ${skipped} had none &nbsp;·&nbsp; ${failed} failed`;
+  closeBtn.disabled = false;
+  closeBtn.addEventListener('click', () => backdrop.remove());
+}
+
 async function renderHubSpotPage(container) {
   container.innerHTML = `
     <div class="page-header">
@@ -7037,6 +7535,7 @@ async function renderHubSpotPage(container) {
         <button class="btn btn-ghost btn-sm hs-filter" data-filter="ongoing">Ongoing</button>
         <button class="btn btn-ghost btn-sm hs-filter" data-filter="completed">Completed</button>
         <button class="btn btn-ghost btn-sm" id="hs-fix-pms-btn" title="Resolve any project managers stored as raw IDs back to user names">&#128295; Fix Project Managers</button>
+        ${effectiveUser()?.role === 'super_admin' ? `<button class="btn btn-ghost btn-sm" id="hs-bulk-contacts-btn" title="Import HubSpot contacts for all projects that have none yet">&#128101; Bulk Import Contacts</button>` : ''}
         <button class="btn btn-primary" id="hs-sync-btn" disabled>&#8635; Sync Selected</button>
       </div>
     </div>
@@ -7153,6 +7652,9 @@ async function renderHubSpotPage(container) {
   });
 
   // Fix Project Managers button — resolves raw HubSpot owner IDs/names to local user IDs
+  // ── Bulk Import HubSpot Contacts (super_admin only) ───────────
+  document.getElementById('hs-bulk-contacts-btn')?.addEventListener('click', () => bulkImportHubSpotContacts());
+
   document.getElementById('hs-fix-pms-btn').addEventListener('click', async () => {
     const btn = document.getElementById('hs-fix-pms-btn');
     btn.disabled = true;
@@ -7704,7 +8206,8 @@ async function renderAppSettings(container) {
                     <div class="settings-row-sub">${(t.phases||[]).length} phases &middot; ${taskCount} tasks</div>
                   </div>
                   <div style="display:flex;gap:.4rem;flex-shrink:0">
-                    <button class="btn btn-ghost btn-sm tpl-rename-btn" data-id="${t.id}">&#9998; Rename</button>
+                    <button class="btn btn-primary btn-sm tpl-edit-btn" data-id="${t.id}">&#9998; Edit</button>
+                    <button class="btn btn-ghost btn-sm tpl-rename-btn" data-id="${t.id}">Rename</button>
                     <button class="btn btn-danger btn-sm tpl-delete-btn" data-id="${t.id}">&#128465;</button>
                   </div>
                 </div>`;
@@ -7873,6 +8376,12 @@ async function renderAppSettings(container) {
 
   document.getElementById('tpl-add-btn').addEventListener('click', () => {
     openAddTimelineTemplateModal(() => renderAppSettings(container));
+  });
+
+  container.querySelectorAll('.tpl-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openEditTimelineTemplateModal(btn.dataset.id, () => renderAppSettings(container));
+    });
   });
 
   container.querySelectorAll('.tpl-rename-btn').forEach(btn => {
@@ -8171,8 +8680,12 @@ async function renderAuditTrail(container) {
             <option value="user">Users</option>
             <option value="project">Projects</option>
             <option value="milestone">Milestones</option>
+            <option value="timeline">Timeline</option>
+            <option value="dashboard">Dashboard</option>
             <option value="permissions">Permissions</option>
+            <option value="role">Roles</option>
             <option value="hubspot">HubSpot</option>
+            <option value="resource_hub">Resource Hub</option>
           </select>
         </div>
         <div>
@@ -8212,9 +8725,15 @@ async function renderAuditTrail(container) {
     'permissions.updated':   { label: 'Permissions',      color: '#f59e0b', bg: '#fffbeb' },
     'hubspot.synced':        { label: 'HubSpot Sync',     color: '#f97316', bg: '#fff7ed' },
     'project.bulkUploaded':  { label: 'Bulk Upload',      color: '#0ea5e9', bg: '#f0f9ff' },
-    'role.created':          { label: 'Role Created',     color: '#8b5cf6', bg: '#f5f3ff' },
-    'role.renamed':          { label: 'Role Renamed',     color: '#8b5cf6', bg: '#f5f3ff' },
-    'role.deleted':          { label: 'Role Deleted',     color: '#dc2626', bg: '#fef2f2' },
+    'role.created':               { label: 'Role Created',         color: '#8b5cf6', bg: '#f5f3ff' },
+    'role.renamed':               { label: 'Role Renamed',         color: '#8b5cf6', bg: '#f5f3ff' },
+    'role.deleted':               { label: 'Role Deleted',         color: '#dc2626', bg: '#fef2f2' },
+    'timeline.version_saved':     { label: 'Timeline Saved',       color: '#0891b2', bg: '#ecfeff' },
+    'dashboard.field_edit':       { label: 'Dashboard Edit',       color: '#d97706', bg: '#fffbeb' },
+    'resource_hub.created':       { label: 'Hub Created',          color: '#059669', bg: '#ecfdf5' },
+    'resource_hub.updated':       { label: 'Hub Updated',          color: '#0ea5e9', bg: '#f0f9ff' },
+    'resource_hub.deleted':       { label: 'Hub Deleted',          color: '#dc2626', bg: '#fef2f2' },
+    'resource_hub.password_set':  { label: 'Hub Password Set',     color: '#7c3aed', bg: '#ede9fe' },
   };
 
   const ROLE_COLORS = {
@@ -8408,38 +8927,46 @@ function renderAccessMatrix(container) {
     return `
       <table class="permissions-table">
         <thead><tr>
-          <th style="text-align:left;min-width:220px">Permission</th>
+          <th>Permission</th>
           ${roles.map(r => `
             <th>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:.35rem">
-                <span class="role-col-label" data-id="${r.id}">${r.label}</span>
-                <div style="display:flex;gap:.25rem;justify-content:center">
-                  <button class="btn btn-ghost btn-sm rename-role-btn" data-id="${r.id}" title="Rename role" style="font-size:.72rem;padding:.15rem .45rem">&#9998;</button>
-                  ${r.id !== 'super_admin' ? `<button class="btn btn-danger btn-sm delete-role-btn" data-id="${r.id}" title="Delete role" style="font-size:.72rem;padding:.15rem .45rem">&#128465;</button>` : ''}
+              <div style="display:flex;flex-direction:column;align-items:center;gap:.3rem">
+                <span class="role-col-label" data-id="${r.id}" style="font-size:.72rem;font-weight:700;letter-spacing:.05em">${r.label}</span>
+                <div style="font-size:.67rem;color:var(--txt-muted);font-weight:400">
+                  ${Object.values(permissionsMatrix[r.id] || {}).filter(Boolean).length} / ${FLAGS.length} perms
+                </div>
+                <div style="display:flex;gap:.25rem;justify-content:center;margin-top:.1rem">
+                  <button class="btn btn-ghost btn-sm rename-role-btn" data-id="${r.id}" title="Rename role" style="font-size:.68rem;padding:.12rem .4rem">&#9998;</button>
+                  ${r.id !== 'super_admin' ? `<button class="btn btn-danger btn-sm delete-role-btn" data-id="${r.id}" title="Delete role" style="font-size:.68rem;padding:.12rem .4rem">&#128465;</button>` : ''}
                 </div>
               </div>
             </th>
           `).join('')}
         </tr></thead>
         <tbody>
-          ${FLAG_GROUPS.map(g => `
-            <tr>
-              <td colspan="${roles.length + 1}" style="padding:.5rem 1rem;background:#092903;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#32CE13;border-bottom:1px solid #0d3d05">
-                ${g.group}
-              </td>
-            </tr>
-            ${g.flags.map(f => `
-              <tr>
-                <td class="perm-label">${f.label}</td>
-                ${roles.map(r => `
-                  <td class="perm-cell">
-                    <input type="checkbox" class="perm-cb" data-role="${r.id}" data-flag="${f.key}"
-                      ${permissionsMatrix[r.id]?.[f.key] ? 'checked' : ''} />
-                  </td>
-                `).join('')}
+          ${FLAG_GROUPS.map(g => {
+            const gid = g.group.toLowerCase().replace(/\s+/g, '-');
+            return `
+              <tr class="perm-group-header" data-group-id="${gid}">
+                <td colspan="${roles.length + 1}" style="padding:.42rem 1rem;background:#092903;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#32CE13;border-bottom:1px solid #0d3d05">
+                  <span class="group-chevron" data-group="${gid}">▼</span>&nbsp;${g.group}
+                  <span style="font-size:.65rem;font-weight:400;color:#4ade80;margin-left:.6rem;letter-spacing:0">(${g.flags.length} permissions)</span>
+                </td>
               </tr>
-            `).join('')}
-          `).join('')}
+              ${g.flags.map(f => `
+                <tr class="perm-row" data-group="${gid}">
+                  <td class="perm-label">${f.label}</td>
+                  ${roles.map(r => {
+                    const on = !!permissionsMatrix[r.id]?.[f.key];
+                    return `
+                      <td class="perm-cell">
+                        <input type="checkbox" class="perm-cb" data-role="${r.id}" data-flag="${f.key}" ${on ? 'checked' : ''} />
+                        <span class="perm-badge ${on ? 'perm-badge--on' : 'perm-badge--off'}" data-role="${r.id}" data-flag="${f.key}">${on ? '✓' : '—'}</span>
+                      </td>`;
+                  }).join('')}
+                </tr>
+              `).join('')}`;
+          }).join('')}
         </tbody>
       </table>`;
   }
@@ -8465,6 +8992,29 @@ function renderAccessMatrix(container) {
   }
 
   function wireRoleButtons() {
+    // Badge click → toggle hidden checkbox
+    container.querySelectorAll('.perm-badge').forEach(badge => {
+      badge.addEventListener('click', () => {
+        const cb = badge.previousElementSibling;
+        cb.checked = !cb.checked;
+        const on = cb.checked;
+        badge.textContent = on ? '✓' : '—';
+        badge.className = `perm-badge ${on ? 'perm-badge--on' : 'perm-badge--off'}`;
+      });
+    });
+
+    // Group header click → collapse/expand rows
+    container.querySelectorAll('.perm-group-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const gid = header.dataset.groupId;
+        const rows = container.querySelectorAll(`.perm-row[data-group="${gid}"]`);
+        const chevron = header.querySelector('.group-chevron');
+        const collapsed = chevron.style.transform === 'rotate(-90deg)';
+        rows.forEach(r => r.style.display = collapsed ? '' : 'none');
+        chevron.style.transform = collapsed ? '' : 'rotate(-90deg)';
+      });
+    });
+
     // Rename buttons
     container.querySelectorAll('.rename-role-btn').forEach(btn => {
       btn.addEventListener('click', () => {

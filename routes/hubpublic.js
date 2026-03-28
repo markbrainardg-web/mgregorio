@@ -603,7 +603,7 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
     <div>
       <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:8px">
         <span style="display:inline-block;width:3px;height:14px;background:#f59e0b;border-radius:2px"></span>
-        ${clientName} Project Team
+        ${clientName} Project Contact
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
         ${contacts.map(c=>`
