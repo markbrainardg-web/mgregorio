@@ -53,6 +53,38 @@ router.get('/project/:projectId', requireAuth, (req, res) => {
   res.json(hub ? sanitizeHub(hub) : null);
 });
 
+// ── GET /api/resource-hub/ticket-alerts ───────────────────────
+// Returns open ticket counts across this user's projects (for notification bell)
+router.get('/ticket-alerts', requireAuth, (req, res) => {
+  const userId  = req.session.userId;
+  const user    = getUsers().find(u => u.id === userId);
+  if (!user) return res.json({ count: 0, items: [] });
+  const { getPermissions, getProjects } = require('../db');
+  const matrix   = getPermissions();
+  const projects = getProjects();
+  const canViewAll = !!(matrix[user.role]?.view_all_projects);
+  const alerts = [];
+  getHubs().forEach(hub => {
+    const project = projects.find(p => p.id === hub.projectId);
+    if (!project) return;
+    const isPM   = project.projectManager === userId;
+    const isTeam = Object.values(project.teamRoles || {}).some(r => r?.id === userId);
+    if (!canViewAll && !isPM && !isTeam) return;
+    (hub.tickets || [])
+      .filter(t => t.status === 'open' || t.status === 'in_progress')
+      .forEach(t => alerts.push({
+        ticketNumber:  t.ticketNumber,
+        subject:       t.subject,
+        priority:      t.priority,
+        projectTitle:  hub.projectTitle,
+        submittedAt:   t.submittedAt,
+        hubId:         hub.id,
+      }));
+  });
+  alerts.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  res.json({ count: alerts.length, items: alerts.slice(0, 15) });
+});
+
 // ── GET /api/resource-hub/:id ──────────────────────────────────
 // Get a single hub by ID
 router.get('/:id', requireAuth, (req, res) => {
@@ -272,6 +304,42 @@ router.post('/:id/set-password', requireAuth, (req, res) => {
   });
 
   res.json({ ok: true });
+});
+
+// ── PATCH /api/resource-hub/:id/tickets/:ticketId ─────────────
+// PM: change status and/or add a reply
+router.patch('/:id/tickets/:ticketId', requireAuth, (req, res) => {
+  if (!canUser(req.session.userId, 'view_resource_hub')) {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+  const list   = getHubs();
+  const hubIdx = list.findIndex(h => h.id === req.params.id);
+  if (hubIdx === -1) return res.status(404).json({ error: 'Hub not found.' });
+  const hub       = list[hubIdx];
+  const ticketIdx = (hub.tickets || []).findIndex(t => t.id === req.params.ticketId);
+  if (ticketIdx === -1) return res.status(404).json({ error: 'Ticket not found.' });
+  const ticket = hub.tickets[ticketIdx];
+  const { status, reply } = req.body;
+  const actor  = getUsers().find(u => u.id === req.session.userId);
+  if (status && ['open', 'in_progress', 'closed'].includes(status)) {
+    ticket.status = status;
+    if (status === 'closed' && !ticket.closedAt) ticket.closedAt = new Date().toISOString();
+    if (status !== 'closed') ticket.closedAt = null;
+  }
+  if (reply?.trim()) {
+    if (!ticket.replies) ticket.replies = [];
+    ticket.replies.push({
+      id:       genId(),
+      from:     'pm',
+      fromName: actor?.name || 'Sprout Team',
+      message:  reply.trim(),
+      sentAt:   new Date().toISOString(),
+    });
+  }
+  list[hubIdx].tickets[ticketIdx] = ticket;
+  list[hubIdx].updatedAt          = new Date().toISOString();
+  saveHubs(list);
+  res.json({ ok: true, ticket: { ...ticket, attachments: (ticket.attachments || []).map(({ stored, ...r }) => r) } });
 });
 
 module.exports = router;

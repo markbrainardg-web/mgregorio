@@ -9,8 +9,86 @@ const express = require('express');
 const bcrypt  = require('bcryptjs');
 const { getHubs, saveHubs, getProjects, getUsers } = require('../db');
 const { getImplementersByHubspotId } = require('./hubspot');
+const multer     = require('multer');
+const fs         = require('fs');
+const nodemailer = require('nodemailer');
+const crypto     = require('crypto');
 
 const router = express.Router();
+
+function genId() { return crypto.randomBytes(6).toString('hex'); }
+
+function fmtFileSize(bytes) {
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+}
+
+const TICKET_DIR = require('path').join(__dirname, '..', 'uploads', 'tickets');
+const ALLOWED_EXT = /^(jpe?g|png|gif|pdf|mp4|mov|webm|avi|mkv|m4v)$/i;
+
+const ticketStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = require('path').join(TICKET_DIR, req.params.slug);
+    fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const safe = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+    cb(null, Date.now() + '_' + safe);
+  },
+});
+
+const ticketUpload = multer({
+  storage: ticketStorage,
+  limits: { fileSize: 1024 * 1024 * 1024 }, // 1 GB per file
+  fileFilter: (req, file, cb) => {
+    const ext = require('path').extname(file.originalname).replace('.', '');
+    if (ALLOWED_EXT.test(ext) || file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/') || file.mimetype === 'application/pdf') {
+      return cb(null, true);
+    }
+    cb(new Error('File type not allowed. Supported: images, PDF, video files.'));
+  },
+});
+
+async function sendTicketEmail(hub, project, ticket, allUsers) {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return;
+  const recipients = new Set();
+  const pm = project?.projectManager ? allUsers.find(u => u.id === project.projectManager) : null;
+  if (pm?.email) recipients.add(pm.email.trim().toLowerCase());
+  const teamRoles = project?.teamRoles || {};
+  ['hrsi', 'psi', 'payrollMaster', 'softwareImpl'].forEach(role => {
+    if (teamRoles[role]?.id) {
+      const u = allUsers.find(u => u.id === teamRoles[role].id);
+      if (u?.email) recipients.add(u.email.trim().toLowerCase());
+    }
+  });
+  if (recipients.size === 0) return;
+  const priLabel = { low: '⚪ Low', normal: '🟡 Normal', high: '🔴 High', urgent: '🚨 Urgent' }[ticket.priority] || ticket.priority;
+  const attList  = (ticket.attachments || []).map(a => escHtml(a.name)).join(', ');
+  const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD } });
+  await transporter.sendMail({
+    from:    `"Sprout PMT" <${process.env.GMAIL_USER}>`,
+    to:      [...recipients].join(', '),
+    subject: `[Ticket #${ticket.ticketNumber} · ${ticket.priority.toUpperCase()}] ${ticket.subject} — ${hub.projectTitle}`,
+    html: `<div style="font-family:sans-serif;max-width:560px;margin:auto;padding:2rem;border:1px solid #e2e8f0;border-radius:8px">
+      <h2 style="color:#092903;margin-bottom:.5rem">🎫 New Support Ticket</h2>
+      <p style="color:#5a7a5a;margin-bottom:1.5rem">A new request was submitted on the <strong>${escHtml(hub.projectTitle)}</strong> Sprout Success Kit.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:1.5rem">
+        <tr><td style="padding:5px 0;color:#5a7a5a;width:110px">Ticket #</td><td style="padding:5px 0;font-weight:600">#${ticket.ticketNumber}</td></tr>
+        <tr><td style="padding:5px 0;color:#5a7a5a">Subject</td><td style="padding:5px 0;font-weight:600">${escHtml(ticket.subject)}</td></tr>
+        <tr><td style="padding:5px 0;color:#5a7a5a">Category</td><td style="padding:5px 0">${escHtml(ticket.category)}</td></tr>
+        <tr><td style="padding:5px 0;color:#5a7a5a">Priority</td><td style="padding:5px 0">${priLabel}</td></tr>
+        <tr><td style="padding:5px 0;color:#5a7a5a">From</td><td style="padding:5px 0">${escHtml(ticket.submittedBy)}</td></tr>
+        ${attList ? `<tr><td style="padding:5px 0;color:#5a7a5a">Attachments</td><td style="padding:5px 0">${attList}</td></tr>` : ''}
+      </table>
+      <div style="background:#f8f9fa;border-left:4px solid #32CE13;padding:12px 16px;border-radius:0 8px 8px 0;font-size:.9rem;line-height:1.6;margin-bottom:1.5rem">${escHtml(ticket.description)}</div>
+      <p style="font-size:.83rem;color:#8a9a8a">Open the PMT → ${escHtml(hub.projectTitle)} → Sprout Success Kit → Tickets tab to respond.</p>
+      <hr style="border:none;border-top:1px solid #e2e8f0;margin:1.5rem 0"/>
+      <p style="font-size:.75rem;color:#aaa">— Sprout PMT Notifications</p>
+    </div>`,
+  });
+}
 
 const MILESTONES = [
   'Project Team Assignment',
@@ -570,12 +648,82 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
     </section>` : '';
 
   // ── Ticketing section ──
-  const tickHtml = sections.ticketing && hub.ticketingUrl ? `
+  const tickHtml = sections.ticketing ? `
     <section id="ticketing" style="margin-bottom:40px">
-      <div style="font-family:'Fira Sans',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5a7a5a;margin-bottom:14px;border-left:4px solid #1679FA;padding-left:12px">🎫 Submit a Ticket</div>
-      <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(9,41,3,.07)">
-        ${hub.ticketingNote?`<p style="margin-bottom:16px;color:#4a7a44;font-size:.9rem;line-height:1.55">${escHtml(hub.ticketingNote)}</p>`:''}
-        <a href="${escHtml(hub.ticketingUrl)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#092903;color:#32CE13;border-radius:10px;text-decoration:none;font-family:'Fira Sans',sans-serif;font-size:.9rem;font-weight:700">Submit a Ticket ↗</a>
+      <div style="font-family:'Fira Sans',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5a7a5a;margin-bottom:14px;border-left:4px solid #1679FA;padding-left:12px">🎫 Submit a Request</div>
+      ${hub.ticketingUrl ? `<div style="background:#eafce6;border:1px solid #a3d900;border-radius:10px;padding:12px 18px;margin-bottom:16px;font-size:.85rem;color:#092903;display:flex;align-items:center;gap:10px">
+        <span>Need to escalate urgently?</span>
+        <a href="${escHtml(hub.ticketingUrl)}" target="_blank" rel="noopener" style="font-weight:700;color:#092903;text-decoration:underline">Open External Ticket System ↗</a>
+      </div>` : ''}
+      <div style="background:#fff;border-radius:14px;padding:24px 28px;box-shadow:0 2px 10px rgba(9,41,3,.07);margin-bottom:20px">
+        ${hub.ticketingNote ? `<p style="margin-bottom:16px;color:#4a7a44;font-size:.88rem;line-height:1.55;background:#f0fdf4;padding:10px 14px;border-radius:8px;border-left:3px solid #16a34a">${escHtml(hub.ticketingNote)}</p>` : ''}
+        <div id="ticket-success-msg" style="display:none;padding:16px;background:#f0fdf4;border:1.5px solid #6ee7b7;border-radius:10px;margin-bottom:16px;text-align:center">
+          <div style="font-size:1.5rem;margin-bottom:6px">✅</div>
+          <div style="font-family:'Fira Sans',sans-serif;font-weight:700;color:#065f46;margin-bottom:4px">Request Submitted!</div>
+          <div style="font-size:.85rem;color:#065f46" id="ticket-success-sub">Ticket logged. The Sprout team has been notified.</div>
+          <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+            <button onclick="document.getElementById('ticket-success-msg').style.display='none';document.getElementById('ticket-form-wrap').style.display='block';document.getElementById('ticket-form').reset();document.getElementById('file-preview-list').innerHTML='';_selFiles=[]" style="padding:7px 18px;background:#092903;color:#32CE13;border:none;border-radius:8px;font-family:'Fira Sans',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer">Submit Another</button>
+            <button onclick="document.getElementById('ticket-success-msg').style.display='none';document.getElementById('ticket-form-wrap').style.display='block';loadMyTickets()" style="padding:7px 18px;background:#f0fdf4;color:#065f46;border:1.5px solid #6ee7b7;border-radius:8px;font-family:'Fira Sans',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer">View My Requests</button>
+          </div>
+        </div>
+        <form id="ticket-form" style="display:flex;flex-direction:column;gap:14px" onsubmit="submitTicket(event)">
+          <div id="ticket-form-wrap">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <label style="display:block;font-size:.8rem;font-weight:700;color:#092903;margin-bottom:5px">Subject *</label>
+                <input type="text" name="subject" required maxlength="120" placeholder="Brief summary of your request…" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d4e8d4;border-radius:8px;font-family:'Rubik',sans-serif;font-size:.88rem;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#32CE13'" onblur="this.style.borderColor='#d4e8d4'"/>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label style="display:block;font-size:.8rem;font-weight:700;color:#092903;margin-bottom:5px">Category *</label>
+                  <select name="category" required style="width:100%;padding:.55rem .75rem;border:1.5px solid #d4e8d4;border-radius:8px;font-family:'Rubik',sans-serif;font-size:.88rem;outline:none;background:#fff;cursor:pointer">
+                    <option value="General Question">General Question</option>
+                    <option value="Data Request">Data Request</option>
+                    <option value="System Access">System Access</option>
+                    <option value="Training">Training</option>
+                    <option value="Bug / Error">Bug / Error</option>
+                    <option value="Change Request">Change Request</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:.8rem;font-weight:700;color:#092903;margin-bottom:5px">Priority</label>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:6px">
+                    <label style="display:flex;align-items:center;gap:5px;font-size:.84rem;cursor:pointer"><input type="radio" name="priority" value="low"> ⚪ Low</label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:.84rem;cursor:pointer"><input type="radio" name="priority" value="normal" checked> 🟡 Normal</label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:.84rem;cursor:pointer"><input type="radio" name="priority" value="high"> 🔴 High</label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:.84rem;cursor:pointer"><input type="radio" name="priority" value="urgent"> 🚨 Urgent</label>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label style="display:block;font-size:.8rem;font-weight:700;color:#092903;margin-bottom:5px">Description *</label>
+                <textarea name="description" required rows="5" placeholder="Describe your issue or request in detail. The more context you provide, the faster we can help." style="width:100%;padding:.55rem .75rem;border:1.5px solid #d4e8d4;border-radius:8px;font-family:'Rubik',sans-serif;font-size:.88rem;outline:none;resize:vertical;line-height:1.55;transition:border-color .15s" onfocus="this.style.borderColor='#32CE13'" onblur="this.style.borderColor='#d4e8d4'"></textarea>
+              </div>
+              <div>
+                <label style="display:block;font-size:.8rem;font-weight:700;color:#092903;margin-bottom:5px">Attachments <span style="font-weight:400;color:#8aaa8a">(screenshots, recordings, documents)</span></label>
+                <div id="file-drop-zone" style="border:2px dashed #b4d4b4;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;background:#fafff8" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.style.borderColor='#32CE13';this.style.background='#f0fdf4'" ondragleave="this.style.borderColor='#b4d4b4';this.style.background='#fafff8'" ondrop="handleFileDrop(event)">
+                  <div style="font-size:1.6rem;margin-bottom:6px">📎</div>
+                  <div style="font-family:'Fira Sans',sans-serif;font-weight:600;color:#4a7a44;font-size:.88rem">Drag & drop files here, or click to browse</div>
+                  <div style="font-size:.76rem;color:#8aaa8a;margin-top:4px">Supports: JPG, PNG, PDF, MP4, MOV, WEBM · Up to 1 GB per file</div>
+                </div>
+                <input type="file" id="file-input" multiple accept="image/*,video/*,.pdf,.mov,.webm" style="display:none" onchange="handleFileSelect(this.files)"/>
+                <div id="file-preview-list" style="display:flex;flex-direction:column;gap:6px;margin-top:8px"></div>
+              </div>
+              <div id="ticket-error-msg" style="display:none;padding:10px 14px;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;color:#991b1b;font-size:.85rem"></div>
+              <div style="display:flex;justify-content:flex-end">
+                <button type="submit" id="ticket-submit-btn" style="padding:10px 28px;background:#092903;color:#32CE13;border:none;border-radius:10px;font-family:'Fira Sans',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .15s">Submit Request →</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- Past tickets -->
+      <div style="background:#fff;border-radius:14px;padding:22px 28px;box-shadow:0 2px 10px rgba(9,41,3,.07)">
+        <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#5a7a5a;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+          <span>Your Submitted Requests</span>
+          <button onclick="loadMyTickets()" style="font-size:.76rem;color:#1a6b08;background:none;border:none;cursor:pointer;font-weight:600">↻ Refresh</button>
+        </div>
+        <div id="my-tickets-list"><div style="text-align:center;padding:20px;color:#8aaa8a;font-size:.85rem">Loading…</div></div>
       </div>
     </section>` : '';
 
@@ -719,6 +867,15 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
     .hub-main>*:nth-child(3){animation-delay:.15s}
     .hub-main>*:nth-child(4){animation-delay:.2s}
 
+    .ticket-row{background:#f8fcf8;border:1px solid #e4ece4;border-radius:10px;padding:14px 18px;cursor:pointer;transition:background .15s;margin-bottom:8px}
+    .ticket-row:hover{background:#f0fdf4}
+    .ticket-row-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .ticket-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:700}
+    .tbadge-open{background:#fef3c7;color:#92400e}
+    .tbadge-in_progress{background:#dbeafe;color:#1e40af}
+    .tbadge-closed{background:#d1fae5;color:#065f46}
+    .ticket-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid #e4ece4}
+    .reply-bubble{background:#f0fdf4;border-left:3px solid #16a34a;padding:10px 14px;border-radius:0 8px 8px 0;font-size:.85rem;line-height:1.55;margin-top:10px}
     footer{text-align:center;padding:24px;font-size:.78rem;color:#8aaa8a;border-top:1px solid #dce8d8;background:#fff}
     .footer-brand{color:#32CE13;font-family:'Fira Sans',sans-serif;font-weight:800}
 
@@ -758,7 +915,7 @@ ${adminBanner}
   ${sections.milestones||sections.timeline ? '<a href="#timeline">🗺️ Milestones</a>' : ''}
   ${sections.documents  ? '<a href="#documents">📄 Documents</a>'   : ''}
   ${sections.recordings && canSee('recordings') ? '<a href="#recordings">🎬 Recordings</a>' : ''}
-  ${sections.ticketing && hub.ticketingUrl ? '<a href="#ticketing">🎫 Ticketing</a>' : ''}
+  ${sections.ticketing ? '<a href="#ticketing">🎫 Ticketing</a>' : ''}
   ${sections.contacts && canSee('contacts') && (pm||contacts.length>0) ? '<a href="#contacts">📞 Contacts</a>' : ''}
 </nav>
 
@@ -933,6 +1090,123 @@ ${adminBanner}
     });
   })();
 
+  // ── Ticketing ──
+  var _selFiles = [];
+  function handleFileSelect(files) {
+    Array.from(files).forEach(f => _selFiles.push(f));
+    renderFilePreviews();
+  }
+  function handleFileDrop(e) {
+    e.preventDefault();
+    document.getElementById('file-drop-zone').style.borderColor = '#b4d4b4';
+    document.getElementById('file-drop-zone').style.background = '#fafff8';
+    handleFileSelect(e.dataTransfer.files);
+  }
+  function fmtSz(b) {
+    if (b < 1024*1024) return (b/1024).toFixed(1)+' KB';
+    if (b < 1024*1024*1024) return (b/(1024*1024)).toFixed(1)+' MB';
+    return (b/(1024*1024*1024)).toFixed(2)+' GB';
+  }
+  function renderFilePreviews() {
+    var el = document.getElementById('file-preview-list');
+    if (!el) return;
+    el.innerHTML = _selFiles.map(function(f,i) {
+      var isImg = f.type.startsWith('image/');
+      var isVid = f.type.startsWith('video/');
+      var icon  = isImg ? '🖼' : isVid ? '🎬' : f.type==='application/pdf' ? '📄' : '📎';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px">'+
+        '<span style="font-size:1.1rem">'+icon+'</span>'+
+        '<div style="flex:1;min-width:0"><div style="font-size:.83rem;font-weight:600;color:#092903;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+f.name+'</div>'+
+        '<div style="font-size:.73rem;color:#5a7a5a">'+fmtSz(f.size)+'</div></div>'+
+        '<button onclick="_selFiles.splice('+i+',1);renderFilePreviews()" style="background:none;border:none;color:#dc2626;font-size:1rem;cursor:pointer;flex-shrink:0;padding:2px 4px" title="Remove">✕</button>'+
+      '</div>';
+    }).join('');
+  }
+  async function submitTicket(e) {
+    e.preventDefault();
+    var btn = document.getElementById('ticket-submit-btn');
+    var errEl = document.getElementById('ticket-error-msg');
+    errEl.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    var form = document.getElementById('ticket-form');
+    var fd   = new FormData(form);
+    _selFiles.forEach(function(f) { fd.append('files', f); });
+    try {
+      var r = await fetch('/hub/${escHtml(hub.slug)}/tickets', { method:'POST', body: fd });
+      var data = await r.json();
+      if (data.ok) {
+        document.getElementById('ticket-form-wrap').style.display = 'none';
+        document.getElementById('ticket-success-msg').style.display = 'block';
+        document.getElementById('ticket-success-sub').textContent = 'Ticket #'+data.ticketNumber+' logged. The Sprout team has been notified.';
+        form.reset(); _selFiles = []; renderFilePreviews();
+        loadMyTickets();
+      } else {
+        errEl.textContent = data.error || 'Failed to submit. Please try again.';
+        errEl.style.display = 'block';
+      }
+    } catch(err) {
+      errEl.textContent = 'Network error. Please try again.';
+      errEl.style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = 'Submit Request →';
+  }
+  var _ticketsData = [];
+  async function loadMyTickets() {
+    var el = document.getElementById('my-tickets-list');
+    if (!el) return;
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:#8aaa8a;font-size:.85rem">Loading…</div>';
+    try {
+      var r = await fetch('/hub/${escHtml(hub.slug)}/tickets');
+      _ticketsData = await r.json();
+      renderMyTickets();
+    } catch(e) {
+      el.innerHTML = '<div style="text-align:center;padding:20px;color:#dc2626;font-size:.85rem">Failed to load tickets.</div>';
+    }
+  }
+  function renderMyTickets() {
+    var el = document.getElementById('my-tickets-list');
+    if (!el) return;
+    if (!_ticketsData.length) {
+      el.innerHTML = '<div style="text-align:center;padding:24px;color:#8aaa8a;font-size:.85rem;border:2px dashed #dce8d8;border-radius:10px">No requests submitted yet.</div>';
+      return;
+    }
+    var priIcon = { low:'⚪', normal:'🟡', high:'🔴', urgent:'🚨' };
+    var statusLabel = { open:'Open', in_progress:'In Progress', closed:'Closed' };
+    el.innerHTML = _ticketsData.slice().reverse().map(function(t) {
+      var attHtml = (t.attachments||[]).length ? '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">'+
+        (t.attachments||[]).map(function(a) {
+          return '<a href="/hub/${escHtml(hub.slug)}/tickets/'+t.id+'/file/'+encodeURIComponent(a.id)+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:6px;text-decoration:none;font-size:.76rem;color:#065f46;font-weight:600">📎 '+a.name+'</a>';
+        }).join('') + '</div>' : '';
+      var repliesHtml = (t.replies||[]).map(function(rep) {
+        return '<div class="reply-bubble"><div style="font-size:.75rem;font-weight:700;color:#065f46;margin-bottom:3px">💬 '+rep.fromName+' · '+new Date(rep.sentAt).toLocaleDateString("en-PH",{month:"short",day:"numeric",year:"numeric"})+'</div>'+
+          '<div style="color:#1a2e1a">'+rep.message+'</div></div>';
+      }).join('');
+      return '<div class="ticket-row" onclick="toggleTicket(\'t'+t.id+'\')">'+
+        '<div class="ticket-row-header">'+
+          '<span style="font-size:.8rem;font-weight:700;color:#092903;min-width:32px">#'+t.ticketNumber+'</span>'+
+          '<span class="ticket-badge tbadge-'+t.status+'">'+statusLabel[t.status]+'</span>'+
+          '<span style="font-size:.76rem">'+(priIcon[t.priority]||'')+'</span>'+
+          '<span style="flex:1;font-size:.88rem;font-weight:600;color:#092903;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+t.subject+'</span>'+
+          '<span style="font-size:.76rem;color:#8aaa8a;white-space:nowrap">'+new Date(t.submittedAt).toLocaleDateString("en-PH",{month:"short",day:"numeric"})+'</span>'+
+          '<span style="font-size:.72rem;color:#1a6b08;flex-shrink:0">▼</span>'+
+        '</div>'+
+        '<div class="ticket-detail" id="t'+t.id+'">'+
+          '<div style="font-size:.84rem;line-height:1.6;color:#1a2e1a;white-space:pre-line">'+t.description+'</div>'+
+          attHtml+
+          repliesHtml+
+          (t.status==='closed'?'<div style="margin-top:10px;font-size:.76rem;color:#065f46;font-weight:700">✅ Closed · '+new Date(t.closedAt||t.submittedAt).toLocaleDateString("en-PH",{month:"short",day:"numeric",year:"numeric"})+'</div>':'')+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+  function toggleTicket(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = el.style.display==='block' ? 'none' : 'block';
+  }
+  // Load tickets on page load if ticketing section exists
+  if (document.getElementById('ticketing')) loadMyTickets();
+
   // ── Scrollspy nav ──
   (function() {
     const links  = document.querySelectorAll('nav.hub-nav a');
@@ -1068,6 +1342,95 @@ router.post('/:slug/verify', (req, res) => {
   if (req.session.hubForceGate) delete req.session.hubForceGate[slug];
 
   res.json({ ok: true, accessLevel: entry.accessLevel });
+});
+
+// ── POST /hub/:slug/tickets ────────────────────────────────────
+router.post('/:slug/tickets', (req, res) => {
+  ticketUpload.array('files', 20)(req, res, async (uploadErr) => {
+    if (uploadErr) return res.json({ ok: false, error: uploadErr.message });
+    const { slug } = req.params;
+    const isInternal = req.session.userId && !req.session.hubForceGate?.[slug];
+    const hubAccess  = req.session.hubAccess?.[slug];
+    if (!isInternal && (!hubAccess || hubAccess.expiresAt < Date.now())) {
+      return res.json({ ok: false, error: 'Not authorized.' });
+    }
+    const hubs   = getHubs();
+    const hubIdx = hubs.findIndex(h => h.slug === slug);
+    if (hubIdx === -1) return res.json({ ok: false, error: 'Hub not found.' });
+    const hub  = hubs[hubIdx];
+    const { subject, category, description, priority } = req.body;
+    if (!subject?.trim() || !description?.trim()) {
+      return res.json({ ok: false, error: 'Subject and description are required.' });
+    }
+    const allUsers = getUsers();
+    const actor    = isInternal ? allUsers.find(u => u.id === req.session.userId) : null;
+    const submittedBy   = isInternal ? (actor?.email || 'internal') : hubAccess.email;
+    const submittedByName = isInternal ? (actor?.name || 'Sprout Team') : hubAccess.email;
+    if (!hub.tickets) hub.tickets = [];
+    const ticketNumber = hub.tickets.length > 0 ? Math.max(...hub.tickets.map(t => t.ticketNumber || 0)) + 1 : 1;
+    const attachments = (req.files || []).map(f => ({
+      id:         genId(),
+      name:       f.originalname,
+      stored:     f.filename,
+      size:       f.size,
+      mimeType:   f.mimetype,
+      uploadedAt: new Date().toISOString(),
+    }));
+    const ticket = {
+      id:             genId(),
+      ticketNumber,
+      subject:        subject.trim(),
+      category:       category || 'General Question',
+      description:    description.trim(),
+      priority:       priority || 'normal',
+      status:         'open',
+      submittedBy,
+      submittedByName,
+      submittedAt:    new Date().toISOString(),
+      attachments,
+      replies:        [],
+      closedAt:       null,
+    };
+    hub.tickets.push(ticket);
+    hubs[hubIdx] = hub;
+    saveHubs(hubs);
+    const project = getProjects().find(p => p.id === hub.projectId);
+    sendTicketEmail(hub, project, ticket, allUsers).catch(() => {});
+    res.json({ ok: true, ticketNumber });
+  });
+});
+
+// ── GET /hub/:slug/tickets ─────────────────────────────────────
+router.get('/:slug/tickets', (req, res) => {
+  const { slug } = req.params;
+  const isInternal = req.session.userId && !req.session.hubForceGate?.[slug];
+  const hubAccess  = req.session.hubAccess?.[slug];
+  if (!isInternal && (!hubAccess || hubAccess.expiresAt < Date.now())) return res.json([]);
+  const hub = getHubs().find(h => h.slug === slug);
+  if (!hub || !hub.tickets) return res.json([]);
+  const clientEmail = isInternal ? null : hubAccess.email?.toLowerCase();
+  const tickets = (hub.tickets || [])
+    .filter(t => isInternal || t.submittedBy?.toLowerCase() === clientEmail)
+    .map(t => ({ ...t, attachments: (t.attachments || []).map(({ stored, ...rest }) => rest) }));
+  res.json(tickets);
+});
+
+// ── GET /hub/:slug/tickets/:ticketId/file/:attId ───────────────
+router.get('/:slug/tickets/:ticketId/file/:attId', (req, res) => {
+  const { slug, ticketId, attId } = req.params;
+  const isInternal = req.session.userId && !req.session.hubForceGate?.[slug];
+  const hubAccess  = req.session.hubAccess?.[slug];
+  if (!isInternal && (!hubAccess || hubAccess.expiresAt < Date.now())) return res.status(403).send('Access denied.');
+  const hub = getHubs().find(h => h.slug === slug);
+  if (!hub) return res.status(404).send('Not found.');
+  const ticket = (hub.tickets || []).find(t => t.id === ticketId);
+  if (!ticket) return res.status(404).send('Not found.');
+  if (!isInternal && ticket.submittedBy?.toLowerCase() !== hubAccess.email?.toLowerCase()) return res.status(403).send('Access denied.');
+  const att = (ticket.attachments || []).find(a => a.id === attId);
+  if (!att) return res.status(404).send('File not found.');
+  const filePath = require('path').join(TICKET_DIR, slug, att.stored);
+  if (!fs.existsSync(filePath)) return res.status(404).send('File not found.');
+  res.download(filePath, att.name);
 });
 
 module.exports = router;

@@ -799,6 +799,15 @@ function getSmartAlerts() {
     });
   });
 
+  // Merge open hub tickets
+  (cachedHubTicketAlerts.items || []).forEach(t => {
+    const entry = { id: t.hubId, title: t.projectTitle, sub: `Ticket #${t.ticketNumber}: ${t.subject}`, isTicket: true };
+    if (t.priority === 'urgent' || t.priority === 'high') {
+      alerts.critical.push(entry);
+    } else {
+      alerts.atRisk.push(entry);
+    }
+  });
   return alerts;
 }
 
@@ -1207,8 +1216,16 @@ async function fetchRoles() {
   }
 }
 
+async function fetchHubTicketAlerts() {
+  try {
+    const res = await fetch('/api/resource-hub/ticket-alerts');
+    if (res.ok) cachedHubTicketAlerts = await res.json();
+  } catch {}
+}
+
 // ── Timeline Templates (fetched from server, cached) ─────────
 let cachedTemplates = [];
+let cachedHubTicketAlerts = { count: 0, items: [] };
 
 async function fetchTimelineTemplates() {
   try {
@@ -1591,6 +1608,7 @@ async function bootApp(user) {
   currentUser = user;
   await fetchUsers();
   await fetchRoles();
+  await fetchHubTicketAlerts();
   await fetchTimelineTemplates();
   await fetchPermissions();
   await fetchAppSettings();
@@ -4988,14 +5006,67 @@ async function openResourceHubModal(projectId) {
         ${!isReadOnly?`<div class="modal-actions" style="margin-top:.8rem"><button class="btn btn-ghost rh-close-btn">Close</button><button class="btn btn-primary" id="rh-save-rec-btn">Save Recordings</button></div>`:'<div class="modal-actions" style="margin-top:.8rem"><button class="btn btn-ghost rh-close-btn">Close</button></div>'}
       </div>`;
 
+    // ── Tickets tab ──
+    const allTickets = hub.tickets || [];
+    const openTix    = allTickets.filter(t => t.status === 'open').length;
+    const inProgTix  = allTickets.filter(t => t.status === 'in_progress').length;
+    const closedTix  = allTickets.filter(t => t.status === 'closed').length;
+    const priIcon    = { low: '⚪', normal: '🟡', high: '🔴', urgent: '🚨' };
+    const statusBadge = s => ({
+      open:        '<span style="background:#fef3c7;color:#92400e;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:700">Open</span>',
+      in_progress: '<span style="background:#dbeafe;color:#1e40af;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:700">In Progress</span>',
+      closed:      '<span style="background:#d1fae5;color:#065f46;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:700">Closed</span>',
+    }[s] || s);
+    const ticketRowsHtml = allTickets.length === 0
+      ? '<div style="text-align:center;padding:2rem;color:var(--txt-muted);font-size:.85rem;border:2px dashed var(--border);border-radius:10px">No tickets submitted yet.</div>'
+      : [...allTickets].reverse().map(t => `
+        <div style="border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden">
+          <div style="padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface)" class="rh-ticket-toggle" data-tid="${t.id}">
+            <span style="font-size:.8rem;font-weight:700;color:var(--txt);min-width:30px">#${t.ticketNumber}</span>
+            ${statusBadge(t.status)}
+            <span style="font-size:.76rem">${priIcon[t.priority] || ''}</span>
+            <span style="flex:1;font-size:.85rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">${t.subject}</span>
+            <span style="font-size:.76rem;color:var(--txt-muted);white-space:nowrap">${new Date(t.submittedAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}</span>
+          </div>
+          <div class="rh-ticket-detail" id="rtd-${t.id}" style="display:none;padding:12px 14px;border-top:1px solid var(--border);background:var(--bg)">
+            <div style="font-size:.78rem;color:var(--txt-muted);margin-bottom:6px">From: <strong>${t.submittedByName || t.submittedBy}</strong> · ${t.category}</div>
+            <div style="font-size:.85rem;line-height:1.6;color:var(--txt);white-space:pre-line;margin-bottom:10px">${t.description}</div>
+            ${(t.attachments||[]).length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${(t.attachments||[]).map(a=>`<span style="font-size:.76rem;color:var(--txt-muted);background:var(--surface);border:1px solid var(--border);padding:3px 9px;border-radius:6px">📎 ${a.name}</span>`).join('')}</div>` : ''}
+            ${(t.replies||[]).map(r=>`<div style="background:#f0fdf4;border-left:3px solid var(--primary);padding:8px 12px;border-radius:0 8px 8px 0;font-size:.83rem;margin-bottom:6px"><div style="font-size:.74rem;font-weight:700;color:#065f46;margin-bottom:2px">${r.fromName} · ${new Date(r.sentAt).toLocaleDateString('en-PH',{month:'short',day:'numeric'})}</div>${r.message}</div>`).join('')}
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+              <select class="rh-ticket-status-sel" data-tid="${t.id}" style="padding:.38rem .6rem;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface);color:var(--txt);outline:none">
+                <option value="open"${t.status==='open'?' selected':''}>Open</option>
+                <option value="in_progress"${t.status==='in_progress'?' selected':''}>In Progress</option>
+                <option value="closed"${t.status==='closed'?' selected':''}>Closed</option>
+              </select>
+              <textarea class="rh-ticket-reply-txt" data-tid="${t.id}" rows="2" placeholder="Add a reply (visible to client)…" style="flex:1;min-width:160px;padding:.38rem .6rem;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;outline:none;resize:vertical"></textarea>
+              <button class="btn btn-primary btn-sm rh-ticket-save-btn" data-tid="${t.id}" data-hubid="${hub.id}">Save</button>
+            </div>
+          </div>
+        </div>`).join('');
+
+    const tickHtml2 = `
+      <div id="rh-tab-tickets" style="display:${activeTab==='tickets'?'block':'none'}">
+        <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+          <div style="padding:8px 16px;background:#fef3c7;border-radius:8px;font-size:.83rem;font-weight:700;color:#92400e">Open: ${openTix}</div>
+          <div style="padding:8px 16px;background:#dbeafe;border-radius:8px;font-size:.83rem;font-weight:700;color:#1e40af">In Progress: ${inProgTix}</div>
+          <div style="padding:8px 16px;background:#d1fae5;border-radius:8px;font-size:.83rem;font-weight:700;color:#065f46">Closed: ${closedTix}</div>
+          <button class="btn btn-ghost btn-sm" id="rh-refresh-tickets-btn" style="margin-left:auto">↻ Refresh</button>
+        </div>
+        <div id="rh-ticket-list">${ticketRowsHtml}</div>
+        <div class="modal-actions" style="margin-top:.8rem"><button class="btn btn-ghost rh-close-btn">Close</button></div>
+      </div>`;
+
     // ── Tabs ──
     const TAB_S  = 'padding:.52rem 1rem;font-size:.83rem;font-weight:600;font-family:var(--font-sub);border:none;background:none;cursor:pointer;margin-bottom:-2px;color:var(--txt-muted);border-bottom:2.5px solid transparent';
     const TAB_SA = TAB_S.replace('var(--txt-muted)','var(--txt)').replace('transparent','var(--primary)');
+    const ticketCount = (hub.tickets || []).filter(t => t.status === 'open' || t.status === 'in_progress').length;
     const tabs   = [
       { key: 'overview',    label: '&#127760; Overview' },
       { key: 'sections',    label: '&#9776; Sections' },
       { key: 'access',      label: '&#128274; Access' },
       { key: 'recordings',  label: '&#127909; Recordings' },
+      { key: 'tickets',     label: `&#127915; Tickets${ticketCount > 0 ? ` <span style="background:#dc2626;color:#fff;border-radius:20px;padding:1px 7px;font-size:.72rem;font-weight:700;vertical-align:middle">${ticketCount}</span>` : ''}` },
     ];
 
     const m = createModal(`
@@ -5010,6 +5081,7 @@ async function openResourceHubModal(projectId) {
       ${sectionsHtml}
       ${accessHtml}
       ${recHtml}
+      ${tickHtml2}
 
       ${activeTab==='overview'?`<div class="modal-actions" style="margin-top:1rem"><button class="btn btn-ghost rh-close-btn">Close</button></div>`:''}
     `);
@@ -5166,6 +5238,42 @@ async function openResourceHubModal(projectId) {
         hub = await r.json();
         m.remove(); buildHubModal('recordings');
       });
+    });
+
+    // Ticket tab handlers
+    m.querySelectorAll('.rh-ticket-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const detail = document.getElementById('rtd-' + btn.dataset.tid);
+        if (detail) detail.style.display = detail.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+    m.querySelectorAll('.rh-ticket-save-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const tid    = btn.dataset.tid;
+        const hubId  = btn.dataset.hubid;
+        const status = m.querySelector(`.rh-ticket-status-sel[data-tid="${tid}"]`)?.value;
+        const reply  = m.querySelector(`.rh-ticket-reply-txt[data-tid="${tid}"]`)?.value?.trim();
+        btn.disabled = true; btn.textContent = 'Saving…';
+        try {
+          const r = await fetch(`/api/resource-hub/${hubId}/tickets/${tid}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status, reply }),
+          });
+          const data = await r.json();
+          if (data.ok) {
+            openResourceHubModal(projectId, 'tickets');
+          } else {
+            alert(data.error || 'Failed to save.');
+            btn.disabled = false; btn.textContent = 'Save';
+          }
+        } catch {
+          alert('Network error.'); btn.disabled = false; btn.textContent = 'Save';
+        }
+      });
+    });
+    m.querySelector('#rh-refresh-tickets-btn')?.addEventListener('click', () => {
+      openResourceHubModal(projectId, 'tickets');
     });
   }
 
