@@ -688,14 +688,42 @@ tbody td { padding: .55rem .8rem; vertical-align: middle; }
 .proj-hub-active  { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
 .proj-hub-private { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
 
+/* ── Access Matrix — SubGroup rows ──────────────────────────── */
+.perm-subgroup-header td {
+  padding: .5rem .75rem .25rem 1.1rem;
+  background: var(--bg-soft, var(--bg));
+  border-top: 1px solid var(--border);
+}
+.perm-subgroup-label {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--primary);
+  opacity: .75;
+}
+.perm-subrow .perm-label {
+  padding-left: 2rem !important;
+  font-size: .82rem;
+  color: var(--txt);
+}
+.perm-tree {
+  font-family: monospace;
+  font-size: .78rem;
+  color: var(--txt-muted);
+  margin-right: .35rem;
+  opacity: .6;
+}
+
 /* ── Access Matrix Table ─────────────────────────────────────── */
-.permissions-table { width: 100%; border-collapse: collapse; }
+.permissions-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .permissions-table thead tr { position: sticky; top: 0; z-index: 10; background: var(--bg); box-shadow: 0 2px 4px rgba(0,0,0,.06); }
-.permissions-table th { padding: .65rem .75rem; text-align: center; font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--txt-muted); border-bottom: 2px solid var(--border); font-family: var(--font-sub); width: 110px; min-width: 90px; }
-.permissions-table th:first-child { text-align: left; width: auto; min-width: 200px; padding-left: 1.1rem; }
-.permissions-table .perm-label { padding: .5rem 1.1rem; font-size: .84rem; border-bottom: 1px solid var(--border); }
-.permissions-table .perm-cell { text-align: center; border-bottom: 1px solid var(--border); padding: .4rem .5rem; }
-.permissions-table .perm-cb { display: none; }
+.permissions-table th { padding: .65rem .75rem; text-align: center; font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--txt-muted); border-bottom: 2px solid var(--border); font-family: var(--font-sub); width: 100px; min-width: 80px; }
+.permissions-table th:first-child { text-align: left; width: 40%; padding-left: 1.1rem; }
+.permissions-table .perm-label { padding: .45rem 1.1rem; font-size: .84rem; border-bottom: 1px solid var(--border); }
+.permissions-table .perm-cell { text-align: center; border-bottom: 1px solid var(--border); padding: .35rem .5rem; }
+.permissions-table .perm-cb { display: inline-block; width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; vertical-align: middle; }
+.permissions-table .perm-badge { display: none; }
 .permissions-table tr.perm-row:hover { background: var(--bg-soft); }
 /* permission badge toggle */
 .perm-badge { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 22px; border-radius: 11px; font-size: .78rem; font-weight: 700; cursor: pointer; transition: transform .12s, opacity .12s; user-select: none; }

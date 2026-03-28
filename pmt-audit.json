@@ -1,5 +1,309 @@
 [
   {
+    "id": "b72fceccfadb",
+    "timestamp": "2026-03-28T16:49:56.781Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "1a7b1bb0f9ed",
+    "timestamp": "2026-03-28T16:49:47.525Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "0cfa18f34e41",
+    "timestamp": "2026-03-28T16:49:43.884Z",
+    "userId": "mn71by3axx1g",
+    "userName": "Michelle Dungog",
+    "userRole": "implementer",
+    "action": "auth.logout",
+    "details": "Michelle Dungog logged out",
+    "meta": {}
+  },
+  {
+    "id": "1f16a9d7be13",
+    "timestamp": "2026-03-28T16:48:50.043Z",
+    "userId": "mn71by3axx1g",
+    "userName": "Michelle Dungog",
+    "userRole": "implementer",
+    "action": "auth.login",
+    "details": "Michelle Dungog logged in",
+    "meta": {
+      "username": "Mdungog"
+    }
+  },
+  {
+    "id": "481f29108b96",
+    "timestamp": "2026-03-28T16:48:44.611Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "4124e5067256",
+    "timestamp": "2026-03-28T16:48:41.094Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "permissions.updated",
+    "details": "Access Matrix permissions were updated",
+    "meta": {
+      "updatedBy": "Brain Gregorio"
+    }
+  },
+  {
+    "id": "aec7bd593d1a",
+    "timestamp": "2026-03-28T16:48:17.544Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "permissions.updated",
+    "details": "Access Matrix permissions were updated",
+    "meta": {
+      "updatedBy": "Brain Gregorio"
+    }
+  },
+  {
+    "id": "fe6a83078211",
+    "timestamp": "2026-03-28T16:47:32.792Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "f06b23158bf3",
+    "timestamp": "2026-03-28T16:45:05.449Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "c74efcf23caf",
+    "timestamp": "2026-03-28T16:44:59.423Z",
+    "userId": "mn71by3axx1g",
+    "userName": "Michelle Dungog",
+    "userRole": "implementer",
+    "action": "auth.logout",
+    "details": "Michelle Dungog logged out",
+    "meta": {}
+  },
+  {
+    "id": "41b455142397",
+    "timestamp": "2026-03-28T16:44:42.082Z",
+    "userId": "mn71by3axx1g",
+    "userName": "Michelle Dungog",
+    "userRole": "implementer",
+    "action": "auth.login",
+    "details": "Michelle Dungog logged in",
+    "meta": {
+      "username": "Mdungog"
+    }
+  },
+  {
+    "id": "967ce54804cb",
+    "timestamp": "2026-03-28T16:44:34.661Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "7191c22e260a",
+    "timestamp": "2026-03-28T16:44:18.487Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "be658a85423c",
+    "timestamp": "2026-03-28T16:43:05.977Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "3740a37f0b1e",
+    "timestamp": "2026-03-28T16:40:13.036Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "17e0705595f7",
+    "timestamp": "2026-03-28T16:33:38.378Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "244f0ce3e4a9",
+    "timestamp": "2026-03-28T14:30:24.919Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "68f93df158cc",
+    "timestamp": "2026-03-28T14:30:19.687Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "4e8fc9ce475e",
+    "timestamp": "2026-03-28T14:27:58.560Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "8baac2ccbf18",
+    "timestamp": "2026-03-28T14:27:54.578Z",
+    "userId": "mn71by3axx1g",
+    "userName": "Michelle Dungog",
+    "userRole": "implementer",
+    "action": "auth.logout",
+    "details": "Michelle Dungog logged out",
+    "meta": {}
+  },
+  {
+    "id": "4774047728ae",
+    "timestamp": "2026-03-28T14:27:17.981Z",
+    "userId": "mn71by3axx1g",
+    "userName": "Michelle Dungog",
+    "userRole": "implementer",
+    "action": "auth.login",
+    "details": "Michelle Dungog logged in",
+    "meta": {
+      "username": "Mdungog"
+    }
+  },
+  {
+    "id": "4efaba1ecf3c",
+    "timestamp": "2026-03-28T14:27:08.633Z",
+    "userId": "mn71bxi7kpad",
+    "userName": "Josephine De Joya",
+    "userRole": "implementer",
+    "action": "auth.logout",
+    "details": "Josephine De Joya logged out",
+    "meta": {}
+  },
+  {
+    "id": "4e5826424577",
+    "timestamp": "2026-03-28T14:26:35.030Z",
+    "userId": "mn71bxi7kpad",
+    "userName": "Josephine De Joya",
+    "userRole": "implementer",
+    "action": "auth.login",
+    "details": "Josephine De Joya logged in",
+    "meta": {
+      "username": "Jjoya"
+    }
+  },
+  {
+    "id": "0f951e834a21",
+    "timestamp": "2026-03-28T14:26:30.654Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "e9478295e4eb",
+    "timestamp": "2026-03-28T14:26:22.685Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "project.updated",
+    "details": "Updated project \"Test Project 3\"",
+    "meta": {
+      "projectId": "mmj4zvaygyej",
+      "projectTitle": "Test Project 3",
+      "status": "ongoing"
+    }
+  },
+  {
+    "id": "01dbd49a5b4c",
+    "timestamp": "2026-03-28T14:25:46.024Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "fcfc9bdd79b1",
+    "timestamp": "2026-03-28T14:25:36.846Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
     "id": "5a162d4f5ede",
     "timestamp": "2026-03-28T14:19:32.541Z",
     "userId": "mmj4wcs359kz",

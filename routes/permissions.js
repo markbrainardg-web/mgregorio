@@ -5,10 +5,30 @@ const { getUsers, getPermissions, savePermissions, getRoles, appendAuditEntry } 
 const router = express.Router();
 
 const VALID_FLAGS = [
-  'view_admin_dashboard', 'view_all_projects', 'view_my_dashboard', 'view_my_projects',
-  'view_users', 'view_hubspot', 'manage_users', 'create_delete_projects',
-  'edit_projects', 'edit_milestones', 'act_as_user', 'log_time', 'view_audit_trail',
-  'view_project_details', 'view_resource_hub', 'generate_resource_hub',
+  // Dashboard
+  'view_admin_dashboard', 'view_my_dashboard', 'view_pm_dashboard_table', 'edit_dashboard_fields',
+  // Projects — access
+  'view_all_projects', 'view_my_projects', 'create_delete_projects', 'edit_projects',
+  // Projects — milestones
+  'move_milestone_kanban', 'edit_timeline', 'edit_actual_dates',
+  // Projects — time tracking
+  'use_timer', 'log_time',
+  // Projects — documentation
+  'view_docs', 'edit_docs',
+  // Projects — contacts
+  'view_contacts', 'edit_contacts',
+  // Projects — recordings
+  'view_recordings', 'manage_recordings',
+  // Projects — files
+  'view_files', 'manage_files',
+  // Projects — Sprout Success Kit
+  'view_resource_hub', 'generate_resource_hub',
+  // Projects — other
+  'view_sidekick', 'view_survey_form',
+  // Administration
+  'view_users', 'manage_users', 'view_hubspot', 'act_as_user', 'view_audit_trail', 'view_tools_hub',
+  // Legacy (kept for backward compatibility, not shown in UI)
+  'edit_milestones', 'view_project_details',
 ];
 
 function requireAuth(req, res, next) {
@@ -33,13 +53,15 @@ router.put('/', requireAuth, requireSuperAdmin, (req, res) => {
   const matrix = req.body;
   const roles  = getRoles();
 
-  // Validate all known roles are present and all flag values are boolean
+  // Validate all known roles are present and submitted flag values are boolean
   for (const role of roles) {
     if (!matrix[role.id] || typeof matrix[role.id] !== 'object')
       return res.status(400).json({ error: `Missing role: ${role.id}` });
-    for (const flag of VALID_FLAGS) {
-      if (typeof matrix[role.id][flag] !== 'boolean')
-        return res.status(400).json({ error: `Invalid flag "${flag}" for role "${role.id}"` });
+    for (const [flag, val] of Object.entries(matrix[role.id])) {
+      if (!VALID_FLAGS.includes(flag))
+        return res.status(400).json({ error: `Unknown flag "${flag}" for role "${role.id}"` });
+      if (typeof val !== 'boolean')
+        return res.status(400).json({ error: `Invalid value for flag "${flag}" on role "${role.id}"` });
     }
   }
 

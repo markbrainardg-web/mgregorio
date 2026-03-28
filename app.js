@@ -1232,12 +1232,11 @@ function roleBadge(roleId) {
 }
 
 let permissionsMatrix = {
-  super_admin:     { view_admin_dashboard:true, view_all_projects:true, view_my_dashboard:true, view_my_projects:true, view_users:true, view_hubspot:true, manage_users:true, create_delete_projects:true, edit_projects:true, edit_milestones:true, edit_actual_dates:true, act_as_user:true, log_time:true, view_audit_trail:true, view_project_details:true, view_resource_hub:true, generate_resource_hub:true, edit_dashboard_fields:true, view_pm_dashboard_table:false, manage_recordings:false, manage_files:false, view_tools_hub:true },
-  lead:            { view_admin_dashboard:true, view_all_projects:true, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:true, manage_users:false, create_delete_projects:true, edit_projects:true, edit_milestones:true, edit_actual_dates:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:true, view_resource_hub:true, generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:false, manage_files:false, view_tools_hub:true },
-  project_manager: { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:true, edit_milestones:true, edit_actual_dates:true, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:true, view_resource_hub:true, generate_resource_hub:true, edit_dashboard_fields:true, view_pm_dashboard_table:true, manage_recordings:false, manage_files:false, view_tools_hub:false },
-  implementer:     { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true, view_my_projects:true, view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:false, edit_milestones:true, edit_actual_dates:false, act_as_user:false, log_time:true, view_audit_trail:false, view_project_details:false, view_resource_hub:false, generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:false, manage_files:false, view_tools_hub:false },
+  super_admin:     { view_admin_dashboard:true,  view_all_projects:true,  view_my_dashboard:true,  view_my_projects:true,  view_users:true,  view_hubspot:true,  manage_users:true,  create_delete_projects:true,  edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:true,  log_time:true,  view_audit_trail:true,  view_project_details:true,  view_resource_hub:true,  generate_resource_hub:true,  edit_dashboard_fields:true,  view_pm_dashboard_table:false, manage_recordings:true,  manage_files:true,  view_tools_hub:true,  move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
+  lead:            { view_admin_dashboard:true,  view_all_projects:true,  view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:true,  manage_users:false, create_delete_projects:true,  edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:true,  view_resource_hub:true,  generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:true,  manage_files:true,  view_tools_hub:true,  move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
+  project_manager: { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:true,  view_resource_hub:true,  generate_resource_hub:true,  edit_dashboard_fields:true,  view_pm_dashboard_table:true,  manage_recordings:true,  manage_files:true,  view_tools_hub:false, move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
+  implementer:     { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:false, edit_milestones:true,  edit_actual_dates:false, act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:false, view_resource_hub:false, generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:false, manage_files:false, view_tools_hub:false, move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:false, edit_docs:false, view_contacts:false, edit_contacts:false, view_recordings:false, view_files:false, view_sidekick:false, view_survey_form:false },
 };
-
 async function fetchPermissions() {
   try {
     const res = await fetch('/api/permissions');
@@ -4539,18 +4538,17 @@ function kanbanCard(p) {
         <div class="kcard-more-wrap">
           <button class="btn btn-ghost btn-sm kcard-more-btn" data-id="${p.id}" title="More actions">&#8943;</button>
           <div class="kcard-dropdown" data-id="${p.id}">
-            ${isRunning
+            ${can('use_timer') ? (isRunning
               ? `<button class="kcard-drop-item item-danger stop-timer-btn" data-id="${p.id}">&#9209; Stop Timer &nbsp;<span id="timer-elapsed-${p.id}" class="timer-elapsed">${formatElapsed(timer.startTime)}</span></button>`
-              : `<button class="kcard-drop-item start-timer-btn" data-id="${p.id}">&#9654; Timer</button>`
-            }
-            <button class="kcard-drop-item log-hours-btn" data-id="${p.id}">&#128336; Log Hours</button>
-            <button class="kcard-drop-item open-docs-btn" data-id="${p.id}">&#128196; Documentation${docCount ? ` <span class="docs-count">${docCount}</span>` : ''}</button>
-            ${can('view_project_details') ? `<button class="kcard-drop-item open-contacts-btn" data-id="${p.id}">&#128101; Contacts</button>` : ''}
-            ${can('manage_recordings') ? `<button class="kcard-drop-item open-recordings-btn" data-id="${p.id}">&#127909; Recordings</button>` : ''}
-            ${can('manage_files') ? `<button class="kcard-drop-item open-files-btn" data-id="${p.id}">&#128193; Files</button>` : ''}
+              : `<button class="kcard-drop-item start-timer-btn" data-id="${p.id}">&#9654; Timer</button>`) : ''}
+            ${can('log_time') ? `<button class="kcard-drop-item log-hours-btn" data-id="${p.id}">&#128336; Log Hours</button>` : ''}
+            ${can('view_docs') ? `<button class="kcard-drop-item open-docs-btn" data-id="${p.id}">&#128196; Documentation${docCount ? ` <span class="docs-count">${docCount}</span>` : ''}</button>` : ''}
+            ${can('view_contacts') ? `<button class="kcard-drop-item open-contacts-btn" data-id="${p.id}">&#128101; Contacts</button>` : ''}
+            ${can('view_recordings') ? `<button class="kcard-drop-item open-recordings-btn" data-id="${p.id}">&#127909; Recordings</button>` : ''}
+            ${can('view_files') ? `<button class="kcard-drop-item open-files-btn" data-id="${p.id}">&#128193; Files</button>` : ''}
             ${can('view_resource_hub') ? `<button class="kcard-drop-item resource-hub-btn" data-id="${p.id}">&#127760; Hub</button>` : ''}
-            <button class="kcard-drop-item ai-chat-btn" data-id="${p.id}"><img src="/Sidekick.png" alt="Sidekick"> Sidekick</button>
-            <button class="kcard-drop-item survey-form-btn" data-id="${p.id}">&#128221; Survey Form</button>
+            ${can('view_sidekick') ? `<button class="kcard-drop-item ai-chat-btn" data-id="${p.id}"><img src="/Sidekick.png" alt="Sidekick"> Sidekick</button>` : ''}
+            ${can('view_survey_form') ? `<button class="kcard-drop-item survey-form-btn" data-id="${p.id}">&#128221; Survey Form</button>` : ''}
           </div>
         </div>
       </div>
@@ -4669,6 +4667,7 @@ function attachKanbanHandlers(container) {
       e.preventDefault();
       col.classList.remove('drag-over');
       if (!draggedId) return;
+      if (!can('move_milestone_kanban')) return;
 
       const colIdx     = parseInt(col.dataset.col);
       const isComplete = colIdx === MILESTONES.length;
@@ -5178,8 +5177,7 @@ function openDocsModal(projectId) {
   const p = getProjects().find(x => x.id === projectId);
   if (!p) return;
 
-  const userRole  = effectiveUser()?.role;
-  const canDelete = userRole === 'super_admin' || userRole === 'lead';
+  const canDelete = can('edit_docs');
   let currentMilestone = getCurrentMilestone(p) || 'Completed';
   let searchQuery = '';
 
@@ -5293,6 +5291,7 @@ function openDocsModal(projectId) {
         ${renderNotesList(entries)}
       </div>
 
+      ${can('edit_docs') ? `
       <div style="border-top:1px solid var(--border);padding-top:.75rem;margin-top:.25rem">
         <div style="font-size:.75rem;font-weight:600;color:var(--txt-muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em">Add a Note</div>
         <div style="display:flex;gap:.3rem;margin-bottom:.35rem;flex-wrap:wrap">
@@ -5305,11 +5304,11 @@ function openDocsModal(projectId) {
         <div id="docs-editor" contenteditable="true"
           style="min-height:90px;max-height:160px;overflow-y:auto;border:1.5px solid var(--border);border-radius:6px;padding:.55rem .75rem;font-size:.84rem;line-height:1.55;background:var(--bg);color:var(--txt);outline:none;font-family:inherit"
           data-placeholder="What happened at this milestone?..."></div>
-      </div>
+      </div>` : ''}
 
       <div class="modal-actions">
         <button class="btn btn-ghost" id="docs-cancel">Close</button>
-        <button class="btn btn-primary" id="docs-add">Add Note</button>
+        ${can('edit_docs') ? `<button class="btn btn-primary" id="docs-add">Add Note</button>` : ''}
       </div>
     `);
 
@@ -5420,19 +5419,21 @@ function openDocsModal(projectId) {
 
     // Placeholder behaviour
     const editor = modal.querySelector('#docs-editor');
-    editor.addEventListener('focus', () => { if (!editor.textContent.trim()) editor.innerHTML = ''; });
+    if (editor) {
+      editor.addEventListener('focus', () => { if (!editor.textContent.trim()) editor.innerHTML = ''; });
+    }
 
     // Format toolbar
     modal.querySelectorAll('.doc-fmt-btn').forEach(btn => {
       btn.addEventListener('mousedown', e => {
         e.preventDefault();
-        editor.focus();
+        if (editor) { editor.focus(); }
         document.execCommand(btn.dataset.cmd, false, null);
       });
     });
 
     modal.querySelector('#docs-cancel').addEventListener('click', () => modal.remove());
-    modal.querySelector('#docs-add').addEventListener('click', () => {
+    modal.querySelector('#docs-add')?.addEventListener('click', () => {
       const html = editor.innerHTML.trim();
       if (!html || html === '<br>') return;
       const list = getProjects();
@@ -5906,7 +5907,7 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
     const details    = p.details    || {};
     const contacts   = details.contacts || [];
     const salesDocs  = details.salesDocs || (details.salesDriveLink ? [{ id: genId(), name: 'Project Link', url: details.salesDriveLink }] : []);
-    const isReadOnly = !can('edit_milestones');
+    const isReadOnly = !can('edit_timeline');
     const today      = new Date().toISOString().split('T')[0];
     const completedCount = MILESTONES.filter(m => milestones[m]).length;
     const progress       = Math.round((completedCount / MILESTONES.length) * 100);
@@ -9073,6 +9074,8 @@ async function renderAuditTrail(container) {
 
 // ── ACCESS MATRIX PAGE ────────────────────────────────────────
 function renderAccessMatrix(container) {
+  // subGroup: flags with the same subGroup are visually grouped under a sub-header row.
+  // The first flag in a subGroup shows the header; last flag gets the └ connector.
   const FLAG_GROUPS = [
     {
       group: 'Dashboard',
@@ -9086,18 +9089,36 @@ function renderAccessMatrix(container) {
     {
       group: 'Projects',
       flags: [
-        { key: 'view_all_projects',      label: 'View All Projects' },
+        // ─ Project Access ─
+        { key: 'view_all_projects',      label: 'View All Projects (Implementation Projects)' },
         { key: 'view_my_projects',       label: 'View My Projects' },
         { key: 'create_delete_projects', label: 'Create / Delete Projects' },
-        { key: 'edit_projects',          label: 'Edit Projects' },
-        { key: 'edit_milestones',        label: 'Edit Milestones' },
-        { key: 'edit_actual_dates',      label: 'Edit Actual Completion Dates' },
-        { key: 'manage_recordings',      label: 'Manage Recordings (add/remove)' },
-        { key: 'manage_files',           label: 'Manage Files & Project Links' },
-        { key: 'log_time',               label: 'Log Time' },
-        { key: 'view_project_details',   label: 'View Project Details (Docs & Contacts)' },
-        { key: 'view_resource_hub',      label: 'View Sprout Success Kit (read-only)' },
-        { key: 'generate_resource_hub',  label: 'Generate & Manage Sprout Success Kit' },
+        { key: 'edit_projects',          label: 'Edit Project Details' },
+        // ─ Milestones ─
+        { key: 'move_milestone_kanban',  label: 'Move Milestone on Kanban',          subGroup: 'Milestones' },
+        { key: 'edit_timeline',          label: 'Edit Timeline & Planning',           subGroup: 'Milestones' },
+        { key: 'edit_actual_dates',      label: 'Edit Actual Completion Dates',       subGroup: 'Milestones' },
+        // ─ Time Tracking ─
+        { key: 'use_timer',              label: 'Timer',                              subGroup: 'Time Tracking' },
+        { key: 'log_time',               label: 'Log Hours',                          subGroup: 'Time Tracking' },
+        // ─ Documentation ─
+        { key: 'view_docs',              label: 'View',                               subGroup: 'Documentation' },
+        { key: 'edit_docs',              label: 'Edit',                               subGroup: 'Documentation' },
+        // ─ Contacts ─
+        { key: 'view_contacts',          label: 'View',                               subGroup: 'Contacts' },
+        { key: 'edit_contacts',          label: 'Edit',                               subGroup: 'Contacts' },
+        // ─ Recordings ─
+        { key: 'view_recordings',        label: 'View',                               subGroup: 'Recordings' },
+        { key: 'manage_recordings',      label: 'Edit',                               subGroup: 'Recordings' },
+        // ─ Files ─
+        { key: 'view_files',             label: 'View',                               subGroup: 'Files' },
+        { key: 'manage_files',           label: 'Edit',                               subGroup: 'Files' },
+        // ─ Sprout Success Kit ─
+        { key: 'view_resource_hub',      label: 'View',                               subGroup: 'Sprout Success Kit' },
+        { key: 'generate_resource_hub',  label: 'Manage',                             subGroup: 'Sprout Success Kit' },
+        // ─ Other ─
+        { key: 'view_sidekick',          label: 'Sidekick' },
+        { key: 'view_survey_form',       label: 'Survey Form' },
       ],
     },
     {
@@ -9112,10 +9133,62 @@ function renderAccessMatrix(container) {
       ],
     },
   ];
+
+  // View → Edit dependency map: turning Edit ON auto-enables View; turning View OFF auto-disables Edit
+  const VIEW_EDIT_PAIRS = {
+    edit_docs:             'view_docs',
+    edit_contacts:         'view_contacts',
+    manage_recordings:     'view_recordings',
+    manage_files:          'view_files',
+    generate_resource_hub: 'view_resource_hub',
+  };
   const FLAGS = FLAG_GROUPS.flatMap(g => g.flags);
 
   function buildTable() {
     const roles = cachedRoles;
+
+    function renderGroupRows(g) {
+      const gid = g.group.toLowerCase().replace(/\s+/g, '-');
+      const visibleFlags = g.flags.filter(f => f.key);
+      let lastSubGroup = null;
+      const rows = [];
+
+      visibleFlags.forEach((f, i) => {
+        // Insert subGroup header when subGroup changes
+        if (f.subGroup && f.subGroup !== lastSubGroup) {
+          lastSubGroup = f.subGroup;
+          rows.push(`
+            <tr class="perm-subgroup-header" data-group="${gid}">
+              <td colspan="${roles.length + 1}">
+                <span class="perm-subgroup-label">${f.subGroup}</span>
+              </td>
+            </tr>`);
+        } else if (!f.subGroup) {
+          lastSubGroup = null;
+        }
+
+        const isLastInSub = f.subGroup && (i === visibleFlags.length - 1 || visibleFlags[i + 1]?.subGroup !== f.subGroup);
+        const connector   = f.subGroup ? (isLastInSub ? '└' : '├') : '';
+
+        rows.push(`
+          <tr class="perm-row ${f.subGroup ? 'perm-subrow' : ''}" data-group="${gid}" data-subgroup="${f.subGroup || ''}">
+            <td class="perm-label">
+              ${connector ? `<span class="perm-tree">${connector}</span>` : ''}
+              ${f.label}
+            </td>
+            ${roles.map(r => {
+              const on = !!permissionsMatrix[r.id]?.[f.key];
+              return `
+                <td class="perm-cell">
+                  <input type="checkbox" class="perm-cb" data-role="${r.id}" data-flag="${f.key}" ${on ? 'checked' : ''} />
+                  <span class="perm-badge ${on ? 'perm-badge--on' : 'perm-badge--off'}" data-role="${r.id}" data-flag="${f.key}">${on ? '✓' : '—'}</span>
+                </td>`;
+            }).join('')}
+          </tr>`);
+      });
+      return rows.join('');
+    }
+
     return `
       <table class="permissions-table">
         <thead><tr>
@@ -9145,19 +9218,7 @@ function renderAccessMatrix(container) {
                   <span style="font-size:.65rem;font-weight:400;color:#4ade80;margin-left:.6rem;letter-spacing:0">(${g.flags.length} permissions)</span>
                 </td>
               </tr>
-              ${g.flags.map(f => `
-                <tr class="perm-row" data-group="${gid}">
-                  <td class="perm-label">${f.label}</td>
-                  ${roles.map(r => {
-                    const on = !!permissionsMatrix[r.id]?.[f.key];
-                    return `
-                      <td class="perm-cell">
-                        <input type="checkbox" class="perm-cb" data-role="${r.id}" data-flag="${f.key}" ${on ? 'checked' : ''} />
-                        <span class="perm-badge ${on ? 'perm-badge--on' : 'perm-badge--off'}" data-role="${r.id}" data-flag="${f.key}">${on ? '✓' : '—'}</span>
-                      </td>`;
-                  }).join('')}
-                </tr>
-              `).join('')}`;
+              ${renderGroupRows(g)}`;
           }).join('')}
         </tbody>
       </table>`;
@@ -9184,22 +9245,34 @@ function renderAccessMatrix(container) {
   }
 
   function wireRoleButtons() {
-    // Badge click → toggle hidden checkbox
-    container.querySelectorAll('.perm-badge').forEach(badge => {
-      badge.addEventListener('click', () => {
-        const cb = badge.previousElementSibling;
-        cb.checked = !cb.checked;
-        const on = cb.checked;
-        badge.textContent = on ? '✓' : '—';
-        badge.className = `perm-badge ${on ? 'perm-badge--on' : 'perm-badge--off'}`;
+    // Checkbox change → enforce view/edit dependency
+    container.querySelectorAll('.perm-cb').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const role = cb.dataset.role;
+        const flag = cb.dataset.flag;
+        const on   = cb.checked;
+
+        // If turning Edit ON → also check paired View
+        if (on && VIEW_EDIT_PAIRS[flag]) {
+          const viewCb = container.querySelector(`.perm-cb[data-role="${role}"][data-flag="${VIEW_EDIT_PAIRS[flag]}"]`);
+          if (viewCb && !viewCb.checked) viewCb.checked = true;
+        }
+        // If turning View OFF → also uncheck paired Edit
+        if (!on) {
+          const editFlag = Object.keys(VIEW_EDIT_PAIRS).find(k => VIEW_EDIT_PAIRS[k] === flag);
+          if (editFlag) {
+            const editCb = container.querySelector(`.perm-cb[data-role="${role}"][data-flag="${editFlag}"]`);
+            if (editCb?.checked) editCb.checked = false;
+          }
+        }
       });
     });
 
-    // Group header click → collapse/expand rows
+    // Group header click → collapse/expand rows + subgroup headers
     container.querySelectorAll('.perm-group-header').forEach(header => {
       header.addEventListener('click', () => {
-        const gid = header.dataset.groupId;
-        const rows = container.querySelectorAll(`.perm-row[data-group="${gid}"]`);
+        const gid     = header.dataset.groupId;
+        const rows    = container.querySelectorAll(`.perm-row[data-group="${gid}"], .perm-subgroup-header[data-group="${gid}"]`);
         const chevron = header.querySelector('.group-chevron');
         const collapsed = chevron.style.transform === 'rotate(-90deg)';
         rows.forEach(r => r.style.display = collapsed ? '' : 'none');
@@ -9344,7 +9417,7 @@ function openMilestonesModal(projectId) {
   const timeline       = p.timeline   || {};
   const completedCount = MILESTONES.filter(m => milestones[m]).length;
   const progress       = Math.round((completedCount / MILESTONES.length) * 100);
-  const isReadOnly     = !can('edit_milestones');
+  const isReadOnly     = !can('edit_timeline');
   const today          = new Date().toISOString().split('T')[0];
 
   // ── Active template ───────────────────────────────────────────
