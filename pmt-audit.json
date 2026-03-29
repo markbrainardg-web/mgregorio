@@ -1,5 +1,61 @@
 [
   {
+    "id": "8bc3fb75d909",
+    "timestamp": "2026-03-29T04:49:11.523Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "bacf2bc55b05",
+    "timestamp": "2026-03-29T04:49:06.861Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "7aa4fd8c2c32",
+    "timestamp": "2026-03-29T04:44:31.155Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "a7b4a410a6a7",
+    "timestamp": "2026-03-29T04:44:25.504Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "2e4742e12eb8",
+    "timestamp": "2026-03-29T04:43:38.449Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
     "id": "241e311fda91",
     "timestamp": "2026-03-28T18:42:40.307Z",
     "userId": "mmj4wcs359kz",

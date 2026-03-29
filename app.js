@@ -3802,21 +3802,29 @@ function renderUserDashboard() {
     ${announcementBannerHtml()}
 
     <div class="stats-grid">
-      <div class="stat-card" style="border-bottom-color:#32CE13">
-        <div class="stat-icon" style="background:#E1F6CB;color:#092903">&#9889;</div>
-        <div><div class="stat-label">Ongoing</div><div class="stat-value">${ongoing}</div></div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#166534 0%,#15803d 60%,#16a34a 100%);box-shadow:0 6px 20px rgba(22,101,52,.35)">
+        <div class="stat-vivid-icon">&#9889;</div>
+        <div class="stat-vivid-label">Ongoing</div>
+        <div class="stat-vivid-value">${ongoing}</div>
+        <div class="stat-vivid-sub">Active projects assigned to you</div>
       </div>
-      <div class="stat-card" style="border-bottom-color:#FF7F00">
-        <div class="stat-icon" style="background:#ffe8cc;color:#FF7F00">&#9208;</div>
-        <div><div class="stat-label">On Hold</div><div class="stat-value">${onHold}</div></div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#92400e 0%,#b45309 60%,#d97706 100%);box-shadow:0 6px 20px rgba(146,64,14,.35)">
+        <div class="stat-vivid-icon">&#9208;</div>
+        <div class="stat-vivid-label">On Hold</div>
+        <div class="stat-vivid-value">${onHold}</div>
+        <div class="stat-vivid-sub">Projects currently paused</div>
       </div>
-      <div class="stat-card" style="border-bottom-color:#8139EE">
-        <div class="stat-icon" style="background:#ede3ff;color:#8139EE">&#8617;</div>
-        <div><div class="stat-label">On Hold - Returned to Sales</div><div class="stat-value">${onHoldSales}</div></div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#5b21b6 0%,#7c3aed 60%,#8b5cf6 100%);box-shadow:0 6px 20px rgba(91,33,182,.35)">
+        <div class="stat-vivid-icon">&#8617;</div>
+        <div class="stat-vivid-label">On Hold – Returned to Sales</div>
+        <div class="stat-vivid-value">${onHoldSales}</div>
+        <div class="stat-vivid-sub">Sent back to sales pipeline</div>
       </div>
-      <div class="stat-card" style="border-bottom-color:#ef4444">
-        <div class="stat-icon" style="background:#fee2e2;color:#ef4444">&#128683;</div>
-        <div><div class="stat-label">Churn</div><div class="stat-value">${churn}</div></div>
+      <div class="stat-card stat-card--vivid" style="background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 60%,#ef4444 100%);box-shadow:0 6px 20px rgba(127,29,29,.35)">
+        <div class="stat-vivid-icon">&#128683;</div>
+        <div class="stat-vivid-label">Churn</div>
+        <div class="stat-vivid-value">${churn}</div>
+        <div class="stat-vivid-sub">Projects marked as churned</div>
       </div>
     </div>
 
