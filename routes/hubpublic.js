@@ -494,6 +494,16 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
   const inProgressCount = 1; // always 1 "in progress" unless all done
   const pendingCount   = Math.max(0, projectMilestones.length - completedCount - (completedCount < projectMilestones.length ? 1 : 0));
   const progress       = projectMilestones.length ? Math.round((completedCount / projectMilestones.length) * 100) : 0;
+  // Donut arc geometry (r=80, C = 2π×80 ≈ 502.655)
+  const _C       = 502.655;
+  const _inProg  = completedCount < projectMilestones.length ? 1 : 0;
+  const _total   = completedCount + _inProg + pendingCount;
+  const _gap     = 4;
+  const _dDash   = _total > 0 ? (completedCount / _total) * _C : 0;
+  const _ipDash  = _total > 0 ? (_inProg        / _total) * _C : 0;
+  const _dFinal  = +Math.max(0, _dDash  - (_dDash  > _gap ? _gap : 0)).toFixed(3);
+  const _ipFinal = +Math.max(0, _ipDash - (_ipDash > _gap ? _gap : 0)).toFixed(3);
+  const _ipOff   = +(_C - _dDash).toFixed(3);
   const serverToday    = new Date().toISOString().split('T')[0];
 
   const allUsers = getUsers();
@@ -619,7 +629,7 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
               ${isActive ? `<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;background:#16a34a;color:#fff">ACTIVE</span>` : ''}
             </div>
             ${v.revisionReason ? `<div style="font-size:.79rem;color:#4a7a44;margin-top:3px">📝 ${escHtml(v.revisionReason)}</div>` : ''}
-            <div style="font-size:.73rem;color:#9ab09a;margin-top:3px">Saved ${fmtDate(v.createdAt)} by ${escHtml(v.createdBy)}</div>
+            <div style="font-size:.73rem;color:#9ab09a;margin-top:3px">Saved ${fmtDate(v.createdAt)} by ${escHtml(v.createdByName || v.createdBy)}</div>
           </div>
         </div>`;
     }).join('');
@@ -784,7 +794,6 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
   <title>${escHtml(hub.projectTitle)} — Sprout Success Kit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Rubik',sans-serif;background:#f0f4f0;color:#1a2e1a;min-height:100vh}
@@ -850,6 +859,8 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
     .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
     .donut-pct{font-family:'Fira Sans',sans-serif;font-size:2rem;font-weight:800;color:#092903;line-height:1}
     .donut-lbl{font-size:.72rem;color:#8aaa8a;font-weight:600;margin-top:2px}
+    #hub-seg-done{animation:hub-done-sweep 1.4s .05s cubic-bezier(.25,.46,.45,.94) both}
+    #hub-seg-ip  {animation:hub-ip-sweep   1.4s .05s cubic-bezier(.25,.46,.45,.94) both}
 
     /* ── Timeline zigzag ── */
     .timeline-section{background:#fff;border-radius:16px;padding:28px 24px;box-shadow:0 2px 12px rgba(9,41,3,.08);margin-bottom:32px}
@@ -891,6 +902,8 @@ function buildHubHtml(hub, project, accessLevel, isInternalUser) {
       nav.hub-nav{padding:0 12px}
       nav.hub-nav a{padding:11px 10px;font-size:.76rem}
     }
+    @keyframes hub-done-sweep{from{stroke-dasharray:0 502.655}to{stroke-dasharray:${_dFinal} ${_C - _dFinal}}}
+    @keyframes hub-ip-sweep  {from{stroke-dasharray:0 502.655}to{stroke-dasharray:${_ipFinal} ${_C - _ipFinal}}}
   </style>
 </head>
 <body>
@@ -926,7 +939,7 @@ ${adminBanner}
     <div class="stat-tile tile-animate-left" style="background:linear-gradient(135deg,#16a34a,#15803d);animation-delay:.05s">
       <div class="stat-tile-icon">📊</div>
       <div class="stat-tile-label">Overall Progress</div>
-      <div class="stat-tile-value" id="tile-progress">0%</div>
+      <div class="stat-tile-value" id="tile-progress">${progress}%</div>
       <div class="stat-tile-sub">${completedCount} of ${projectMilestones.length} milestones done</div>
     </div>
     <div class="stat-tile tile-animate-left" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);animation-delay:.18s">
@@ -938,7 +951,7 @@ ${adminBanner}
     <div class="stat-tile tile-animate-right" style="background:linear-gradient(135deg,#0891b2,#0e7490);animation-delay:.31s">
       <div class="stat-tile-icon">🏁</div>
       <div class="stat-tile-label">Milestones Done</div>
-      <div class="stat-tile-value"><span id="tile-ms-done">0</span> <span style="font-size:1rem;opacity:.7">/ ${projectMilestones.length}</span></div>
+      <div class="stat-tile-value"><span id="tile-ms-done">${completedCount}</span> <span style="font-size:1rem;opacity:.7">/ ${projectMilestones.length}</span></div>
       <div class="stat-tile-sub">${pendingCount} remaining</div>
     </div>
     <div class="stat-tile tile-animate-right" style="background:linear-gradient(135deg,#d97706,#b45309);animation-delay:.44s">
@@ -966,10 +979,14 @@ ${adminBanner}
     <div>
       <div class="chart-card" style="margin-bottom:20px">
         <div class="chart-card-title">Progress Overview</div>
-        <div style="position:relative;height:220px;display:flex;align-items:center;justify-content:center">
-          <canvas id="hub-donut-chart"></canvas>
+        <div style="position:relative;width:220px;height:220px;margin:0 auto">
+          <svg id="hub-donut-svg" width="220" height="220" viewBox="0 0 220 220" style="display:block">
+            <circle cx="110" cy="110" r="80" fill="none" stroke="#e5e7eb" stroke-width="24"/>
+            <circle id="hub-seg-ip" cx="110" cy="110" r="80" fill="none" stroke="#d97706" stroke-width="24" stroke-dasharray="${_ipFinal} ${_C - _ipFinal}" stroke-dashoffset="${_ipOff}" transform="rotate(-90 110 110)"/>
+            <circle id="hub-seg-done" cx="110" cy="110" r="80" fill="none" stroke="#16a34a" stroke-width="24" stroke-dasharray="${_dFinal} ${_C - _dFinal}" transform="rotate(-90 110 110)"/>
+          </svg>
           <div class="donut-center">
-            <div class="donut-pct" id="hub-donut-center">0%</div>
+            <div class="donut-pct" id="hub-donut-center">${progress}%</div>
             <div class="donut-lbl">Complete</div>
           </div>
         </div>
@@ -1018,78 +1035,6 @@ ${adminBanner}
 </footer>
 
 <script>
-  // ── Tile count-up ──
-  (function() {
-    function countUp(elId, target, suffix, duration) {
-      const el = document.getElementById(elId);
-      if (!el) return;
-      let start = 0;
-      const step = target / (duration / 16);
-      const timer = setInterval(() => {
-        start = Math.min(start + step, target);
-        el.textContent = Math.round(start) + (suffix || '');
-        if (start >= target) clearInterval(timer);
-      }, 16);
-    }
-    setTimeout(() => {
-      countUp('tile-progress', ${progress}, '%', 900);
-      countUp('tile-ms-done', ${completedCount}, '', 900);
-    }, 300);
-  })();
-
-  // ── Donut chart ──
-  (function() {
-    const ctx = document.getElementById('hub-donut-chart');
-    if (!ctx) return;
-    const done    = ${completedCount};
-    const inProg  = ${completedCount < projectMilestones.length ? 1 : 0};
-    const pending = ${pendingCount};
-    const total = done + inProg + pending;
-    const targetPct = total > 0 ? Math.round((done / total) * 100) : 0;
-    const centerLabel = document.getElementById('hub-donut-center');
-
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Completed', 'In Progress', 'Pending'],
-        datasets: [{
-          data: [done, inProg, pending],
-          backgroundColor: ['#16a34a', '#d97706', '#e5e7eb'],
-          borderWidth: 3,
-          borderColor: '#fff',
-          hoverOffset: 8,
-        }],
-      },
-      options: {
-        cutout: '72%',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: c => ' ' + c.label + ': ' + c.parsed + ' milestone' + (c.parsed !== 1 ? 's' : ''),
-            },
-          },
-        },
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-          duration: 1400,
-          easing: 'easeInOutQuart',
-          onProgress: function(anim) {
-            if (!centerLabel) return;
-            const current = Math.round(targetPct * anim.currentStep / anim.numSteps);
-            centerLabel.textContent = current + '%';
-          },
-          onComplete: function() {
-            if (centerLabel) centerLabel.textContent = targetPct + '%';
-          },
-        },
-      },
-    });
-  })();
-
   // ── Ticketing ──
   var _selFiles = [];
   function handleFileSelect(files) {
