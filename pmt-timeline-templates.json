@@ -257,5 +257,258 @@
     ],
     "createdAt": "2026-03-26T01:25:05.998Z",
     "createdBy": "mmj1fmmjvy5a"
+  },
+  {
+    "id": "tpl_1774842368321",
+    "name": "30 day Implementation Timeline",
+    "phases": [
+      {
+        "label": "PHASE 0: PROJECT TEAM ASSIGNMENT",
+        "key": "phase_0_project_team_assignment",
+        "tasks": [
+          {
+            "label": "Team Assignment Sprout",
+            "duration": 1,
+            "assignedTo": "SPROUT",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 1: KICK OFF MEETING",
+        "key": "phase_1_kick_off_meeting",
+        "tasks": [
+          {
+            "label": "Introduction",
+            "duration": 1,
+            "assignedTo": "SPROUT",
+            "indent": 0
+          },
+          {
+            "label": "Project Timeline",
+            "duration": 1,
+            "assignedTo": "SPROUT",
+            "indent": 0
+          },
+          {
+            "label": "HR Policy Questionnaire",
+            "duration": 0,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Payroll Policy Questionnaire",
+            "duration": 0,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 2: DATA GATHERING",
+        "key": "phase_2_data_gathering",
+        "tasks": [
+          {
+            "label": "Account Creation",
+            "duration": 3,
+            "assignedTo": "SPROUT",
+            "indent": 0
+          },
+          {
+            "label": "Data Submission",
+            "duration": 0,
+            "assignedTo": "CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Masterfile",
+            "duration": 4,
+            "assignedTo": "CLIENT",
+            "indent": 1
+          },
+          {
+            "label": "Payroll Registers",
+            "duration": 0,
+            "assignedTo": "CLIENT",
+            "indent": 1
+          },
+          {
+            "label": "Data Validation",
+            "duration": 2,
+            "assignedTo": "SPROUT  - HR AND PAYROLL IMPLEMENTER",
+            "indent": 0
+          },
+          {
+            "label": "Data Migration",
+            "duration": 2,
+            "assignedTo": "SPROUT  - HR IMPLEMENTER",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 3: SIMULATION",
+        "key": "phase_3_simulation",
+        "tasks": [
+          {
+            "label": "Payroll Simulation (Past Payroll Registers)",
+            "duration": 2,
+            "assignedTo": "SPROUT - PAYROLL IMPLEMENTER",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 4: TRAINING AND SYSTEM SETUP",
+        "key": "phase_4_training_and_system_setup",
+        "tasks": [
+          {
+            "label": "Admin Training",
+            "duration": 0,
+            "assignedTo": "",
+            "indent": 0
+          },
+          {
+            "label": "Sprout HR",
+            "duration": 0,
+            "assignedTo": "",
+            "indent": 0
+          },
+          {
+            "label": "Online Training Videos",
+            "duration": 1,
+            "assignedTo": "CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Training Test Account",
+            "duration": 1,
+            "assignedTo": "CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Admin Training",
+            "duration": 1,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Sprout Payroll",
+            "duration": 0,
+            "assignedTo": "",
+            "indent": 0
+          },
+          {
+            "label": "Online Training Videos",
+            "duration": 1,
+            "assignedTo": "CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Training Test Account",
+            "duration": 1,
+            "assignedTo": "CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Admin Training",
+            "duration": 1,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Send PARALLEL RUN AND CASCADE STRATEGY (Internal)",
+            "duration": 0,
+            "assignedTo": "SPROUT - PROJECT MANAGERS",
+            "indent": 0
+          },
+          {
+            "label": "User Cascade",
+            "duration": 3,
+            "assignedTo": "",
+            "indent": 0
+          },
+          {
+            "label": "Employees Training",
+            "duration": 3,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Managers Training",
+            "duration": 3,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 5: PROJECT REVIEW",
+        "key": "phase_5_project_review",
+        "tasks": [
+          {
+            "label": "Sprout HR Project Review Checklist",
+            "duration": 0.5,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Sprout Payroll Project Review Checklist",
+            "duration": 0.5,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 6: SIMULATION II",
+        "key": "phase_6_simulation_ii",
+        "tasks": [
+          {
+            "label": "HR Timekeeping Simulation",
+            "duration": 1,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Payroll Processing Simulation",
+            "duration": 1,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 7: IMPLEMENTATION SIGN OFF",
+        "key": "phase_7_implementation_sign_off",
+        "tasks": [
+          {
+            "label": "Pre-handover",
+            "duration": 1,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          },
+          {
+            "label": "Pre-handover Internal Meeting",
+            "duration": 1,
+            "assignedTo": "SPROUT",
+            "indent": 0
+          },
+          {
+            "label": "Project Handover",
+            "duration": 1,
+            "assignedTo": "SPROUT AND CLIENT",
+            "indent": 0
+          }
+        ]
+      },
+      {
+        "label": "PHASE 8: ADOPTION",
+        "key": "phase_8_adoption",
+        "tasks": []
+      }
+    ],
+    "createdAt": "2026-03-30T03:46:08.321Z",
+    "createdBy": "mmj1fmmjvy5a"
   }
 ]

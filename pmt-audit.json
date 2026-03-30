@@ -1,5 +1,675 @@
 [
   {
+    "id": "2ebd3a856fe0",
+    "timestamp": "2026-03-30T16:18:23.050Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: Prime Pacific Foods Corp",
+    "meta": {
+      "hubId": "f15fd6a9162a"
+    }
+  },
+  {
+    "id": "c111b1eb335e",
+    "timestamp": "2026-03-30T16:13:03.341Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "823b84250c21",
+    "timestamp": "2026-03-30T16:12:58.018Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "7a699f217b6f",
+    "timestamp": "2026-03-30T16:12:12.473Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "4cfa50f117e9",
+    "timestamp": "2026-03-30T16:08:48.803Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "408bfcaefa81",
+    "timestamp": "2026-03-30T16:03:48.406Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "83bd5a187bf0",
+    "timestamp": "2026-03-30T16:01:15.602Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "074736b720b9",
+    "timestamp": "2026-03-30T15:56:55.624Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "948a33d1c396",
+    "timestamp": "2026-03-30T15:56:49.720Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Alexandra Marie Dela Cruz logged out",
+    "meta": {}
+  },
+  {
+    "id": "81c33a46bb81",
+    "timestamp": "2026-03-30T15:56:31.118Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "ab7ebf1b264d",
+    "timestamp": "2026-03-30T15:39:35.801Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "5e5e4ac0d873",
+    "timestamp": "2026-03-30T14:24:40.676Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "ef327e86b97d",
+    "timestamp": "2026-03-30T14:24:36.809Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Alexandra Marie Dela Cruz logged out",
+    "meta": {}
+  },
+  {
+    "id": "cfd1c427a955",
+    "timestamp": "2026-03-30T14:24:13.486Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "4fb970992272",
+    "timestamp": "2026-03-30T14:24:09.002Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "472d1c158254",
+    "timestamp": "2026-03-30T14:18:12.613Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "6fcd4067bb93",
+    "timestamp": "2026-03-30T06:17:12.427Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "80dc974d397e",
+    "timestamp": "2026-03-30T06:12:44.529Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "9650cd3873dc",
+    "timestamp": "2026-03-30T05:45:45.681Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "ea09110da1ea",
+    "timestamp": "2026-03-30T05:42:10.642Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "timeline.version_saved",
+    "details": "Saved timeline version \"Project Timeline Version 3\" for \"Prime Pacific Foods Corp\" — Reason: Changes in the Timeline",
+    "meta": {
+      "projectId": "hs_46768769099"
+    }
+  },
+  {
+    "id": "c3375c719859",
+    "timestamp": "2026-03-30T05:36:52.557Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "89500bf353cd",
+    "timestamp": "2026-03-30T05:32:21.184Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "d0d1c89b7d7e",
+    "timestamp": "2026-03-30T05:28:21.934Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "770dc21d7698",
+    "timestamp": "2026-03-30T05:24:14.809Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "timeline.version_saved",
+    "details": "Saved timeline version \"Project Timeline Version 2\" for \"Prime Pacific Foods Corp\" — Reason: Project Timeline Version 2",
+    "meta": {
+      "projectId": "hs_46768769099"
+    }
+  },
+  {
+    "id": "4a139a6e8c07",
+    "timestamp": "2026-03-30T05:23:08.556Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "4499e26854db",
+    "timestamp": "2026-03-30T05:19:18.262Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "09e20ab0d8f1",
+    "timestamp": "2026-03-30T05:16:51.773Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "milestone.saved",
+    "details": "Saved milestones for \"Prime Pacific Foods Corp\" (4/9 complete)",
+    "meta": {
+      "projectId": "hs_46768769099",
+      "progress": 44
+    }
+  },
+  {
+    "id": "4c889dc4d4ee",
+    "timestamp": "2026-03-30T05:12:14.230Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "milestone.saved",
+    "details": "Saved milestones for \"Prime Pacific Foods Corp\" (5/9 complete)",
+    "meta": {
+      "projectId": "hs_46768769099",
+      "progress": 56
+    }
+  },
+  {
+    "id": "f92f81a66ea5",
+    "timestamp": "2026-03-30T05:08:45.181Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "4c8ff17f4582",
+    "timestamp": "2026-03-30T05:08:03.521Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.created",
+    "details": "Sprout Success Kit generated for project: Prime Pacific Foods Corp",
+    "meta": {
+      "projectId": "hs_46768769099",
+      "slug": "prime-pacific-foods-corp-tjm71f"
+    }
+  },
+  {
+    "id": "fa51101c1432",
+    "timestamp": "2026-03-30T05:05:56.251Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "6cb5f186342a",
+    "timestamp": "2026-03-30T03:53:10.656Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "f7729b77b55f",
+    "timestamp": "2026-03-30T03:49:07.603Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "timeline.version_saved",
+    "details": "Saved timeline version \"v1 - Please do not touch\" for \"Prime Pacific Foods Corp\" — Reason: testing",
+    "meta": {
+      "projectId": "hs_46768769099"
+    }
+  },
+  {
+    "id": "524c94ee6ae2",
+    "timestamp": "2026-03-30T03:48:17.326Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "1aa170268719",
+    "timestamp": "2026-03-30T03:48:11.957Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "ee6d8853fe30",
+    "timestamp": "2026-03-30T03:42:49.582Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "d2e5c07cd485",
+    "timestamp": "2026-03-30T03:42:38.381Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Alexandra Marie Dela Cruz logged out",
+    "meta": {}
+  },
+  {
+    "id": "ee2fe58b6b28",
+    "timestamp": "2026-03-30T03:42:03.328Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "228dc4665690",
+    "timestamp": "2026-03-30T03:42:00.856Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "34a45b2ccdc4",
+    "timestamp": "2026-03-30T03:41:54.203Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "user.updated",
+    "details": "Updated user Alexandra Marie Dela Cruz (project_manager)",
+    "meta": {
+      "targetUserId": "mmj4wxtgf2lr",
+      "targetUserName": "Alexandra Marie Dela Cruz"
+    }
+  },
+  {
+    "id": "d3a9213421ef",
+    "timestamp": "2026-03-30T03:41:10.166Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "cc74e288ebc2",
+    "timestamp": "2026-03-30T03:39:49.112Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "89823a10149f",
+    "timestamp": "2026-03-30T03:39:44.593Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "3935332a2663",
+    "timestamp": "2026-03-30T03:39:39.835Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "4fca033b0af2",
+    "timestamp": "2026-03-30T03:33:16.566Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "a6924bd3019c",
+    "timestamp": "2026-03-30T03:33:11.788Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "0fb422222c11",
+    "timestamp": "2026-03-30T03:27:38.538Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "4b71037245ac",
+    "timestamp": "2026-03-30T03:27:33.500Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "29ffe06be9af",
+    "timestamp": "2026-03-30T03:27:30.397Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "permissions.updated",
+    "details": "Access Matrix permissions were updated",
+    "meta": {
+      "updatedBy": "Brain Gregorio"
+    }
+  },
+  {
+    "id": "002894702b8e",
+    "timestamp": "2026-03-30T03:26:24.081Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "7dc16bd489c3",
+    "timestamp": "2026-03-30T03:26:18.928Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "b0b0a94a7ee6",
+    "timestamp": "2026-03-30T03:18:48.214Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "822b9b768c7b",
+    "timestamp": "2026-03-30T03:18:42.610Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "ba31057d14c5",
+    "timestamp": "2026-03-30T03:18:37.337Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "d022f09ec0e0",
+    "timestamp": "2026-03-30T03:18:35.413Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "75b6a8337ce4",
+    "timestamp": "2026-03-30T03:15:17.603Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "104edef75a2b",
+    "timestamp": "2026-03-30T03:15:12.829Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "340c4a0544cf",
+    "timestamp": "2026-03-30T03:14:06.895Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
     "id": "8bc3fb75d909",
     "timestamp": "2026-03-29T04:49:11.523Z",
     "userId": "mmj1fmmjvy5a",

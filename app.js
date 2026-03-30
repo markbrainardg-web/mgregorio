@@ -1456,10 +1456,10 @@ function roleBadge(roleId) {
 }
 
 let permissionsMatrix = {
-  super_admin:     { view_admin_dashboard:true,  view_all_projects:true,  view_my_dashboard:true,  view_my_projects:true,  view_users:true,  view_hubspot:true,  manage_users:true,  create_delete_projects:true,  edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:true,  log_time:true,  view_audit_trail:true,  view_project_details:true,  view_resource_hub:true,  generate_resource_hub:true,  edit_dashboard_fields:true,  view_pm_dashboard_table:false, manage_recordings:true,  manage_files:true,  view_tools_hub:true,  move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
-  lead:            { view_admin_dashboard:true,  view_all_projects:true,  view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:true,  manage_users:false, create_delete_projects:true,  edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:true,  view_resource_hub:true,  generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:true,  manage_files:true,  view_tools_hub:true,  move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
-  project_manager: { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:true,  view_resource_hub:true,  generate_resource_hub:true,  edit_dashboard_fields:true,  view_pm_dashboard_table:true,  manage_recordings:true,  manage_files:true,  view_tools_hub:false, move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
-  implementer:     { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:false, edit_milestones:true,  edit_actual_dates:false, act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:false, view_resource_hub:false, generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:false, manage_files:false, view_tools_hub:false, move_milestone_kanban:true,  edit_timeline:true,  use_timer:true,  view_docs:false, edit_docs:false, view_contacts:false, edit_contacts:false, view_recordings:false, view_files:false, view_sidekick:false, view_survey_form:false },
+  super_admin:     { view_admin_dashboard:true,  view_all_projects:true,  view_my_dashboard:true,  view_my_projects:true,  view_users:true,  view_hubspot:true,  manage_users:true,  create_delete_projects:true,  edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:true,  log_time:true,  view_audit_trail:true,  view_project_details:true,  view_resource_hub:true,  generate_resource_hub:true,  edit_dashboard_fields:true,  view_pm_dashboard_table:false, manage_recordings:true,  manage_files:true,  view_tools_hub:true,  move_milestone_kanban:true,  edit_timeline:true,  upload_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
+  lead:            { view_admin_dashboard:true,  view_all_projects:true,  view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:true,  manage_users:false, create_delete_projects:true,  edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:true,  view_resource_hub:true,  generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:true,  manage_files:true,  view_tools_hub:true,  move_milestone_kanban:true,  edit_timeline:true,  upload_timeline:false, use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
+  project_manager: { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:true,  edit_milestones:true,  edit_actual_dates:true,  act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:true,  view_resource_hub:true,  generate_resource_hub:true,  edit_dashboard_fields:true,  view_pm_dashboard_table:true,  manage_recordings:true,  manage_files:true,  view_tools_hub:false, move_milestone_kanban:true,  edit_timeline:true,  upload_timeline:true,  use_timer:true,  view_docs:true,  edit_docs:true,  view_contacts:true,  edit_contacts:true,  view_recordings:true,  view_files:true,  view_sidekick:true,  view_survey_form:true  },
+  implementer:     { view_admin_dashboard:false, view_all_projects:false, view_my_dashboard:true,  view_my_projects:true,  view_users:false, view_hubspot:false, manage_users:false, create_delete_projects:false, edit_projects:false, edit_milestones:true,  edit_actual_dates:false, act_as_user:false, log_time:true,  view_audit_trail:false, view_project_details:false, view_resource_hub:false, generate_resource_hub:false, edit_dashboard_fields:false, view_pm_dashboard_table:false, manage_recordings:false, manage_files:false, view_tools_hub:false, move_milestone_kanban:true,  edit_timeline:true,  upload_timeline:false, use_timer:true,  view_docs:false, edit_docs:false, view_contacts:false, edit_contacts:false, view_recordings:false, view_files:false, view_sidekick:false, view_survey_form:false },
 };
 async function fetchPermissions() {
   try {
@@ -6291,6 +6291,7 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
           <option value="">&#9989; Active (Current)</option>
           ${[...versions].reverse().map(v => `<option value="${v.id}">v${v.versionNumber} &mdash; ${v.name} (${new Date(v.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})})</option>`).join('')}
         </select>
+        <button class="btn btn-ghost btn-sm" id="pf-version-rename-btn" style="display:none;white-space:nowrap;font-size:.75rem;border-color:#065f46;color:#065f46">&#9998; Edit</button>
       </div>` : '';
 
     // Documents tab
@@ -6362,10 +6363,11 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
         ${versionSelectorHtml}
         ${pfTplSelectorHtml}
         <div id="pf-planning-rows-wrap" style="display:flex;flex-direction:column;gap:.2rem">${planningRows}</div>
-        <div class="modal-actions" style="margin-top:1.2rem">
-          <button class="btn btn-ghost pf-close-btn">Close</button>
-          <button class="btn btn-ghost" id="pf-tl-download-btn">&#11123; Download Timeline</button>
-          ${!isReadOnly ? `<button class="btn btn-secondary" id="pf-tl-version-btn" style="background:#f0fdf4;border:1.5px solid #86efac;color:#065f46">&#128203; Save as New Version</button><button class="btn btn-primary" id="pf-tl-save-btn">Save Dates</button>` : ''}
+        <div class="modal-actions" style="margin-top:1.2rem;gap:.4rem;flex-wrap:nowrap">
+          <button class="btn btn-ghost btn-sm pf-close-btn">Close</button>
+          <button class="btn btn-ghost btn-sm" id="pf-tl-download-btn" style="font-size:.75rem">&#11123; Download</button>
+          ${can('upload_timeline') ? `<input type="file" id="pf-tl-upload-input" accept=".csv" style="display:none"><button class="btn btn-ghost btn-sm" id="pf-tl-csv-dl-btn" style="border-color:#0891b2;color:#0891b2;font-size:.75rem">&#11015; Bulk Download</button><button class="btn btn-ghost btn-sm" id="pf-tl-upload-btn" style="border-color:#0891b2;color:#0891b2;font-size:.75rem">&#11014; Bulk Upload</button>` : ''}
+          ${!isReadOnly ? `<button class="btn btn-secondary btn-sm" id="pf-tl-version-btn" style="background:#f0fdf4;border:1.5px solid #86efac;color:#065f46;font-size:.75rem">&#128203; Save Version</button><button class="btn btn-primary btn-sm" id="pf-tl-save-btn">Save Dates</button>` : ''}
         </div>
       </div>
 
@@ -6541,6 +6543,19 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
     modal.querySelector('#pf-download-btn')?.addEventListener('click', handleDownload);
     modal.querySelector('#pf-tl-download-btn')?.addEventListener('click', handleDownload);
 
+    // Bulk CSV edit buttons
+    modal.querySelector('#pf-tl-csv-dl-btn')?.addEventListener('click', () => {
+      const latest = getProjects().find(x => x.id === projectId);
+      downloadTimelineCsv(modal, getPfActivePhases(), latest?.title || '');
+    });
+    const pfUploadInput = modal.querySelector('#pf-tl-upload-input');
+    modal.querySelector('#pf-tl-upload-btn')?.addEventListener('click', () => pfUploadInput?.click());
+    pfUploadInput?.addEventListener('change', function () {
+      if (!this.files[0]) return;
+      handleTimelineUpload(this.files[0], modal);
+      this.value = '';
+    });
+
     if (!isReadOnly) {
       // Save milestone progress
       modal.querySelector('#pf-ms-save-btn')?.addEventListener('click', () => {
@@ -6638,16 +6653,22 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
 
     // Version selector — switch between historical snapshots
     modal.querySelector('#pf-version-selector')?.addEventListener('change', function() {
-      const versionId = this.value;
-      const wrap = modal.querySelector('#pf-planning-rows-wrap');
+      const versionId  = this.value;
+      const wrap       = modal.querySelector('#pf-planning-rows-wrap');
       const saveBtn    = modal.querySelector('#pf-tl-save-btn');
       const verBtn     = modal.querySelector('#pf-tl-version-btn');
+      const csvDlBtn   = modal.querySelector('#pf-tl-csv-dl-btn');
+      const uploadBtn  = modal.querySelector('#pf-tl-upload-btn');
+      const renameBtn  = modal.querySelector('#pf-version-rename-btn');
       const tplWrap    = modal.querySelector('#pf-tpl-selector')?.closest('div[style*="Template"]') || null;
       if (!versionId) {
         // Active timeline — editable
         wrap.innerHTML = buildPlanningRows(timeline, milestones, isReadOnly, getPfActivePhases());
-        if (saveBtn) saveBtn.style.display = '';
-        if (verBtn)  verBtn.style.display  = '';
+        if (saveBtn)   saveBtn.style.display   = '';
+        if (verBtn)    verBtn.style.display    = '';
+        if (csvDlBtn)  csvDlBtn.style.display  = '';
+        if (uploadBtn) uploadBtn.style.display = '';
+        if (renameBtn) renameBtn.style.display = 'none';
       } else {
         const ver = versions.find(v => v.id === versionId);
         if (!ver) return;
@@ -6660,9 +6681,34 @@ function openProjectFullModal(projectId, initialTab = 'milestones') {
           banner.innerHTML = `&#128203; <strong>Reason:</strong> ${ver.revisionReason} &mdash; <em>${new Date(ver.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})} by ${ver.createdBy}</em>`;
           wrap.appendChild(banner);
         }
-        if (saveBtn) saveBtn.style.display = 'none';
-        if (verBtn)  verBtn.style.display  = 'none';
+        if (saveBtn)   saveBtn.style.display   = 'none';
+        if (verBtn)    verBtn.style.display    = 'none';
+        if (csvDlBtn)  csvDlBtn.style.display  = 'none';
+        if (uploadBtn) uploadBtn.style.display = 'none';
+        if (renameBtn) renameBtn.style.display = '';
       }
+    });
+
+    modal.querySelector('#pf-version-rename-btn')?.addEventListener('click', () => {
+      const versionId = modal.querySelector('#pf-version-selector')?.value;
+      if (!versionId) return;
+      const list = getProjects();
+      const proj = list.find(x => x.id === projectId);
+      const ver  = (proj?.timelineVersions || []).find(v => v.id === versionId);
+      if (!ver) return;
+      const newName = prompt('Version name:', ver.name);
+      if (newName === null) return; // cancelled
+      const newReason = prompt('Revision reason:', ver.revisionReason || '');
+      if (newReason === null) return; // cancelled
+      const trimName   = newName.trim() || ver.name;
+      const trimReason = newReason.trim();
+      ver.name           = trimName;
+      ver.revisionReason = trimReason;
+      saveProjects(list);
+      // Update the option text in the selector
+      const sel = modal.querySelector('#pf-version-selector');
+      const opt = sel?.querySelector(`option[value="${versionId}"]`);
+      if (opt) opt.textContent = `v${ver.versionNumber} — ${ver.name} (${new Date(ver.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})})`;
     });
 
     // Documents: add
@@ -8708,7 +8754,10 @@ async function renderAppSettings(container) {
           </div>
           <div class="settings-row-sub">${TIMELINE_PHASES.length} phases &middot; ${TIMELINE_PHASES.reduce((a,p) => a + p.tasks.length, 0)} tasks &middot; Default when no template is selected</div>
         </div>
-        <span style="font-size:.78rem;color:var(--txt-muted);flex-shrink:0">Cannot be modified</span>
+        <div style="display:flex;gap:.4rem;align-items:center;flex-shrink:0">
+          <span style="font-size:.78rem;color:var(--txt-muted)">Cannot be modified</span>
+          <button class="btn btn-ghost btn-sm" id="tpl-builtin-duplicate-btn" title="Duplicate built-in template">&#128203; Duplicate</button>
+        </div>
       </div>
 
       <!-- Custom templates -->
@@ -8726,6 +8775,7 @@ async function renderAppSettings(container) {
                   <div style="display:flex;gap:.4rem;flex-shrink:0">
                     <button class="btn btn-primary btn-sm tpl-edit-btn" data-id="${t.id}">&#9998; Edit</button>
                     <button class="btn btn-ghost btn-sm tpl-rename-btn" data-id="${t.id}">Rename</button>
+                    <button class="btn btn-ghost btn-sm tpl-duplicate-btn" data-id="${t.id}" title="Duplicate template">&#128203; Duplicate</button>
                     <button class="btn btn-danger btn-sm tpl-delete-btn" data-id="${t.id}">&#128465;</button>
                   </div>
                 </div>`;
@@ -8896,6 +8946,21 @@ async function renderAppSettings(container) {
     openAddTimelineTemplateModal(() => renderAppSettings(container));
   });
 
+  // Duplicate built-in template
+  container.querySelector('#tpl-builtin-duplicate-btn')?.addEventListener('click', async () => {
+    const phases = TIMELINE_PHASES.map(p => ({
+      label: p.label,
+      tasks: p.tasks.map(t => ({ ...t })),
+    }));
+    await fetch('/api/timeline-templates', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name: 'Standard Payroll Implementation (Copy)', phases }),
+    });
+    await fetchTimelineTemplates();
+    renderAppSettings(container);
+  });
+
   container.querySelectorAll('.tpl-edit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       openEditTimelineTemplateModal(btn.dataset.id, () => renderAppSettings(container));
@@ -8912,6 +8977,21 @@ async function renderAppSettings(container) {
         method:  'PUT',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ name: newName.trim() }),
+      });
+      await fetchTimelineTemplates();
+      renderAppSettings(container);
+    });
+  });
+
+  container.querySelectorAll('.tpl-duplicate-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const tpl = cachedTemplates.find(t => t.id === btn.dataset.id);
+      if (!tpl) return;
+      const copyName = `${tpl.name} (Copy)`;
+      await fetch('/api/timeline-templates', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name: copyName, phases: tpl.phases }),
       });
       await fetchTimelineTemplates();
       renderAppSettings(container);
@@ -9422,6 +9502,7 @@ function renderAccessMatrix(container) {
         // ─ Milestones ─
         { key: 'move_milestone_kanban',  label: 'Move Milestone on Kanban',          subGroup: 'Milestones' },
         { key: 'edit_timeline',          label: 'Edit Timeline & Planning',           subGroup: 'Milestones' },
+        { key: 'upload_timeline',        label: 'Upload Timeline Dates (Bulk Edit)',  subGroup: 'Milestones' },
         { key: 'edit_actual_dates',      label: 'Edit Actual Completion Dates',       subGroup: 'Milestones' },
         // ─ Time Tracking ─
         { key: 'use_timer',              label: 'Timer',                              subGroup: 'Time Tracking' },
@@ -9759,6 +9840,7 @@ function openMilestonesModal(projectId) {
         <option value="">&#10003; Active (Current)</option>
         ${[...versions].reverse().map(v => `<option value="${v.id}">v${v.versionNumber} &mdash; ${v.name} (${new Date(v.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})})</option>`).join('')}
       </select>
+      <button class="btn btn-ghost btn-sm" id="ms-version-rename-btn" style="display:none;white-space:nowrap;font-size:.75rem;border-color:#065f46;color:#065f46">&#9998; Edit</button>
     </div>` : '';
 
   // Template selector HTML (only if custom templates exist)
@@ -9829,11 +9911,12 @@ function openMilestonesModal(projectId) {
       <div id="ms-version-reason-banner" style="display:none;padding:.45rem .85rem;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;margin-bottom:.6rem;font-size:.78rem;color:#92400e"></div>
       ${tplSelectorHtml}
       <div id="ms-planning-rows-wrap" style="display:flex;flex-direction:column;gap:.2rem">${planningRows}</div>
-      <div class="modal-actions" style="margin-top:1.2rem">
-        <button class="btn btn-ghost" id="modal-cancel">Close</button>
-        <button class="btn btn-ghost" id="plan-download-btn">&#11123; Download Timeline</button>
-        ${!isReadOnly ? `<button class="btn btn-ghost" id="plan-version-btn" style="border-color:var(--primary);color:var(--primary)">&#128190; Save as New Version</button>` : ''}
-        ${!isReadOnly ? `<button class="btn btn-primary" id="plan-save-btn">Save Dates</button>` : ''}
+      <div class="modal-actions" style="margin-top:1.2rem;gap:.4rem;flex-wrap:nowrap">
+        <button class="btn btn-ghost btn-sm" id="modal-cancel">Close</button>
+        <button class="btn btn-ghost btn-sm" id="plan-download-btn" style="font-size:.75rem">&#11123; Download</button>
+        ${can('upload_timeline') ? `<input type="file" id="ms-tl-upload-input" accept=".csv" style="display:none"><button class="btn btn-ghost btn-sm" id="ms-tl-csv-dl-btn" style="border-color:#0891b2;color:#0891b2;font-size:.75rem">&#11015; Bulk Download</button><button class="btn btn-ghost btn-sm" id="ms-tl-upload-btn" style="border-color:#0891b2;color:#0891b2;font-size:.75rem">&#11014; Bulk Upload</button>` : ''}
+        ${!isReadOnly ? `<button class="btn btn-ghost btn-sm" id="plan-version-btn" style="border-color:var(--primary);color:var(--primary);font-size:.75rem">&#128190; Save Version</button>` : ''}
+        ${!isReadOnly ? `<button class="btn btn-primary btn-sm" id="plan-save-btn">Save Dates</button>` : ''}
       </div>
     </div>
 
@@ -10025,6 +10108,19 @@ function openMilestonesModal(projectId) {
   modal.querySelector('#plan-download-btn')?.addEventListener('click', handleDownload);
   modal.querySelector('#prog-download-btn')?.addEventListener('click', handleDownload);
 
+  // Bulk CSV edit buttons
+  modal.querySelector('#ms-tl-csv-dl-btn')?.addEventListener('click', () => {
+    const latest = getProjects().find(x => x.id === projectId);
+    downloadTimelineCsv(modal, getMsActivePhases(), latest?.title || '');
+  });
+  const msTlUploadInput = modal.querySelector('#ms-tl-upload-input');
+  modal.querySelector('#ms-tl-upload-btn')?.addEventListener('click', () => msTlUploadInput?.click());
+  msTlUploadInput?.addEventListener('change', function () {
+    if (!this.files[0]) return;
+    handleTimelineUpload(this.files[0], modal);
+    this.value = '';
+  });
+
   if (!isReadOnly) {
     modal.querySelector('#plan-save-btn')?.addEventListener('click', savePlanningDates);
     modal.querySelector('#plan-paste-btn')?.addEventListener('click', () => {
@@ -10065,19 +10161,25 @@ function openMilestonesModal(projectId) {
 
   // ── Version selector: show historical snapshot (read-only) ────
   modal.querySelector('#ms-version-selector')?.addEventListener('change', function () {
-    const vId     = this.value;
-    const wrap    = modal.querySelector('#ms-planning-rows-wrap');
-    const banner  = modal.querySelector('#ms-version-reason-banner');
-    const saveBtn = modal.querySelector('#plan-save-btn');
-    const verBtn  = modal.querySelector('#plan-version-btn');
-    const tplSel  = modal.querySelector('#ms-tpl-selector');
+    const vId       = this.value;
+    const wrap      = modal.querySelector('#ms-planning-rows-wrap');
+    const banner    = modal.querySelector('#ms-version-reason-banner');
+    const saveBtn   = modal.querySelector('#plan-save-btn');
+    const verBtn    = modal.querySelector('#plan-version-btn');
+    const csvDlBtn  = modal.querySelector('#ms-tl-csv-dl-btn');
+    const uploadBtn = modal.querySelector('#ms-tl-upload-btn');
+    const renameBtn = modal.querySelector('#ms-version-rename-btn');
+    const tplSel    = modal.querySelector('#ms-tpl-selector');
 
     if (!vId) {
       // Back to current
       if (wrap) wrap.innerHTML = buildPlanningRows(timeline, milestones, isReadOnly, getMsActivePhases());
       if (banner) { banner.style.display = 'none'; banner.textContent = ''; }
-      if (saveBtn) saveBtn.style.display = '';
-      if (verBtn)  verBtn.style.display  = '';
+      if (saveBtn)   saveBtn.style.display   = '';
+      if (verBtn)    verBtn.style.display    = '';
+      if (csvDlBtn)  csvDlBtn.style.display  = '';
+      if (uploadBtn) uploadBtn.style.display = '';
+      if (renameBtn) renameBtn.style.display = 'none';
       if (tplSel)  tplSel.closest('div') && (tplSel.closest('div').style.display = '');
     } else {
       const ver = versions.find(v => v.id === vId);
@@ -10087,8 +10189,38 @@ function openMilestonesModal(projectId) {
         banner.style.display = 'block';
         banner.innerHTML = `<strong>v${ver.versionNumber} &mdash; ${ver.name}</strong> &nbsp;|&nbsp; Saved ${new Date(ver.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})} by ${ver.createdByName || 'Unknown'}${ver.revisionReason ? `<br><em>Reason: ${ver.revisionReason}</em>` : ''}`;
       }
-      if (saveBtn) saveBtn.style.display = 'none';
-      if (verBtn)  verBtn.style.display  = 'none';
+      if (saveBtn)   saveBtn.style.display   = 'none';
+      if (verBtn)    verBtn.style.display    = 'none';
+      if (csvDlBtn)  csvDlBtn.style.display  = 'none';
+      if (uploadBtn) uploadBtn.style.display = 'none';
+      if (renameBtn) renameBtn.style.display = '';
+    }
+  });
+
+  modal.querySelector('#ms-version-rename-btn')?.addEventListener('click', () => {
+    const vId = modal.querySelector('#ms-version-selector')?.value;
+    if (!vId) return;
+    const list = getProjects();
+    const proj = list.find(x => x.id === projectId);
+    const ver  = (proj?.timelineVersions || []).find(v => v.id === vId);
+    if (!ver) return;
+    const newName = prompt('Version name:', ver.name);
+    if (newName === null) return; // cancelled
+    const newReason = prompt('Revision reason:', ver.revisionReason || '');
+    if (newReason === null) return; // cancelled
+    const trimName   = newName.trim() || ver.name;
+    const trimReason = newReason.trim();
+    ver.name           = trimName;
+    ver.revisionReason = trimReason;
+    saveProjects(list);
+    // Update the option text in the selector
+    const sel = modal.querySelector('#ms-version-selector');
+    const opt = sel?.querySelector(`option[value="${vId}"]`);
+    if (opt) opt.textContent = `v${ver.versionNumber} — ${ver.name} (${new Date(ver.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})})`;
+    // Update reason banner if visible
+    const banner = modal.querySelector('#ms-version-reason-banner');
+    if (banner && banner.style.display !== 'none') {
+      banner.innerHTML = `<strong>v${ver.versionNumber} &mdash; ${ver.name}</strong> &nbsp;|&nbsp; Saved ${new Date(ver.createdAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})} by ${ver.createdByName || 'Unknown'}${ver.revisionReason ? `<br><em>Reason: ${ver.revisionReason}</em>` : ''}`;
     }
   });
 }
@@ -10531,6 +10663,109 @@ function openProjectChatModal(projectId) {
 
   // Auto-trigger proactive briefing on open
   sendMessage();
+}
+
+// ── TIMELINE BULK EDIT (CSV download / upload) ─────────────────
+
+function downloadTimelineCsv(modal, phases, projectTitle) {
+  phases = phases || TIMELINE_PHASES;
+  const rows = [['row_key', 'label', 'start_date', 'end_date']];
+  phases.forEach((phase) => {
+    const key = phase.milestone || phase.key || phase.label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    const s = modal.querySelector(`.plan-start[data-milestone="${key}"]`)?.value || '';
+    const e = modal.querySelector(`.plan-end[data-milestone="${key}"]`)?.value || '';
+    rows.push([key, phase.label, s, e]);
+    phase.tasks.forEach((task, ti) => {
+      const tk = key + '_t' + ti;
+      const ts = modal.querySelector(`.plan-start[data-milestone="${tk}"]`)?.value || '';
+      const te = modal.querySelector(`.plan-end[data-milestone="${tk}"]`)?.value || '';
+      rows.push([tk, task.label, ts, te]);
+    });
+  });
+  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = (projectTitle ? projectTitle.replace(/[^a-z0-9]/gi, '_') : 'timeline') + '_dates.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function parseTimelineCsvLine(line) {
+  const result = [];
+  let current = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current); current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+function normalizeTimelineDate(raw) {
+  if (!raw) return '';
+  raw = raw.trim();
+  if (!raw) return '';
+  // Already ISO YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+  // Excel M/D/YYYY or MM/DD/YYYY (US locale)
+  const mdy = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (mdy) {
+    const [, m, d, y] = mdy;
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  // D-M-YYYY or DD-MM-YYYY with dashes
+  const dmy = raw.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+  if (dmy) {
+    const [, d, m, y] = dmy;
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  // Try native Date parse as last resort
+  const dt = new Date(raw);
+  if (!isNaN(dt)) return dt.toISOString().split('T')[0];
+  return '';
+}
+
+function handleTimelineUpload(file, modal) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const lines = e.target.result.split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.length < 2) { alert('Invalid CSV file.'); return; }
+    let updated = 0, skippedBadDate = 0;
+    lines.slice(1).forEach(line => {
+      const cols = parseTimelineCsvLine(line);
+      if (cols.length < 4) return;
+      const rowKey    = cols[0].trim();
+      const startDate = normalizeTimelineDate(cols[2]);
+      const endDate   = normalizeTimelineDate(cols[3]);
+      const startInput = modal.querySelector(`.plan-start[data-milestone="${rowKey}"]`);
+      const endInput   = modal.querySelector(`.plan-end[data-milestone="${rowKey}"]`);
+      if (startInput) {
+        if (startDate) { startInput.value = startDate; updated++; }
+        else if (cols[2].trim()) skippedBadDate++;
+      }
+      if (endInput && endDate) { endInput.value = endDate; }
+    });
+    if (updated > 0) {
+      const warn = skippedBadDate > 0 ? ` (${skippedBadDate} row(s) skipped — unrecognised date format)` : '';
+      alert(`${updated} timeline row(s) updated${warn}. Click "Save Dates" to save your changes.`);
+    } else if (skippedBadDate > 0) {
+      alert(`Upload failed: dates could not be read. Make sure you save the file as CSV (not .xlsx) and that dates are in MM/DD/YYYY or YYYY-MM-DD format.`);
+    } else {
+      alert('No matching rows found. Make sure you are uploading the CSV downloaded from this project\'s active timeline.');
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ── DOWNLOAD TIMELINE (Excel) ──────────────────────────────────

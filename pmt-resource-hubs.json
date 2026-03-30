@@ -440,5 +440,54 @@
       }
     ],
     "updatedAt": "2026-03-27T08:52:23.958Z"
+  },
+  {
+    "id": "f15fd6a9162a",
+    "slug": "prime-pacific-foods-corp-tjm71f",
+    "projectId": "hs_46768769099",
+    "projectTitle": "Prime Pacific Foods Corp",
+    "createdAt": "2026-03-30T05:08:03.519Z",
+    "createdBy": "mmj4wxtgf2lr",
+    "createdByName": "Alexandra Marie Dela Cruz",
+    "isPublic": true,
+    "sections": {
+      "milestones": true,
+      "timeline": true,
+      "documents": false,
+      "recordings": false,
+      "contacts": true,
+      "ticketing": false
+    },
+    "limitedSections": {
+      "milestones": true,
+      "timeline": true,
+      "documents": false,
+      "recordings": false,
+      "contacts": false,
+      "ticketing": false
+    },
+    "ticketingUrl": "",
+    "ticketingNote": "",
+    "accessList": [
+      {
+        "contactId": "mmj4wxtgf2lr",
+        "name": "Alexandra Marie Dela Cruz",
+        "email": "adelacruz@sprout.ph",
+        "accessLevel": "full",
+        "addedAt": "2026-03-30T05:08:03.519Z",
+        "isPM": true
+      }
+    ],
+    "recordings": [],
+    "accessLog": [
+      {
+        "email": "adelacruz",
+        "timestamp": "2026-03-30T06:12:37.301Z",
+        "ip": "127.0.0.1",
+        "success": false,
+        "reason": "email_not_found"
+      }
+    ],
+    "updatedAt": "2026-03-30T16:18:22.474Z"
   }
 ]

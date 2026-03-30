@@ -3464,7 +3464,7 @@
       "mn71byk9urnr"
     ],
     "dueDate": "",
-    "progress": 0,
+    "progress": 44,
     "createdBy": "hubspot",
     "hubspotId": "46768769099",
     "hubspotStage": "Customer Onboarding",
@@ -3472,6 +3472,13 @@
     "projectType": "client",
     "syncedAt": "2026-03-19T08:40:26.806Z",
     "milestones": {
+      "Project Team Assignment": true,
+      "KOM or Requirements Alignment": true,
+      "Data Gathering": true,
+      "Simulation I": true,
+      "Training and System Setup": false,
+      "Project Review Checklist": false,
+      "Simulation II / Parallel Run": false,
       "8. Implementation Sign Off": false,
       "9. Adoption / Hypercare": false
     },
@@ -3491,6 +3498,1106 @@
       "softwareImpl": {
         "id": null,
         "name": null
+      }
+    },
+    "timelineTemplate": "tpl_1774842368321",
+    "timelineVersions": [
+      {
+        "id": "v1774842547073",
+        "versionNumber": 1,
+        "name": "Project Timeline Version 1",
+        "revisionReason": "Main POC Resigned",
+        "snapshot": {
+          "phase_0_project_team_assignment": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_0_project_team_assignment_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t4": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t5": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_3_simulation": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_3_simulation_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t4": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t5": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t6": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t7": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t8": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t9": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t10": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t11": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t12": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_5_project_review": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_5_project_review_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_5_project_review_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_8_adoption": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          }
+        },
+        "createdAt": "2026-03-30T03:49:07.073Z",
+        "createdBy": "mmj4wxtgf2lr",
+        "createdByName": "Alexandra Marie Dela Cruz"
+      },
+      {
+        "id": "v1774848254319",
+        "versionNumber": 2,
+        "name": "Project Timeline Version 2",
+        "revisionReason": "Extension needed for Payroll Training",
+        "snapshot": {
+          "phase_0_project_team_assignment": {
+            "startDate": "2026-02-02",
+            "endDate": "2026-02-02",
+            "targetDate": "2026-02-02"
+          },
+          "phase_0_project_team_assignment_t0": {
+            "startDate": "2026-02-02",
+            "endDate": "2026-02-02",
+            "targetDate": "2026-02-02"
+          },
+          "phase_1_kick_off_meeting": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_1_kick_off_meeting_t0": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_1_kick_off_meeting_t1": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_1_kick_off_meeting_t2": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_2_data_gathering": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t0": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t1": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t2": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t3": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t4": {
+            "startDate": "2026-02-24",
+            "endDate": "2026-02-25",
+            "targetDate": "2026-02-25"
+          },
+          "phase_2_data_gathering_t5": {
+            "startDate": "2026-02-26",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27"
+          },
+          "phase_3_simulation": {
+            "startDate": "2026-03-02",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_3_simulation_t0": {
+            "startDate": "2026-03-02",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_4_training_and_system_setup": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_4_training_and_system_setup_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t2": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27"
+          },
+          "phase_4_training_and_system_setup_t3": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27"
+          },
+          "phase_4_training_and_system_setup_t4": {
+            "startDate": "2026-03-18",
+            "endDate": "2026-03-18",
+            "targetDate": "2026-03-18"
+          },
+          "phase_4_training_and_system_setup_t5": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t6": {
+            "startDate": "2026-03-03",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_4_training_and_system_setup_t7": {
+            "startDate": "2026-03-03",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_4_training_and_system_setup_t8": {
+            "startDate": "2026-03-25",
+            "endDate": "2026-03-25",
+            "targetDate": "2026-03-25"
+          },
+          "phase_4_training_and_system_setup_t9": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t10": {
+            "startDate": "2026-03-19",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_4_training_and_system_setup_t11": {
+            "startDate": "2026-03-19",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_4_training_and_system_setup_t12": {
+            "startDate": "2026-03-19",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_5_project_review": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "phase_5_project_review_t0": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-03-27",
+            "targetDate": "2026-03-27"
+          },
+          "phase_5_project_review_t1": {
+            "startDate": "2026-04-01",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "phase_6_parallel_run": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_7_implementation_sign_off_t0": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_7_implementation_sign_off_t1": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_7_implementation_sign_off_t2": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_8_adoption": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t3": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_6_simulation_ii": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "phase_6_simulation_ii_t0": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-03-27",
+            "targetDate": "2026-03-27"
+          },
+          "phase_6_simulation_ii_t1": {
+            "startDate": "2026-04-01",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "Project Team Assignment": {
+            "startDate": "2026-02-02",
+            "endDate": "2026-02-02",
+            "targetDate": "2026-02-02",
+            "actualDate": "2026-02-02"
+          },
+          "KOM or Requirements Alignment": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18",
+            "actualDate": "2026-02-18"
+          },
+          "Data Gathering": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27",
+            "actualDate": "2026-02-27"
+          },
+          "Simulation I": {
+            "startDate": "2026-03-02",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03",
+            "actualDate": "2026-03-03"
+          },
+          "Training and System Setup": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24",
+            "actualDate": ""
+          },
+          "Project Review Checklist": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01",
+            "actualDate": ""
+          },
+          "Simulation II / Parallel Run": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01",
+            "actualDate": ""
+          },
+          "8. Implementation Sign Off": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06",
+            "actualDate": ""
+          },
+          "9. Adoption / Hypercare": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": "",
+            "actualDate": ""
+          }
+        },
+        "createdAt": "2026-03-30T05:24:14.319Z",
+        "createdBy": "mmj4wxtgf2lr",
+        "createdByName": "Alexandra Marie Dela Cruz"
+      },
+      {
+        "id": "v1774849330104",
+        "versionNumber": 3,
+        "name": "Project Timeline Version 3",
+        "revisionReason": "Changes in the Timeline",
+        "snapshot": {
+          "phase_0_project_team_assignment": {
+            "startDate": "2026-02-02",
+            "endDate": "2026-02-02",
+            "targetDate": "2026-02-02"
+          },
+          "phase_0_project_team_assignment_t0": {
+            "startDate": "2026-02-02",
+            "endDate": "2026-02-02",
+            "targetDate": "2026-02-02"
+          },
+          "phase_1_kick_off_meeting": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_1_kick_off_meeting_t0": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_1_kick_off_meeting_t1": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_1_kick_off_meeting_t2": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_2_data_gathering": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t0": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t1": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t2": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t3": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-23",
+            "targetDate": "2026-02-23"
+          },
+          "phase_2_data_gathering_t4": {
+            "startDate": "2026-02-24",
+            "endDate": "2026-02-25",
+            "targetDate": "2026-02-25"
+          },
+          "phase_2_data_gathering_t5": {
+            "startDate": "2026-02-26",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27"
+          },
+          "phase_3_simulation": {
+            "startDate": "2026-03-02",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_3_simulation_t0": {
+            "startDate": "2026-03-02",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_4_training_and_system_setup": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_4_training_and_system_setup_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t2": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27"
+          },
+          "phase_4_training_and_system_setup_t3": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27"
+          },
+          "phase_4_training_and_system_setup_t4": {
+            "startDate": "2026-03-18",
+            "endDate": "2026-03-18",
+            "targetDate": "2026-03-18"
+          },
+          "phase_4_training_and_system_setup_t5": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t6": {
+            "startDate": "2026-03-03",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_4_training_and_system_setup_t7": {
+            "startDate": "2026-03-03",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03"
+          },
+          "phase_4_training_and_system_setup_t8": {
+            "startDate": "2026-03-25",
+            "endDate": "2026-03-25",
+            "targetDate": "2026-03-25"
+          },
+          "phase_4_training_and_system_setup_t9": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t10": {
+            "startDate": "2026-03-19",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_4_training_and_system_setup_t11": {
+            "startDate": "2026-03-19",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_4_training_and_system_setup_t12": {
+            "startDate": "2026-03-19",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24"
+          },
+          "phase_5_project_review": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "phase_5_project_review_t0": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-03-27",
+            "targetDate": "2026-03-27"
+          },
+          "phase_5_project_review_t1": {
+            "startDate": "2026-04-01",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "phase_6_parallel_run": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_parallel_run_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_7_implementation_sign_off_t0": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_7_implementation_sign_off_t1": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_7_implementation_sign_off_t2": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06"
+          },
+          "phase_8_adoption": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t3": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18"
+          },
+          "phase_6_simulation_ii": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "phase_6_simulation_ii_t0": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-03-27",
+            "targetDate": "2026-03-27"
+          },
+          "phase_6_simulation_ii_t1": {
+            "startDate": "2026-04-01",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01"
+          },
+          "Project Team Assignment": {
+            "startDate": "2026-02-02",
+            "endDate": "2026-02-02",
+            "targetDate": "2026-02-02",
+            "actualDate": "2026-02-02"
+          },
+          "KOM or Requirements Alignment": {
+            "startDate": "2026-02-18",
+            "endDate": "2026-02-18",
+            "targetDate": "2026-02-18",
+            "actualDate": "2026-02-18"
+          },
+          "Data Gathering": {
+            "startDate": "2026-02-19",
+            "endDate": "2026-02-27",
+            "targetDate": "2026-02-27",
+            "actualDate": "2026-02-27"
+          },
+          "Simulation I": {
+            "startDate": "2026-03-02",
+            "endDate": "2026-03-03",
+            "targetDate": "2026-03-03",
+            "actualDate": "2026-03-03"
+          },
+          "Training and System Setup": {
+            "startDate": "2026-02-27",
+            "endDate": "2026-03-24",
+            "targetDate": "2026-03-24",
+            "actualDate": ""
+          },
+          "Project Review Checklist": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01",
+            "actualDate": ""
+          },
+          "Simulation II / Parallel Run": {
+            "startDate": "2026-03-27",
+            "endDate": "2026-04-01",
+            "targetDate": "2026-04-01",
+            "actualDate": ""
+          },
+          "8. Implementation Sign Off": {
+            "startDate": "2026-04-06",
+            "endDate": "2026-04-06",
+            "targetDate": "2026-04-06",
+            "actualDate": ""
+          },
+          "9. Adoption / Hypercare": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": "",
+            "actualDate": ""
+          }
+        },
+        "createdAt": "2026-03-30T05:42:10.104Z",
+        "createdBy": "mmj4wxtgf2lr",
+        "createdByName": "Alexandra Marie Dela Cruz"
+      }
+    ],
+    "timeline": {
+      "phase_0_project_team_assignment": {
+        "startDate": "2026-02-02",
+        "endDate": "2026-02-02",
+        "targetDate": "2026-02-02"
+      },
+      "phase_0_project_team_assignment_t0": {
+        "startDate": "2026-02-02",
+        "endDate": "2026-02-02",
+        "targetDate": "2026-02-02"
+      },
+      "phase_1_kick_off_meeting": {
+        "startDate": "2026-02-18",
+        "endDate": "2026-02-18",
+        "targetDate": "2026-02-18"
+      },
+      "phase_1_kick_off_meeting_t0": {
+        "startDate": "2026-02-18",
+        "endDate": "2026-02-18",
+        "targetDate": "2026-02-18"
+      },
+      "phase_1_kick_off_meeting_t1": {
+        "startDate": "2026-02-18",
+        "endDate": "2026-02-18",
+        "targetDate": "2026-02-18"
+      },
+      "phase_1_kick_off_meeting_t2": {
+        "startDate": "2026-02-18",
+        "endDate": "2026-02-18",
+        "targetDate": "2026-02-18"
+      },
+      "phase_2_data_gathering": {
+        "startDate": "2026-02-19",
+        "endDate": "2026-02-23",
+        "targetDate": "2026-02-23"
+      },
+      "phase_2_data_gathering_t0": {
+        "startDate": "2026-02-19",
+        "endDate": "2026-02-23",
+        "targetDate": "2026-02-23"
+      },
+      "phase_2_data_gathering_t1": {
+        "startDate": "2026-02-19",
+        "endDate": "2026-02-23",
+        "targetDate": "2026-02-23"
+      },
+      "phase_2_data_gathering_t2": {
+        "startDate": "2026-02-19",
+        "endDate": "2026-02-23",
+        "targetDate": "2026-02-23"
+      },
+      "phase_2_data_gathering_t3": {
+        "startDate": "2026-02-19",
+        "endDate": "2026-02-23",
+        "targetDate": "2026-02-23"
+      },
+      "phase_2_data_gathering_t4": {
+        "startDate": "2026-02-24",
+        "endDate": "2026-02-25",
+        "targetDate": "2026-02-25"
+      },
+      "phase_2_data_gathering_t5": {
+        "startDate": "2026-02-26",
+        "endDate": "2026-02-27",
+        "targetDate": "2026-02-27"
+      },
+      "phase_3_simulation": {
+        "startDate": "2026-03-02",
+        "endDate": "2026-03-03",
+        "targetDate": "2026-03-03"
+      },
+      "phase_3_simulation_t0": {
+        "startDate": "2026-03-02",
+        "endDate": "2026-03-03",
+        "targetDate": "2026-03-03"
+      },
+      "phase_4_training_and_system_setup": {
+        "startDate": "2026-02-27",
+        "endDate": "2026-03-24",
+        "targetDate": "2026-03-24"
+      },
+      "phase_4_training_and_system_setup_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t2": {
+        "startDate": "2026-02-27",
+        "endDate": "2026-02-27",
+        "targetDate": "2026-02-27"
+      },
+      "phase_4_training_and_system_setup_t3": {
+        "startDate": "2026-02-27",
+        "endDate": "2026-02-27",
+        "targetDate": "2026-02-27"
+      },
+      "phase_4_training_and_system_setup_t4": {
+        "startDate": "2026-03-18",
+        "endDate": "2026-03-18",
+        "targetDate": "2026-03-18"
+      },
+      "phase_4_training_and_system_setup_t5": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t6": {
+        "startDate": "2026-03-03",
+        "endDate": "2026-03-03",
+        "targetDate": "2026-03-03"
+      },
+      "phase_4_training_and_system_setup_t7": {
+        "startDate": "2026-03-03",
+        "endDate": "2026-03-03",
+        "targetDate": "2026-03-03"
+      },
+      "phase_4_training_and_system_setup_t8": {
+        "startDate": "2026-03-25",
+        "endDate": "2026-03-25",
+        "targetDate": "2026-03-25"
+      },
+      "phase_4_training_and_system_setup_t9": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t10": {
+        "startDate": "2026-03-19",
+        "endDate": "2026-03-24",
+        "targetDate": "2026-03-24"
+      },
+      "phase_4_training_and_system_setup_t11": {
+        "startDate": "2026-03-19",
+        "endDate": "2026-03-24",
+        "targetDate": "2026-03-24"
+      },
+      "phase_4_training_and_system_setup_t12": {
+        "startDate": "2026-03-19",
+        "endDate": "2026-03-24",
+        "targetDate": "2026-03-24"
+      },
+      "phase_5_project_review": {
+        "startDate": "2026-03-27",
+        "endDate": "2026-04-01",
+        "targetDate": "2026-04-01"
+      },
+      "phase_5_project_review_t0": {
+        "startDate": "2026-03-27",
+        "endDate": "2026-03-27",
+        "targetDate": "2026-03-27"
+      },
+      "phase_5_project_review_t1": {
+        "startDate": "2026-04-01",
+        "endDate": "2026-04-01",
+        "targetDate": "2026-04-01"
+      },
+      "phase_6_parallel_run": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_parallel_run_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_parallel_run_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_parallel_run_t2": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_parallel_run_t3": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_7_implementation_sign_off": {
+        "startDate": "2026-04-06",
+        "endDate": "2026-04-06",
+        "targetDate": "2026-04-06"
+      },
+      "phase_7_implementation_sign_off_t0": {
+        "startDate": "2026-04-06",
+        "endDate": "2026-04-06",
+        "targetDate": "2026-04-06"
+      },
+      "phase_7_implementation_sign_off_t1": {
+        "startDate": "2026-04-06",
+        "endDate": "2026-04-06",
+        "targetDate": "2026-04-06"
+      },
+      "phase_7_implementation_sign_off_t2": {
+        "startDate": "2026-04-06",
+        "endDate": "2026-04-06",
+        "targetDate": "2026-04-06"
+      },
+      "phase_8_adoption": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_1_kick_off_meeting_t3": {
+        "startDate": "2026-02-18",
+        "endDate": "2026-02-18",
+        "targetDate": "2026-02-18"
+      },
+      "phase_6_simulation_ii": {
+        "startDate": "2026-03-27",
+        "endDate": "2026-04-01",
+        "targetDate": "2026-04-01"
+      },
+      "phase_6_simulation_ii_t0": {
+        "startDate": "2026-03-27",
+        "endDate": "2026-03-27",
+        "targetDate": "2026-03-27"
+      },
+      "phase_6_simulation_ii_t1": {
+        "startDate": "2026-04-01",
+        "endDate": "2026-04-01",
+        "targetDate": "2026-04-01"
+      },
+      "Project Team Assignment": {
+        "startDate": "2026-02-02",
+        "endDate": "2026-02-02",
+        "targetDate": "2026-02-02",
+        "actualDate": "2026-02-02"
+      },
+      "KOM or Requirements Alignment": {
+        "startDate": "2026-02-18",
+        "endDate": "2026-02-18",
+        "targetDate": "2026-02-18",
+        "actualDate": "2026-02-18"
+      },
+      "Data Gathering": {
+        "startDate": "2026-02-19",
+        "endDate": "2026-02-27",
+        "targetDate": "2026-02-27",
+        "actualDate": "2026-02-27"
+      },
+      "Simulation I": {
+        "startDate": "2026-03-02",
+        "endDate": "2026-03-03",
+        "targetDate": "2026-03-03",
+        "actualDate": "2026-03-03"
+      },
+      "Training and System Setup": {
+        "startDate": "2026-02-27",
+        "endDate": "2026-03-24",
+        "targetDate": "2026-03-24",
+        "actualDate": ""
+      },
+      "Project Review Checklist": {
+        "startDate": "2026-03-27",
+        "endDate": "2026-04-01",
+        "targetDate": "2026-04-01",
+        "actualDate": ""
+      },
+      "Simulation II / Parallel Run": {
+        "startDate": "2026-03-27",
+        "endDate": "2026-04-01",
+        "targetDate": "2026-04-01",
+        "actualDate": ""
+      },
+      "8. Implementation Sign Off": {
+        "startDate": "2026-04-06",
+        "endDate": "2026-04-06",
+        "targetDate": "2026-04-06",
+        "actualDate": ""
+      },
+      "9. Adoption / Hypercare": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": "",
+        "actualDate": ""
       }
     }
   },
@@ -127972,7 +129079,10 @@
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": "44416908",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71byxgfqr0",
+      "mn71by3axx1g"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -128249,8 +129359,8 @@
     "status": "ongoing",
     "priority": "medium",
     "projectType": "client",
-    "projectManager": null,
-    "hubspotOwnerId": "44416908",
+    "projectManager": "mmj4xh2lc5uq",
+    "hubspotOwnerId": "803549924",
     "coProjectManagerHsId": "44416908",
     "assignedTo": [],
     "teamRoles": {
@@ -128275,7 +129385,7 @@
     "progress": 0,
     "createdBy": "hubspot",
     "hubspotId": "52589170449",
-    "hubspotStage": "Sales Handover",
+    "hubspotStage": "Customer Onboarding",
     "syncedAt": "2026-03-28T14:25:59.991Z"
   },
   {
@@ -128285,8 +129395,8 @@
     "status": "ongoing",
     "priority": "medium",
     "projectType": "client",
-    "projectManager": null,
-    "hubspotOwnerId": "44416908",
+    "projectManager": "mmj4wxtgf2lr",
+    "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": "44416908",
     "assignedTo": [],
     "teamRoles": {
@@ -128311,7 +129421,7 @@
     "progress": 0,
     "createdBy": "hubspot",
     "hubspotId": "52024159631",
-    "hubspotStage": "Sales Handover",
+    "hubspotStage": "Customer Onboarding",
     "syncedAt": "2026-03-28T14:25:59.993Z"
   },
   {
@@ -128349,5 +129459,24 @@
     "hubspotId": "53284670265",
     "hubspotStage": "Customer Success",
     "syncedAt": "2026-03-28T14:26:00.019Z"
+  },
+  {
+    "id": "hs_52242710133",
+    "title": "Konektao Global BPO Corporation",
+    "description": "Auto-synced from HubSpot — Customer Onboarding",
+    "status": "ongoing",
+    "priority": "medium",
+    "projectManager": "mmj4wcs359kz",
+    "hubspotOwnerId": "396579952",
+    "assignedTo": [],
+    "dueDate": "",
+    "progress": 0,
+    "createdBy": "hubspot",
+    "hubspotId": "52242710133",
+    "hubspotStage": "Customer Onboarding",
+    "projectType": "client",
+    "syncedAt": "2026-03-30T01:29:53.874Z",
+    "milestones": {},
+    "timeline": {}
   }
 ]
