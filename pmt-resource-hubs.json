@@ -79,7 +79,54 @@
     },
     "ticketingUrl": "",
     "ticketingNote": "",
-    "accessList": [],
+    "accessList": [
+      {
+        "contactId": "mn71bybo3mr7",
+        "name": "Nadine Sebastian",
+        "email": "nsebastian@sprout.ph",
+        "accessLevel": "full",
+        "addedAt": "2026-04-08T10:25:54.438Z",
+        "isTeam": true,
+        "teamRole": "team",
+        "isPM": false
+      },
+      {
+        "contactId": "mn71by3axx1g",
+        "name": "Michelle Dungog",
+        "email": "mdungog@sprout.ph",
+        "accessLevel": "full",
+        "addedAt": "2026-04-08T10:25:54.439Z",
+        "isTeam": true,
+        "teamRole": "team",
+        "isPM": false
+      },
+      {
+        "contactId": "mmj4wcs359kz",
+        "name": "Louie Anthony See",
+        "email": "lsee@sprout.ph",
+        "accessLevel": "full",
+        "addedAt": "2026-04-08T10:25:54.439Z",
+        "isTeam": true,
+        "isPM": true,
+        "teamRole": "pm"
+      },
+      {
+        "contactId": "mnadqj43wvgp",
+        "name": "Pinky Maquera",
+        "email": "pinky.maquera@macegroup.com",
+        "accessLevel": "limited",
+        "addedAt": "2026-04-08T10:25:54.439Z",
+        "isClient": true
+      },
+      {
+        "contactId": "mnadqj43bph8",
+        "name": "Ronalyn Manansala",
+        "email": "ronalyn.manansala@macegroup.com",
+        "accessLevel": "limited",
+        "addedAt": "2026-04-08T10:25:54.439Z",
+        "isClient": true
+      }
+    ],
     "recordings": [],
     "accessLog": [
       {

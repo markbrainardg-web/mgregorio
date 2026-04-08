@@ -1,5 +1,42 @@
 [
   {
+    "id": "90b6dd480a5f",
+    "timestamp": "2026-04-08T10:25:54.441Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "resource_hub.access_synced",
+    "details": "Access list synced for hub: MACETPM INC — 5 new entries added",
+    "meta": {
+      "hubId": "a775dcde514b",
+      "added": 5
+    }
+  },
+  {
+    "id": "116a7358eb65",
+    "timestamp": "2026-04-08T10:25:35.738Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "22cb1446874b",
+    "timestamp": "2026-04-08T10:17:28.493Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
     "id": "f4ecf9dcbe32",
     "timestamp": "2026-04-08T01:06:21.218Z",
     "userId": "mmj4wcs359kz",
