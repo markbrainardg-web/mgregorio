@@ -5145,8 +5145,11 @@ async function openResourceHubModal(projectId) {
           </div>
         </div>`:''}
 
-        <div style="font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt-muted);margin-bottom:.5rem">
-          Authorized Users <span style="font-weight:400;text-transform:none;font-size:.78rem">(${hub.accessList.length})</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+          <div style="font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt-muted)">
+            Authorized Users <span style="font-weight:400;text-transform:none;font-size:.78rem">(${hub.accessList.length})</span>
+          </div>
+          ${!isReadOnly ? `<button class="btn btn-ghost btn-sm" id="rh-sync-team-btn" style="font-size:.72rem;padding:.2rem .55rem">&#8635; Sync from Project</button>` : ''}
         </div>
         <div style="display:flex;flex-direction:column;gap:.4rem;max-height:220px;overflow-y:auto" id="rh-ac-list">
           ${hub.accessList.length===0
@@ -5155,7 +5158,7 @@ async function openResourceHubModal(projectId) {
                 <div style="display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;border:1px solid var(--border);border-radius:9px;background:var(--surface)">
                   <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#8139EE,#32CE13);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${(a.name||a.email||'?')[0].toUpperCase()}</div>
                   <div style="flex:1;min-width:0">
-                    ${a.name?`<div style="font-size:.83rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.name}${a.isPM?` <span style="font-size:.68rem;background:#d1fae5;color:#065f46;padding:1px 6px;border-radius:10px;font-weight:700">PM</span>`:''}</div>`:''}
+                    ${a.name?`<div style="font-size:.83rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.name}${a.isPM?` <span style="font-size:.68rem;background:#d1fae5;color:#065f46;padding:1px 6px;border-radius:10px;font-weight:700">PM</span>`:a.isTeam?` <span style="font-size:.68rem;background:#dbeafe;color:#1d4ed8;padding:1px 6px;border-radius:10px;font-weight:700">Team</span>`:a.isClient?` <span style="font-size:.68rem;background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:10px;font-weight:700">Client</span>`:''}</div>`:''}
                     <div style="font-size:.74rem;color:var(--txt-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.email}</div>
                     <div style="font-size:.7rem;margin-top:1px">${a.hasPassword?'<span style="color:#059669">🔒 Password set</span>':'<span style="color:#d97706">⚠️ No password set</span>'}</div>
                   </div>
@@ -5368,6 +5371,19 @@ async function openResourceHubModal(projectId) {
       const r = await fetch(`/api/resource-hub/${hub.id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ sections: hub.sections, limitedSections: hub.limitedSections, ticketingUrl: tickUrl, ticketingNote: tickNote }) });
       hub = await r.json();
       m.remove(); buildHubModal('sections');
+    });
+
+    // Sync from Project (team members + HubSpot contacts)
+    m.querySelector('#rh-sync-team-btn')?.addEventListener('click', async function() {
+      this.disabled = true;
+      this.textContent = 'Syncing…';
+      const r = await fetch(`/api/resource-hub/${hub.id}/sync-team`, { method: 'POST' });
+      const data = await r.json();
+      if (!r.ok) { alert(data.error || 'Sync failed.'); this.disabled = false; this.textContent = '↻ Sync from Project'; return; }
+      const msg = data.added === 0 ? 'Access list is already up to date — no new members found.' : `${data.added} new member${data.added === 1 ? '' : 's'} added from the project.`;
+      alert(msg);
+      hub.accessList = data.accessList;
+      m.remove(); buildHubModal('access');
     });
 
     // Add access

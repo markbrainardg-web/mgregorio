@@ -113,8 +113,8 @@ router.post('/', requireAuth, (req, res) => {
   const actor = getUsers().find(u => u.id === req.session.userId);
 
   // Auto-populate access list from project contacts (contacts with email only)
-  const contacts     = project.details?.contacts || [];
-  const accessList   = contacts
+  const contacts   = project.details?.contacts || [];
+  const accessList = contacts
     .filter(c => c.email && c.email.trim())
     .map(c => ({
       contactId:   c.id,
@@ -122,9 +122,55 @@ router.post('/', requireAuth, (req, res) => {
       email:       c.email.trim().toLowerCase(),
       accessLevel: c.access || 'limited',
       addedAt:     new Date().toISOString(),
+      isClient:    true,
     }));
 
-  // Auto-add the PM who generated the hub (if they have an email)
+  // Helper to add a team member (PMT user) if not already in list
+  const allUsers = getUsers();
+  function addTeamMember(userId, role) {
+    if (!userId) return;
+    const u = allUsers.find(u => u.id === userId);
+    if (!u || !u.email || !u.email.trim()) return;
+    const email = u.email.trim().toLowerCase();
+    if (accessList.find(a => a.email === email)) return;
+    accessList.unshift({
+      contactId:   u.id,
+      name:        u.name,
+      email,
+      accessLevel: 'full',
+      addedAt:     new Date().toISOString(),
+      isTeam:      true,
+      teamRole:    role,
+    });
+  }
+
+  // Add all assigned team members
+  (project.assignedTo || []).forEach(uid => addTeamMember(uid, 'team'));
+  // Add PM (mark as isPM for badge display)
+  if (project.projectManager) {
+    const pmUser = allUsers.find(u => u.id === project.projectManager);
+    if (pmUser?.email?.trim()) {
+      const email = pmUser.email.trim().toLowerCase();
+      const existing = accessList.find(a => a.email === email);
+      if (existing) {
+        existing.isPM = true;
+        existing.teamRole = 'pm';
+      } else {
+        accessList.unshift({
+          contactId:   pmUser.id,
+          name:        pmUser.name,
+          email,
+          accessLevel: 'full',
+          addedAt:     new Date().toISOString(),
+          isTeam:      true,
+          isPM:        true,
+          teamRole:    'pm',
+        });
+      }
+    }
+  }
+
+  // Also add the actor who clicked Generate (in case they differ from the assigned PM)
   if (actor?.email && actor.email.trim()) {
     const pmEmail = actor.email.trim().toLowerCase();
     if (!accessList.find(a => a.email === pmEmail)) {
@@ -134,7 +180,9 @@ router.post('/', requireAuth, (req, res) => {
         email:       pmEmail,
         accessLevel: 'full',
         addedAt:     new Date().toISOString(),
+        isTeam:      true,
         isPM:        true,
+        teamRole:    'pm',
       });
     }
   }
@@ -304,6 +352,85 @@ router.post('/:id/set-password', requireAuth, (req, res) => {
   });
 
   res.json({ ok: true });
+});
+
+// ── POST /api/resource-hub/:id/sync-team ──────────────────────
+// Sync project team members and HubSpot contacts into the access list
+// Only adds new entries — does not remove anyone already there
+router.post('/:id/sync-team', requireAuth, (req, res) => {
+  if (!canUser(req.session.userId, 'generate_resource_hub')) {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+
+  const list   = getHubs();
+  const hubIdx = list.findIndex(h => h.id === req.params.id);
+  if (hubIdx === -1) return res.status(404).json({ error: 'Hub not found.' });
+
+  const hub     = list[hubIdx];
+  const project = getProjects().find(p => p.id === hub.projectId);
+  if (!project) return res.status(404).json({ error: 'Project not found.' });
+
+  const allUsers   = getUsers();
+  const accessList = hub.accessList || [];
+  let added = 0;
+
+  function addTeamMember(userId, role) {
+    if (!userId) return;
+    const u = allUsers.find(u => u.id === userId);
+    if (!u || !u.email || !u.email.trim()) return;
+    const email = u.email.trim().toLowerCase();
+    if (accessList.find(a => a.email === email)) return;
+    accessList.push({
+      contactId:   u.id,
+      name:        u.name,
+      email,
+      accessLevel: 'full',
+      addedAt:     new Date().toISOString(),
+      isTeam:      true,
+      teamRole:    role,
+      isPM:        role === 'pm' || role === 'co_pm',
+    });
+    added++;
+  }
+
+  // Sync team members
+  (project.assignedTo || []).forEach(uid => addTeamMember(uid, 'team'));
+  if (project.projectManager) {
+    const pmUser = allUsers.find(u => u.id === project.projectManager);
+    if (pmUser?.email?.trim()) {
+      const email = pmUser.email.trim().toLowerCase();
+      const existing = accessList.find(a => a.email === email);
+      if (existing) {
+        existing.isPM = true; existing.teamRole = existing.teamRole || 'pm';
+      } else {
+        accessList.push({ contactId: pmUser.id, name: pmUser.name, email, accessLevel: 'full', addedAt: new Date().toISOString(), isTeam: true, isPM: true, teamRole: 'pm' });
+        added++;
+      }
+    }
+  }
+
+  // Sync HubSpot contacts
+  (project.details?.contacts || []).forEach(c => {
+    if (!c.email || !c.email.trim()) return;
+    const email = c.email.trim().toLowerCase();
+    if (accessList.find(a => a.email === email)) return;
+    accessList.push({ contactId: c.id, name: c.name, email, accessLevel: c.access || 'limited', addedAt: new Date().toISOString(), isClient: true });
+    added++;
+  });
+
+  list[hubIdx].accessList = accessList;
+  saveHubs(list);
+
+  const actor = allUsers.find(u => u.id === req.session.userId);
+  appendAuditEntry({
+    id: genId(), timestamp: new Date().toISOString(),
+    userId: actor?.id || 'unknown', userName: actor?.name || 'Unknown', userRole: actor?.role || 'unknown',
+    action: 'resource_hub.access_synced',
+    details: `Access list synced for hub: ${hub.projectTitle} — ${added} new entr${added === 1 ? 'y' : 'ies'} added`,
+    meta: { hubId: hub.id, added },
+  });
+
+  res.json({ ok: true, added, accessList });
 });
 
 // ── PATCH /api/resource-hub/:id/tickets/:ticketId ─────────────
