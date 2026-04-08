@@ -342,7 +342,7 @@
         "startDate": "2026-03-27",
         "endDate": "2026-03-27",
         "targetDate": "2026-03-27",
-        "actualDate": "2026-03-28"
+        "actualDate": "2026-03-31"
       },
       "Simulation II / Parallel Run": {
         "endDate": "2026-04-23",
@@ -636,7 +636,25 @@
         "createdBy": "mmj4wcs359kz",
         "createdByName": "Louie Anthony See"
       }
-    ]
+    ],
+    "docs": {
+      "Simulation II / Parallel Run": [
+        {
+          "id": "mne2p3v9ok8l",
+          "html": "TEST",
+          "text": "TEST",
+          "createdAt": "2026-03-31T03:44:20.950Z",
+          "createdByName": "Louie Anthony See"
+        },
+        {
+          "id": "mne2p7ej8z5d",
+          "html": "Client Called",
+          "text": "Client Called",
+          "createdAt": "2026-03-31T03:44:25.531Z",
+          "createdByName": "Louie Anthony See"
+        }
+      ]
+    }
   },
   {
     "id": "mmj509nt39ok",
@@ -1223,12 +1241,12 @@
     },
     "teamRoles": {
       "hrsi": {
-        "id": null,
-        "name": null
+        "id": "mn71bz1odu9g",
+        "name": "Hazel Anne Ortiz"
       },
       "psi": {
         "id": null,
-        "name": null
+        "name": "Denise Gonowon"
       },
       "payrollMaster": {
         "id": null,
@@ -2557,7 +2575,10 @@
     "priority": "medium",
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bxuuelpj",
+      "mn71bxmf9qb0"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -2769,7 +2790,7 @@
       "mn71byojpspv"
     ],
     "dueDate": "",
-    "progress": 0,
+    "progress": 33,
     "createdBy": "hubspot",
     "hubspotId": "50696578313",
     "hubspotStage": "Customer Onboarding",
@@ -2778,7 +2799,14 @@
     "syncedAt": "2026-03-19T08:40:26.806Z",
     "milestones": {
       "8. Implementation Sign Off": false,
-      "9. Adoption / Hypercare": false
+      "9. Adoption / Hypercare": false,
+      "Project Team Assignment": true,
+      "KOM or Requirements Alignment": true,
+      "Data Gathering": true,
+      "Simulation I": false,
+      "Training and System Setup": false,
+      "Project Review Checklist": false,
+      "Simulation II / Parallel Run": false
     },
     "teamRoles": {
       "hrsi": {
@@ -2797,6 +2825,475 @@
         "id": null,
         "name": null
       }
+    },
+    "timeline": {
+      "Project Team Assignment": {
+        "actualDate": "2026-03-31"
+      },
+      "KOM or Requirements Alignment": {
+        "actualDate": "2026-03-31"
+      },
+      "Data Gathering": {
+        "actualDate": "2026-03-31"
+      },
+      "phase_0_project_team_assignment": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_0_project_team_assignment_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_1_kick_off_meeting": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_1_kick_off_meeting_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_1_kick_off_meeting_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_1_kick_off_meeting_t2": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_1_kick_off_meeting_t3": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering_t2": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering_t3": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering_t4": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_2_data_gathering_t5": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_3_simulation": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_3_simulation_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t2": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t3": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t4": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t5": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t6": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t7": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t8": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t9": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t10": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t11": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_4_training_and_system_setup_t12": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_5_project_review": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_5_project_review_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_5_project_review_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_simulation_ii": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_simulation_ii_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_6_simulation_ii_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_7_implementation_sign_off": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_7_implementation_sign_off_t0": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_7_implementation_sign_off_t1": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_7_implementation_sign_off_t2": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      },
+      "phase_8_adoption": {
+        "startDate": "",
+        "endDate": "",
+        "targetDate": ""
+      }
+    },
+    "timelineTemplate": "tpl_1774842368321",
+    "timelineVersions": [
+      {
+        "id": "v1774927082417",
+        "versionNumber": 1,
+        "name": "V1",
+        "revisionReason": "Client request to move training",
+        "snapshot": {
+          "Project Team Assignment": {
+            "actualDate": "2026-03-31"
+          },
+          "KOM or Requirements Alignment": {
+            "actualDate": "2026-03-31"
+          },
+          "Data Gathering": {
+            "actualDate": "2026-03-31"
+          },
+          "phase_0_project_team_assignment": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_0_project_team_assignment_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_1_kick_off_meeting_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t4": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_2_data_gathering_t5": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_3_simulation": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_3_simulation_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t3": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t4": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t5": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t6": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t7": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t8": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t9": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t10": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t11": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_4_training_and_system_setup_t12": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_5_project_review": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_5_project_review_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_5_project_review_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_simulation_ii": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_simulation_ii_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_6_simulation_ii_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off_t0": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off_t1": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_7_implementation_sign_off_t2": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          },
+          "phase_8_adoption": {
+            "startDate": "",
+            "endDate": "",
+            "targetDate": ""
+          }
+        },
+        "createdAt": "2026-03-31T03:18:02.417Z",
+        "createdBy": "mmj4wxtgf2lr",
+        "createdByName": "Alexandra Marie Dela Cruz"
+      }
+    ],
+    "docs": {
+      "Simulation I": [
+        {
+          "id": "mne1u3s5dpmj",
+          "html": "Called the client asked for assistance or leave",
+          "text": "Called the client asked for assistance or leave",
+          "createdAt": "2026-03-31T03:20:14.501Z",
+          "createdByName": "Alexandra Marie Dela Cruz"
+        }
+      ]
+    },
+    "details": {
+      "contacts": [
+        {
+          "id": "mne1uxc4njae",
+          "name": "Pia Thea Rosal",
+          "phone": "0209602091681 ",
+          "email": "piathearosal@gmail.com",
+          "position": "Project Manager;Project  Manager;Signatory;Finance",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        }
+      ]
     }
   },
   {
@@ -3240,7 +3737,7 @@
     "id": "hs_48372394403",
     "title": "B2B Entertainment",
     "description": "Synced from HubSpot — Customer Onboarding",
-    "status": "ongoing",
+    "status": "on-hold-sales",
     "priority": "medium",
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
@@ -3412,7 +3909,7 @@
     "id": "hs_46928323683",
     "title": "ArchiUnite",
     "description": "Synced from HubSpot — Customer Onboarding",
-    "status": "on-hold-sales",
+    "status": "churn",
     "priority": "medium",
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
@@ -9113,7 +9610,10 @@
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
     "coProjectManagerHsId": null,
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71byfy6dx2",
+      "mn71byojpspv"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -39719,7 +40219,7 @@
     "progress": 0,
     "createdBy": "hubspot",
     "hubspotId": "8502688864",
-    "hubspotStage": "Customer Success",
+    "hubspotStage": "Customer Onboarding",
     "projectType": "client",
     "syncedAt": "2026-03-19T08:40:26.813Z",
     "milestones": {
@@ -54504,7 +55004,10 @@
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": null,
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71byfy6dx2",
+      "mn71byk9urnr"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -54587,7 +55090,10 @@
     "projectManager": "mmj4wcs359kz",
     "hubspotOwnerId": "396579952",
     "coProjectManagerHsId": null,
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71byxgfqr0",
+      "mn71bysxfyvb"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -85821,20 +86327,20 @@
   },
   {
     "id": "hs_3878721482",
-    "title": "MHSI",
+    "title": "Maxicare Health Services Inc (MHSI)",
     "description": "Synced from HubSpot — Customer Success",
-    "status": "churn",
+    "status": "ongoing",
     "priority": "medium",
     "projectType": "client",
-    "projectManager": null,
-    "hubspotOwnerId": "44416983",
+    "projectManager": "mmj4yvxq8555",
+    "hubspotOwnerId": "259739806",
     "coProjectManagerHsId": "278706991",
     "assignedTo": [],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
     "hubspotId": "3878721482",
-    "hubspotStage": "Customer Success",
+    "hubspotStage": "Customer Onboarding",
     "syncedAt": "2026-03-20T15:52:45.004Z",
     "milestones": {
       "8. Implementation Sign Off": false,
@@ -110866,7 +111372,10 @@
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": null,
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bxqmhm95",
+      "mn71bysxfyvb"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -116148,7 +116657,10 @@
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": null,
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bxz20bxq",
+      "mn71by3axx1g"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -129095,12 +129607,12 @@
     },
     "teamRoles": {
       "hrsi": {
-        "id": null,
-        "name": null
+        "id": "mn71byxgfqr0",
+        "name": "Rovilyn Palco"
       },
       "psi": {
-        "id": null,
-        "name": null
+        "id": "mn71by3axx1g",
+        "name": "Michelle Dungog"
       },
       "payrollMaster": {
         "id": null,
@@ -129248,7 +129760,10 @@
     "projectManager": "mmj4xh2lc5uq",
     "hubspotOwnerId": "803549924",
     "coProjectManagerHsId": "44416908",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71byfy6dx2",
+      "mn71bysxfyvb"
+    ],
     "dueDate": "",
     "progress": 0,
     "createdBy": "hubspot",
@@ -129362,7 +129877,10 @@
     "projectManager": "mmj4xh2lc5uq",
     "hubspotOwnerId": "803549924",
     "coProjectManagerHsId": "44416908",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bybo3mr7",
+      "mn71byk9urnr"
+    ],
     "teamRoles": {
       "hrsi": {
         "id": null,
@@ -129398,7 +129916,10 @@
     "projectManager": "mmj4wxtgf2lr",
     "hubspotOwnerId": "634519299",
     "coProjectManagerHsId": "44416908",
-    "assignedTo": [],
+    "assignedTo": [
+      "mn71bz5wu3p4",
+      "mn71bzelrb5w"
+    ],
     "teamRoles": {
       "hrsi": {
         "id": null,
@@ -129477,6 +129998,24 @@
     "projectType": "client",
     "syncedAt": "2026-03-30T01:29:53.874Z",
     "milestones": {},
-    "timeline": {}
+    "timeline": {},
+    "teamRoles": {
+      "hrsi": {
+        "id": null,
+        "name": null
+      },
+      "psi": {
+        "id": null,
+        "name": null
+      },
+      "payrollMaster": {
+        "id": null,
+        "name": null
+      },
+      "softwareImpl": {
+        "id": null,
+        "name": null
+      }
+    }
   }
 ]

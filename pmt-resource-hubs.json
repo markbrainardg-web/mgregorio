@@ -84,6 +84,20 @@
     "accessLog": [
       {
         "email": "lsee@sprout.ph",
+        "timestamp": "2026-04-08T01:05:38.789Z",
+        "ip": "127.0.0.1",
+        "success": false,
+        "reason": "email_not_found"
+      },
+      {
+        "email": "lsee@sprout.ph",
+        "timestamp": "2026-04-08T01:05:33.843Z",
+        "ip": "127.0.0.1",
+        "success": false,
+        "reason": "email_not_found"
+      },
+      {
+        "email": "lsee@sprout.ph",
         "timestamp": "2026-03-27T12:40:08.719Z",
         "ip": "127.0.0.1",
         "success": false,
@@ -104,7 +118,7 @@
         "reason": "email_not_found"
       }
     ],
-    "updatedAt": "2026-03-28T14:19:32.318Z"
+    "updatedAt": "2026-04-08T01:06:20.687Z"
   },
   {
     "id": "223b7085e025",
@@ -439,7 +453,7 @@
         "reason": "email_not_found"
       }
     ],
-    "updatedAt": "2026-03-27T08:52:23.958Z"
+    "updatedAt": "2026-03-31T03:53:46.517Z"
   },
   {
     "id": "f15fd6a9162a",
@@ -453,10 +467,10 @@
     "sections": {
       "milestones": true,
       "timeline": true,
-      "documents": false,
-      "recordings": false,
+      "documents": true,
+      "recordings": true,
       "contacts": true,
-      "ticketing": false
+      "ticketing": true
     },
     "limitedSections": {
       "milestones": true,
@@ -475,7 +489,8 @@
         "email": "adelacruz@sprout.ph",
         "accessLevel": "full",
         "addedAt": "2026-03-30T05:08:03.519Z",
-        "isPM": true
+        "isPM": true,
+        "hasPassword": false
       }
     ],
     "recordings": [],
@@ -488,6 +503,6 @@
         "reason": "email_not_found"
       }
     ],
-    "updatedAt": "2026-03-30T16:18:22.474Z"
+    "updatedAt": "2026-03-31T03:24:41.618Z"
   }
 ]

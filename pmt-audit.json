@@ -1,5 +1,349 @@
 [
   {
+    "id": "f4ecf9dcbe32",
+    "timestamp": "2026-04-08T01:06:21.218Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: MACETPM INC",
+    "meta": {
+      "hubId": "a775dcde514b"
+    }
+  },
+  {
+    "id": "7b250803f88a",
+    "timestamp": "2026-04-08T01:06:05.765Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: MACETPM INC",
+    "meta": {
+      "hubId": "a775dcde514b"
+    }
+  },
+  {
+    "id": "0cd02c65f31d",
+    "timestamp": "2026-04-08T01:03:09.277Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "5027f7f7e2cb",
+    "timestamp": "2026-04-06T15:00:23.254Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "d32040908395",
+    "timestamp": "2026-03-31T03:59:03.974Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "872487d5a98c",
+    "timestamp": "2026-03-31T03:58:58.629Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "d0c1decae818",
+    "timestamp": "2026-03-31T03:53:47.030Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: Test Project 3",
+    "meta": {
+      "hubId": "db6564d88d56"
+    }
+  },
+  {
+    "id": "f954638d12e3",
+    "timestamp": "2026-03-31T03:44:53.818Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "6fd4e61225a7",
+    "timestamp": "2026-03-31T03:44:49.639Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
+    "id": "1c1aad89fa85",
+    "timestamp": "2026-03-31T03:43:48.007Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Louie Anthony See logged in",
+    "meta": {
+      "username": "LSee"
+    }
+  },
+  {
+    "id": "7f473bfde155",
+    "timestamp": "2026-03-31T03:30:59.350Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "56efd08d0db0",
+    "timestamp": "2026-03-31T03:28:49.585Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "a0f4208a40d8",
+    "timestamp": "2026-03-31T03:28:45.830Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "9fdfb92b1a36",
+    "timestamp": "2026-03-31T03:27:55.916Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "role.deleted",
+    "details": "Deleted role \"Consultant\"",
+    "meta": {
+      "roleId": "consultant",
+      "roleLabel": "Consultant"
+    }
+  },
+  {
+    "id": "fce0e3ff2290",
+    "timestamp": "2026-03-31T03:27:39.295Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "role.created",
+    "details": "Created role \"Consultant\"",
+    "meta": {
+      "roleId": "consultant",
+      "roleLabel": "Consultant"
+    }
+  },
+  {
+    "id": "b1113aafabaa",
+    "timestamp": "2026-03-31T03:25:46.975Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "5d84fe577e87",
+    "timestamp": "2026-03-31T03:25:41.872Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Alexandra Marie Dela Cruz logged out",
+    "meta": {}
+  },
+  {
+    "id": "22e460a4cba7",
+    "timestamp": "2026-03-31T03:24:42.194Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: Prime Pacific Foods Corp",
+    "meta": {
+      "hubId": "f15fd6a9162a"
+    }
+  },
+  {
+    "id": "bd6c7610c283",
+    "timestamp": "2026-03-31T03:23:22.052Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: Prime Pacific Foods Corp",
+    "meta": {
+      "hubId": "f15fd6a9162a"
+    }
+  },
+  {
+    "id": "03fa0d514780",
+    "timestamp": "2026-03-31T03:18:03.256Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "timeline.version_saved",
+    "details": "Saved timeline version \"V1\" for \"Holistic International Comprehensive Care\" — Reason: Client request to move training",
+    "meta": {
+      "projectId": "hs_50696578313"
+    }
+  },
+  {
+    "id": "399054871e16",
+    "timestamp": "2026-03-31T03:14:55.863Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "dashboard.field_edit",
+    "details": "[Paste] HRSI: \"—\" → \"Rovilyn Palco\" on 52396180598",
+    "meta": {
+      "hsId": "52396180598",
+      "field": "hrsi",
+      "from": "",
+      "to": "Rovilyn Palco",
+      "company": "52396180598",
+      "source": "paste"
+    }
+  },
+  {
+    "id": "3310663e6b9c",
+    "timestamp": "2026-03-31T03:14:46.033Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "dashboard.field_edit",
+    "details": "[Paste] Implem Packages: \"—\" → \"[CORE] Professional (30 Days)\" on 52024159631",
+    "meta": {
+      "hsId": "52024159631",
+      "field": "implemPackage",
+      "from": "",
+      "to": "[CORE] Professional (30 Days)",
+      "company": "52024159631",
+      "source": "paste"
+    }
+  },
+  {
+    "id": "5cc00574fb0a",
+    "timestamp": "2026-03-31T03:13:48.087Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "8338bb466820",
+    "timestamp": "2026-03-31T03:13:40.070Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.logout",
+    "details": "Brain Gregorio logged out",
+    "meta": {}
+  },
+  {
+    "id": "1dee06a6a2f5",
+    "timestamp": "2026-03-31T03:13:32.430Z",
+    "userId": "mmj1fmmjvy5a",
+    "userName": "Brain Gregorio",
+    "userRole": "super_admin",
+    "action": "auth.login",
+    "details": "Brain Gregorio logged in",
+    "meta": {
+      "username": "mgregorio"
+    }
+  },
+  {
+    "id": "f6748e370dda",
+    "timestamp": "2026-03-31T03:13:27.897Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Alexandra Marie Dela Cruz logged out",
+    "meta": {}
+  },
+  {
+    "id": "07e77000a297",
+    "timestamp": "2026-03-31T03:12:23.654Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "61f76c4d7800",
+    "timestamp": "2026-03-31T03:10:24.398Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Alexandra Marie Dela Cruz logged out",
+    "meta": {}
+  },
+  {
+    "id": "7c62ffb2dd0c",
+    "timestamp": "2026-03-31T01:39:11.201Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
     "id": "2ebd3a856fe0",
     "timestamp": "2026-03-30T16:18:23.050Z",
     "userId": "mmj4wxtgf2lr",
