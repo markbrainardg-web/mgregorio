@@ -537,11 +537,61 @@
         "accessLevel": "full",
         "addedAt": "2026-03-30T05:08:03.519Z",
         "isPM": true,
+        "hasPassword": false,
+        "teamRole": "pm"
+      },
+      {
+        "contactId": "mn71bybo3mr7",
+        "name": "Nadine Sebastian",
+        "email": "nsebastian@sprout.ph",
+        "accessLevel": "full",
+        "addedAt": "2026-04-08T10:28:00.211Z",
+        "isTeam": true,
+        "teamRole": "team",
+        "isPM": false,
+        "hasPassword": true,
+        "passwordHash": "$2a$10$GZWcWsbdORrB.a2Zejh08ufHq4boMITIj6B5cufFKfwAjhlylGGPm",
+        "lastAccess": "2026-04-08T10:29:22.578Z"
+      },
+      {
+        "contactId": "mn71byk9urnr",
+        "name": "Arni Acosta",
+        "email": "aacosta@sprout.ph",
+        "accessLevel": "full",
+        "addedAt": "2026-04-08T10:28:00.211Z",
+        "isTeam": true,
+        "teamRole": "team",
+        "isPM": false,
+        "hasPassword": false
+      },
+      {
+        "contactId": "mnpwnu2cs1ka",
+        "name": "Jimuel Florendo",
+        "email": "jimuel.florendo@primepacificfoods.com.ph",
+        "accessLevel": "limited",
+        "addedAt": "2026-04-08T10:28:49.096Z",
+        "isClient": true,
+        "hasPassword": false
+      },
+      {
+        "contactId": "mnpwnu2cnt0s",
+        "name": "Jessica Tan",
+        "email": "jessica.tan@primepacificfoods.com.ph",
+        "accessLevel": "limited",
+        "addedAt": "2026-04-08T10:28:49.096Z",
+        "isClient": true,
         "hasPassword": false
       }
     ],
     "recordings": [],
     "accessLog": [
+      {
+        "email": "nsebastian@sprout.ph",
+        "timestamp": "2026-04-08T10:29:22.411Z",
+        "ip": "127.0.0.1",
+        "success": true,
+        "reason": "ok"
+      },
       {
         "email": "adelacruz",
         "timestamp": "2026-03-30T06:12:37.301Z",
@@ -550,6 +600,6 @@
         "reason": "email_not_found"
       }
     ],
-    "updatedAt": "2026-03-31T03:24:41.618Z"
+    "updatedAt": "2026-04-08T10:29:01.821Z"
   }
 ]

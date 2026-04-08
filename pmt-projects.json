@@ -5096,6 +5096,30 @@
         "targetDate": "",
         "actualDate": ""
       }
+    },
+    "details": {
+      "contacts": [
+        {
+          "id": "mnpwnu2cs1ka",
+          "name": "Jimuel Florendo",
+          "phone": "",
+          "email": "jimuel.florendo@primepacificfoods.com.ph",
+          "position": "Fintech Contact;Finance;Project Manager",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        },
+        {
+          "id": "mnpwnu2cnt0s",
+          "name": "Jessica Tan",
+          "phone": "9178808004",
+          "email": "jessica.tan@primepacificfoods.com.ph",
+          "position": "Signatory;Executive Sponsor;Project Manager;Project  Manager;Fintech Contact;Finance",
+          "projectRole": "",
+          "access": "limited",
+          "fromHubSpot": true
+        }
+      ]
     }
   },
   {

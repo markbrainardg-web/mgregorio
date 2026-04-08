@@ -1,5 +1,78 @@
 [
   {
+    "id": "ddbd7d3d2e21",
+    "timestamp": "2026-04-08T10:29:02.426Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.updated",
+    "details": "Sprout Success Kit updated for project: Prime Pacific Foods Corp",
+    "meta": {
+      "hubId": "f15fd6a9162a"
+    }
+  },
+  {
+    "id": "ebb8c8322ece",
+    "timestamp": "2026-04-08T10:28:59.794Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.password_set",
+    "details": "Password set for nsebastian@sprout.ph in hub: Prime Pacific Foods Corp",
+    "meta": {
+      "hubId": "f15fd6a9162a",
+      "email": "nsebastian@sprout.ph"
+    }
+  },
+  {
+    "id": "7418921aaad8",
+    "timestamp": "2026-04-08T10:28:49.098Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.access_synced",
+    "details": "Access list synced for hub: Prime Pacific Foods Corp — 2 new entries added",
+    "meta": {
+      "hubId": "f15fd6a9162a",
+      "added": 2
+    }
+  },
+  {
+    "id": "dd33237edcb4",
+    "timestamp": "2026-04-08T10:28:00.213Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "resource_hub.access_synced",
+    "details": "Access list synced for hub: Prime Pacific Foods Corp — 2 new entries added",
+    "meta": {
+      "hubId": "f15fd6a9162a",
+      "added": 2
+    }
+  },
+  {
+    "id": "03ac5d1787ac",
+    "timestamp": "2026-04-08T10:27:41.188Z",
+    "userId": "mmj4wxtgf2lr",
+    "userName": "Alexandra Marie Dela Cruz",
+    "userRole": "project_manager",
+    "action": "auth.login",
+    "details": "Alexandra Marie Dela Cruz logged in",
+    "meta": {
+      "username": "ADelacruz"
+    }
+  },
+  {
+    "id": "02799f96f9f1",
+    "timestamp": "2026-04-08T10:27:35.670Z",
+    "userId": "mmj4wcs359kz",
+    "userName": "Louie Anthony See",
+    "userRole": "project_manager",
+    "action": "auth.logout",
+    "details": "Louie Anthony See logged out",
+    "meta": {}
+  },
+  {
     "id": "90b6dd480a5f",
     "timestamp": "2026-04-08T10:25:54.441Z",
     "userId": "mmj4wcs359kz",
